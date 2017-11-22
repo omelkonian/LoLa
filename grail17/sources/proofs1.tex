@@ -1,0 +1,67 @@
+\documentclass[11pt]{article}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage{proof}
+\usepackage{color}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{palatino}
+
+\RequirePackage[pdfview=FitBH,pdfstartview=FitBH]{hyperref}
+
+\pagestyle{empty}
+
+\definecolor{Blue}{rgb}{0,.5,1}
+\newcommand{\Wb}[1]{\textcolor{Blue}{\textbf{#1}}}
+\newcommand{\Boxd}{\Box}
+\newcommand{\bs}{\backslash}
+\newcommand{\bo}{[}
+\newcommand{\bc}{]}
+\newcommand{\ra}{\rule{0pt}{7pt} \Rightarrow}
+
+\addtolength{\inferLineSkip}{2pt}
+\newlength{\wdtotal}
+\newlength{\httotal}
+\setlength{\wdtotal}{0cm}
+\setlength{\httotal}{0cm}
+
+%%
+% box for eg1.tex
+%%
+\newsavebox{\proofboxa}
+\sbox{\proofboxa}{\input{eg1.tex}}
+\ifthenelse{\wd\proofboxa > \wdtotal}{\setlength{\wdtotal}{\wd\proofboxa}}{}
+\ifthenelse{\ht\proofboxa > \httotal}{\setlength{\httotal}{\ht\proofboxa}}{}
+
+%%
+% box for eg2.tex
+%%
+\newsavebox{\proofboxb}
+\sbox{\proofboxb}{\input{eg2.tex}}
+\ifthenelse{\wd\proofboxb > \wdtotal}{\setlength{\wdtotal}{\wd\proofboxb}}{}
+\ifthenelse{\ht\proofboxb > \httotal}{\setlength{\httotal}{\ht\proofboxb}}{}
+
+
+\setlength{\paperwidth}{2in+\wdtotal}
+\setlength{\paperheight}{2in+\httotal}
+\textwidth = \wdtotal
+\textheight = \httotal
+
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.2in
+\parindent = 0.0in
+ 
+\begin{document}
+\begin{center}
+\usebox{\proofboxa}
+\end{center}
+\newpage
+\begin{center}
+\usebox{\proofboxb}
+\end{center}
+\end{document}
+

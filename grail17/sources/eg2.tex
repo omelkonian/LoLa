@@ -1,0 +1,35 @@
+
+%
+% lambda(K,bool(appl(lakei,K),&,appl(appl(plaagt,alice),K)))
+%
+
+{\samepage
+
+\ensuremath{
+\deduce{\textcolor{red}{\lambda y_{3}.((\textsc{lakei} \  y_{3}) \wedge ((\textsc{plaagt} \  \textsc{alice}) \  y_{3}))}}{\deduce{$\rule{0pt}{2em}$}{
+   \infer[\bo \bs E \bc^{}]{\mbox{lakei}\cdot_{}(\mbox{die}\cdot_{}(\mbox{alice}\cdot_{}\mbox{plaagt})) \vdash n}{
+      \infer{n}{\mbox{lakei}}
+   & 
+      \infer[\bo / E \bc^{}]{\mbox{die}\cdot_{}(\mbox{alice}\cdot_{}\mbox{plaagt}) \vdash n \bs_{}n}{
+         \infer{(n \bs_{}n) /_{}(\diamondsuit_{}\Box_{}np \bs_{}s)}{\mbox{die}}
+      & 
+         \infer[\bo \bs I \bc^{1}]{\mbox{alice}\cdot_{}\mbox{plaagt} \vdash \diamondsuit_{}\Box_{}np \bs_{}s}{
+            \infer[\bo \diamondsuit E \bc^{2}]{\makebox[.85em]{\textvisiblespace}\cdot_{}(\mbox{alice}\cdot_{}\mbox{plaagt}) \vdash s}{
+                \bo \makebox[.85em]{\textvisiblespace} \vdash \diamondsuit_{}\Box_{}np \bc^{1} 
+            & 
+               \infer[\bo \bs E \bc^{}]{\langle \makebox[.85em]{\textvisiblespace}\rangle^{}\cdot_{}(\mbox{alice}\cdot_{}\mbox{plaagt}) \vdash s}{
+                  \infer[\bo \Box E \bc^{}]{\langle \makebox[.85em]{\textvisiblespace}\rangle^{} \vdash np}{
+                      \bo \makebox[.85em]{\textvisiblespace} \vdash \Box_{}np \bc^{2} 
+                  }
+               & 
+                  \infer[\bo \bs E \bc^{}]{\mbox{alice}\cdot_{}\mbox{plaagt} \vdash np \bs_{}s}{
+                     \infer{np}{\mbox{alice}}
+                  & 
+                     \infer{np \bs_{}(np \bs_{}s)}{\mbox{plaagt}}
+                  }
+               }
+            }
+         }
+      }
+   }}}}}
+
