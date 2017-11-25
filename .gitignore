@@ -1,4 +1,8 @@
 *.swp
 .ipynb_checkpoints/
 *.pyc
+*.aux
+*.log
+*.out
+*.gz
 

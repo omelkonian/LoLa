@@ -1,0 +1,82 @@
+\documentclass[]{article}
+\usepackage[a4paper]{geometry}
+\usepackage{proof}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{stmaryrd}
+\usepackage{xcolor, color}
+\usepackage{graphicx}
+\usepackage{tikz-qtree}
+\usepackage{hyperref}
+
+\newcommand{\cut}[1]{}
+
+\newcommand{\nd}[2]{#1 \vdash #2}
+\newcommand{\seq}[2]{#1 \Rightarrow #2}
+\newcommand{\Ra}{\rightarrow}
+\newcommand{\Zip}[1]{\langle #1 \rangle}
+\newcommand{\CPS}[1]{\lceil #1 \rceil}
+\newcommand{\CBN}[1]{\overline{#1}}
+\newcommand{\bang}{\mathop{!}}
+\newcommand{\lolli}{\multimap}
+\newcommand{\bs}{\backslash}
+\newcommand{\with}{\mathbin{\&}}
+\newcommand{\amp}{\mathbin{\&}}
+\newcommand{\W}[1]{\textsf{#1}}
+\newcommand{\Ws}[1]{\textsc{#1}}
+\newcommand{\fdia}{\diamondsuit}
+\newcommand{\gbox}{\Box}
+\newcommand\rlambda{\overset{{}_{\shortrightarrow}}{\lambda}}
+\newcommand\llambda{\overset{{}_{\shortleftarrow}}{\lambda}}
+\newcommand{\bo}{[}
+\newcommand{\bc}{]}
+\newcommand{\LRline}[1]{#1^{>}}
+\newcommand{\RLline}[1]{#1^{<}}
+\newcommand{\lrline}[1]{#1^{\leadsto}}
+\newcommand{\rlline}[1]{#1^{\rotatebox[origin=c]{180}{$\leadsto$}}}
+\newcommand{\AppR}{\mathbin{\triangleleft}}
+\newcommand{\AppL}{\mathbin{\triangleright}}
+
+\newcommand{\la}{\lambda}
+\newsavebox\MBox
+\newcommand\Cline[2]{{\sbox\MBox{$#2$}%
+  \rlap{\usebox\MBox}\color{#1}\rule[-1\dp\MBox]{\wd\MBox}{0.5pt}}}
+\newcommand\red[1]{\Cline{red}{#1}}
+\newcommand\green[1]{\Cline{green}{#1}}
+\newcommand{\EmptyContext}{(\la x.x)}
+
+\title{\textbf{Logic and Language: Exercise (Week 2)}}
+\author{Orestis Melkonian [6176208], Konstantinos Kogkalidis [6230067]}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Hendriks}
+
+\section{Barker}
+
+\subsection{Left-to-right incremental}
+
+\begin{eqnarray*}
+    && \lrline{(\W{Mary}\AppL(\W{thinks}\AppR(\W{someone}\AppL\W{left})))} \ \EmptyContext \\
+    & \equiv & \red{\la k.(\lrline{\W{Mary}} \ \la n.(\lrline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))} \ \la m.(k \ (m \ n))))} \ \green{\EmptyContext} \\
+    & \to_\beta & \lrline{\W{Mary}} \ \la n.(\lrline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))} \ \la m.(m \ n)) \\
+    & \equiv & \red{\la k.(k\ \textsc{mary})} \ \green{\la n.(\lrline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))} \ \la m.(k \ (m \ n))} \\
+    & \to_\beta & \lrline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))} \ \la m.(m \ \textsc{Mary}) \\
+    & \equiv & \red{\la k.(\lrline{(\W{thinks}} \ \la m.(\lrline{(\W{someone}\AppL\W{left})} \ \la n.(k \ (m \ n))))} \ \green{\la m.(m \ \textsc{Mary})}\\
+    & \to_\beta & \lrline{\W{thinks}} \ \la m.(\lrline{(\W{someone}\AppL\W{left})} \ \la n.((m \ n) \ \textsc{Mary})) \\
+    & \equiv & \red{\la k.(k \ \textsc{thinks})} \ \green{\la m.(\lrline{(\W{someone}\AppL\W{left})} \ \la n.((m \ n) \ \textsc{Mary}))} \\
+    & \to_\beta & \lrline{(\W{someone}\AppL\W{left})} \ \la n.((\textsc{thinks} \ n) \ \textsc{Mary}) \\
+    & \equiv & \red{\la k.(\lrline{\W{someone}} \la n.(\lrline{\W{left}} \la m.(k \ (m \ n))))} \ \green{\la n.((\textsc{thinks} \ n) \ \textsc{Mary})} \\
+    & \to_\beta & \lrline{\W{someone}} \la n.(\lrline{\W{left}} \la m.(\textsc{thinks} \ (m \ n) \ \textsc{Mary} ))) \\
+    & \equiv & \exists \la n.(\red{\la k. (k \ \textsc{left})} \ \green{\la m.(\textsc{thinks} \ (m \ n) \ \textsc{Mary}))}) \\
+    & \to_\beta & \exists \la n.(\textsc{thinks} \ (\textsc{left} \ n) \ \textsc{Mary})) \\
+\end{eqnarray*}
+
+\subsection{Right-to-left incremental}
+
+\section{Plotkin}
+
+\end{document}
