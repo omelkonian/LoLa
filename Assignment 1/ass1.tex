@@ -192,6 +192,9 @@
     & \tobetas & \exists \la n.((\textsc{thinks}\ (\textsc{left}\ n)\ \textsc{mary})) \\
 \end{eqnarray*}
 
+\subsection{Observations and Discussion}
+Whereas the local derivation was the easiest one to produce with Hendrik's model, Barker's seems unable to create it. Contrary to Hendriks', Barker's model is deterministic and leaves no choice to the parser about the rules applied or the continuations created. In that sense, it is not surprising that only one of the interpretations could be associated with the given sentence.\\
+As to why it is this particular intepretation that we obtain with both the left-to-right and right-to-left approaches, two points must be considered. Obviously, there will come a point in which we will have to translate $\W{someone}\AppL\W{left}$, which will produce a lambda abstraction that will accept a continuation $k$.  Now, $k$ will necessarily include the other words of the sentence (i.e. $\W{Mary}$ and $\W{thinks}$). If we carefully look at the corresponding translation rule for $\W{someone}\AppL\W{left}$, we notice that that $k$ is always positioned in an inner scope than that of $\W{someone}$. As the non-local interpretation positions $\W{Mary}$ and $\W{thinks}$ in an outer scope than that of $\W{someone}$, it cannot be derived from Barker's model.\\
 \newpage
 \section{Plotkin}
 \renewcommand{\arraystretch}{1.8}
@@ -228,5 +231,6 @@ We can now compute the interpretation by giving the empty context ($\epsilon$) a
 	& \tobetas & \red{\la k.(\exists \la n.(k\ \la x. \la c.(c\ (\textsc{thinks}\ (\textsc{left}\ n)\ x)))}\ \green{\la m.(m\ \textsc{mary}\ \EmptyContext)} \\
 	& \tobetas & \exists \la n.(\textsc{thinks}\ (\textsc{left}\ n)\ \textsc{mary}) \\
 \end{eqnarray*}
-
+\subsection{Observations and Discussion}
+Plotkin's model surpasses Barker's due to its ability to handle quantifiers. However it still falls short of producing the local interpretation of the given sentence, largely due to the same reasons. As before, Plotkin's model is strict in terms of how much control it assigns to the parser; only a single, deterministic parse is possible for a sentence. Similarly, the subphrase $\W{someone}\AppL\W{left}$ will at some point be evaluated and await for a continuation to accept. When it does so, it will insert one of the words' translation in the inner $\CBN{N}$ position. That word could not possibly be $left$, since it already occupies the right side of the translation $\CBN{N^{A}\AppL M^{A\bs B}} \lambda k.(\CBN{M}^{\CBN{A\bs B}}\ \lambda m.(\CBN{N}^{\CBN{A}}\\lambda n.(m^{\CPS{A\bs B}}\ n^{\CPS{A}} k^{\CPS{B}\lolli\perp})))$. If no such word were to be inserted, the form would be ill-typed as it in fact requires a constant to the right. Therefore, either $think$ or $mary$ would have to be inserted, thus enforcing the global interpretation.\\
 \end{document}
