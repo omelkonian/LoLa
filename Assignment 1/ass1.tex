@@ -1,38 +1,20 @@
 \documentclass[]{article}
 \usepackage[a4paper]{geometry}
-\usepackage{proof}
-\usepackage{latexsym}
 \usepackage{amssymb}
 \usepackage{amsmath}
-\usepackage{stmaryrd}
-\usepackage{xcolor, color}
-\usepackage{graphicx}
+\usepackage[usenames, dvipsnames]{color, xcolor}
+\definecolor{MyRed}{rgb}{0.8, 0.01, 0.04}
+\definecolor{MyGreen}{rgb}{0.0, 0.5, 0.0}
+\colorlet{green}{MyGreen}
+\colorlet{red}{MyRed}
 \usepackage{tikz-qtree}
-\usepackage{hyperref}
 
-\newcommand{\cut}[1]{}
-
-\newcommand{\nd}[2]{#1 \vdash #2}
-\newcommand{\seq}[2]{#1 \Rightarrow #2}
 \newcommand{\Ra}{\rightarrow}
-\newcommand{\Zip}[1]{\langle #1 \rangle}
 \newcommand{\CPS}[1]{\lceil #1 \rceil}
 \newcommand{\CBN}[1]{\overline{#1}}
-\newcommand{\bang}{\mathop{!}}
 \newcommand{\lolli}{\multimap}
 \newcommand{\bs}{\backslash}
-\newcommand{\with}{\mathbin{\&}}
-\newcommand{\amp}{\mathbin{\&}}
 \newcommand{\W}[1]{\textsf{#1}}
-\newcommand{\Ws}[1]{\textsc{#1}}
-\newcommand{\fdia}{\diamondsuit}
-\newcommand{\gbox}{\Box}
-\newcommand\rlambda{\overset{{}_{\shortrightarrow}}{\lambda}}
-\newcommand\llambda{\overset{{}_{\shortleftarrow}}{\lambda}}
-\newcommand{\bo}{[}
-\newcommand{\bc}{]}
-\newcommand{\LRline}[1]{#1^{>}}
-\newcommand{\RLline}[1]{#1^{<}}
 \newcommand{\lrline}[1]{#1^{\leadsto}}
 \newcommand{\rlline}[1]{#1^{\rotatebox[origin=c]{180}{$\leadsto$}}}
 \newcommand{\AppR}{\mathbin{\triangleleft}}
@@ -40,12 +22,28 @@
 
 % Beta-reduction macros
 \newcommand{\la}{\lambda}
+\newcommand{\tobeta}{\to_\beta}
+\newcommand{\tobetas}{\to_{\beta}^{*}}
 \newsavebox\MBox
 \newcommand\Cline[2]{{\sbox\MBox{$#2$}%
   \rlap{\usebox\MBox}\color{#1}\rule[-1\dp\MBox]{\wd\MBox}{0.5pt}}}
 \newcommand\red[1]{\Cline{red}{#1}}
 \newcommand\green[1]{\Cline{green}{#1}}
 \newcommand{\EmptyContext}{(\la x.x)}
+
+% Tree macros
+\newcommand{\lolliedge}[2]{
+	\draw[semithick, ->] (#1) to node [midway,right] {$E_{\lolli}$} (#2);
+}
+\newcommand{\Tedge}[2]{
+	\draw[semithick, ->, blue] (#2) to node [midway,right] {$#1$} (#2');
+}
+\newcommand{\Dedge}[3][25]{
+	\draw[semithick, dashed, ->] (#2) to [bend right=#1] (#3);
+}
+\newcommand\Type[1]{
+	\textcolor{ForestGreen}{\footnotesize{$#1$}}
+}
 
 \title{\textbf{Logic and Language: Exercise (Week 2)}}
 \author{Orestis Melkonian [6176208], Konstantinos Kogkalidis [6230067]}
@@ -59,17 +57,17 @@
 \subsection{Local Interpretation}
 \begin{figure}[!h]
 \centering
-\begin{tikzpicture}[sibling distance=5mm]
+\begin{tikzpicture}[level 2+/.style={sibling distance=10mm}]
 \begin{scope}[level distance=11mm, level 3+/.style={level distance=15mm}]
 \Tree
 [.\node(app1){$\AppL$};
-	\node(mary)[label={-35:\textcolor{green}{\footnotesize{$e$}}}]{\W{Mary} $\approx \textsc{mary}$};
+	\node(mary)[label={-35:\Type{e}}]{\W{Mary} $\approx \textsc{mary}$};
 	[.{$\AppR$}
-		\node(thinks)[label={-35:\textcolor{green}{\footnotesize{$t \Ra e \Ra t$}}}]{\W{thinks} $\approx \la t. \la m. \textsc{thinks} \; t \; m$};
+		\node(thinks)[label={-35:\Type{t \Ra e \Ra t}}]{\W{thinks} $\approx \la t. \la m. \textsc{thinks} \; t \; m$};
 		[.{$\AppL$}
-			\node(someone)[label={-35:\textcolor{green}{\footnotesize{$(e \Ra t) \Ra t$}}}]{\W{someone} $\approx \exists$};
-			[.\node(left)[label={-15:\textcolor{green}{\footnotesize{$e \Ra t$}}}]{\W{left} $\approx \la x. \textsc{left} \; x$};
-				[.\node(left')[label={-15:\textcolor{green}{\footnotesize{$((e \Ra t) \Ra t) \Ra t$}}}]{$\la k. (k \; \la x.(\textsc{left} \; x))$};
+			\node(someone)[label={-35:\Type{(e \Ra t) \Ra t}}]{\W{someone} $\approx \exists$};
+			[.\node(left)[label={-15:\Type{e \Ra t}}]{\W{left} $\approx \la x. \textsc{left} \; x$};
+				[.\node(left')[label={-15:\Type{((e \Ra t) \Ra t) \Ra t}}]{$\la k. (k \; \la x.(\textsc{left} \; x))$};
 				]
 			]
 		]
@@ -77,15 +75,15 @@
 ]
 \end{scope}
 
-\begin{scope}[grow'=up, xshift=+4cm, yshift=-13cm, level distance=13mm]
+\begin{scope}[grow'=up, xshift=+4cm, yshift=-12cm, level distance=11mm]
 \Tree
-[.\node(la1)[label={-5:\textcolor{green}{\footnotesize{$t$}}}]{$\textsc{thinks} \; (\exists \; \la x. (\textsc{left} \; x)) \; \textsc{mary}$};
+[.\node(la1)[label={-5:\Type{t}}]{$\textsc{thinks} \; (\exists \; \la x. (\textsc{left} \; x)) \; \textsc{mary}$};
     [.\node(app1'){};
     	\node(tmary){$\cdot$};
-    	[.\node(la2)[label={-10:\textcolor{green}{\footnotesize{$e \Ra t$}}}]{$\la m.(\textsc{thinks} \; (\exists \; \la x. (\textsc{left} \; x)) \; m)$};
+    	[.\node(la2)[label={-10:\Type{e \Ra t}}]{$\la m.(\textsc{thinks} \; (\exists \; \la x. (\textsc{left} \; x)) \; m)$};
 			[.\node(app2'){};
 				[.\node(tthinks){$\cdot$};]
-				[.\node(la3)[label={-15:\textcolor{green}{\footnotesize{$t$}}}]{$\exists \; \la x.(\textsc{left} \; x)$};
+				[.\node(la3)[label={-15:\Type{t}}]{$\exists \; \la x.(\textsc{left} \; x)$};
 					[.\node(app3'){};
 						\node(tsomeone){$\cdot$};
 						\node{};
@@ -95,41 +93,35 @@
 		]
     ]
 ]
-
-\draw[semithick, dashed, ->] (mary) to [bend right=25] (tmary);
-\draw[semithick, dashed, ->] (thinks) to [bend right=25] (tthinks);
-\draw[semithick, dashed, ->] (someone) to [bend right=25] (tsomeone);
-
-\draw[semithick, ->] (app1') to node [midway,left] {$E_{\lolli}$} (la1);
-\draw[semithick, ->] (app2') to node [midway,left] {$E_{\lolli}$} (la2);
-\draw[semithick, ->] (app3') to node [midway,left] {$E_{\lolli}$} (la3);
-
-\draw[semithick, ->, blue] (left) to node [midway,right] {$VR$} (left');
-
+\Dedge{mary}{tmary}; \Dedge{thinks}{tthinks}; \Dedge{someone}{tsomeone}
+\lolliedge{app1'}{la1}; \lolliedge{app2'}{la2}; \lolliedge{app3'}{la3}
+\Tedge{VR}{left}
 \end{scope}
 
 \end{tikzpicture}
 \end{figure}
+
+\paragraph{Clarification:} Basic term translations implicitly apply $\eta$-expansions, in order to transform the term in the desired format.
 
 \newpage
 
 \subsection{Non-Local Interpretation}
 \begin{figure}[!h]
 \centering
-\begin{tikzpicture}[sibling distance=2mm]
+\begin{tikzpicture}[level 2-/.style={sibling distance=10mm}]
 \begin{scope}[level distance=13mm, level 3+/.style={level distance=17mm}]
 \Tree
 [.\node(app1){$\AppL$};
-	\node(mary)[label={-35:\textcolor{green}{\footnotesize{$e$}}}]{\W{Mary} $\approx \textsc{mary}$};
+	\node(mary)[label={-35:\Type{e}}]{\W{Mary} $\approx \textsc{mary}$};
 	[.{$\AppR$}
-		[.\node(thinks)[label={-35:\textcolor{green}{\footnotesize{$t \Ra e \Ra t$}}}]{\W{thinks} $\approx \textsc{thinks}$};
-			\node(thinks')[label={-35:\textcolor{green}{\footnotesize{$((t \Ra t) \Ra t) \Ra e \Ra t$}}}]{$\la k. \la m.(k \; \la l.(\textsc{thinks}))$};
+		[.\node(thinks)[label={-35:\Type{t \Ra e \Ra t}}]{\W{thinks} $\approx \textsc{thinks}$};
+			\node(thinks')[label={-35:\Type{((t \Ra t) \Ra t) \Ra e \Ra t}}]{$\la k. \la m.(k \; \la l.(\textsc{thinks}))$};
 		]
 		[.{$\AppL$}
-			\node(someone)[label={-35:\textcolor{green}{\footnotesize{$(e \Ra t) \Ra t$}}}]{\W{someone} $\approx \exists$};
-			[.\node(left)[label={-15:\textcolor{green}{\footnotesize{$e \Ra t$}}}]{\W{left} $\approx \textsc{left}$};
-				[.\node(left')[label={-15:\textcolor{green}{\footnotesize{$e \Ra ((t \Ra t) \Ra t)$}}}]{$\la x \la w.(w \; (\textsc{left} \ x))$};
-					\node(left'')[label={-85:\textcolor{green}{\footnotesize{$((e \Ra t) \Ra t) \Ra ((t \Ra t) \Ra t)$}}}]{$\la \epsilon \la k.(\epsilon \; \la x.(k \; (\textsc{left} \ x)))$};
+			\node(someone)[label={-35:\Type{(e \Ra t) \Ra t}}]{\W{someone} $\approx \exists$};
+			[.\node(left)[label={-15:\Type{e \Ra t}}]{\W{left} $\approx \textsc{left}$};
+				[.\node(left')[label={-15:\Type{e \Ra ((t \Ra t) \Ra t)}}]{$\la x \la w.(w \; (\textsc{left} \ x))$};
+					\node(left'')[label={-85:\Type{((e \Ra t) \Ra t) \Ra ((t \Ra t) \Ra t)}}]{$\la \epsilon \la k.(\epsilon \; \la x.(k \; (\textsc{left} \ x)))$};
 				]
 			]
 		]
@@ -139,13 +131,13 @@
 
 \begin{scope}[grow'=up, xshift=+4cm, yshift=-18cm, level distance=15mm]
 \Tree
-[.\node(la1)[label={-5:\textcolor{green}{\footnotesize{$t$}}}]{$\exists \la x.(\textsc{thinks} \; (\textsc{left} \; x) \; \textsc{mary})$};
+[.\node(la1)[label={-5:\Type{t}}]{$\exists \la x.(\textsc{thinks} \; (\textsc{left} \; x) \; \textsc{mary})$};
     [.\node(app1'){};
     	\node(tmary){$\cdot$};
-    	[.\node(la2)[label={-10:\textcolor{green}{\footnotesize{$e \Ra t$}}}]{$\la m.(\exists \la x.(\textsc{thinks} \; (\textsc{left} \; x) \; m))$};
+    	[.\node(la2)[label={-10:\Type{e \Ra t}}]{$\la m.(\exists \la x.(\textsc{thinks} \; (\textsc{left} \; x) \; m))$};
 			[.\node(app2'){};
 				[.\node(tthinks){$\cdot$};]
-				[.\node(la3)[label={-15:\textcolor{green}{\footnotesize{$(t \Ra t) \Ra t$}}}]{$\la k.(\exists \la x.(k \; (\textsc{left} \ x)))$};
+				[.\node(la3)[label={-15:\Type{(t \Ra t) \Ra t}}]{$\la k.(\exists \la x.(k \; (\textsc{left} \ x)))$};
 					[.\node(app3'){};
 						\node(tsomeone){$\cdot$};
 						\node(tleft){$\cdot$};
@@ -155,20 +147,9 @@
 		]
     ]
 ]
-
-\draw[semithick, dashed, ->] (mary) to [bend right=25] (tmary);
-\draw[semithick, dashed, ->] (thinks') to [bend right=25] (tthinks);
-\draw[semithick, dashed, ->] (someone) to [bend right=25] (tsomeone);
-\draw[semithick, dashed, ->] (left'') to [bend left=15] (tleft);
-
-\draw[semithick, ->] (app1') to node [midway,left] {$E_{\lolli}$} (la1);
-\draw[semithick, ->] (app2') to node [midway,left] {$E_{\lolli}$} (la2);
-\draw[semithick, ->] (app3') to node [midway,left] {$E_{\lolli}$} (la3);
-
-\draw[semithick, ->, blue] (thinks) to node [midway,left] {$AR$} (thinks');
-\draw[semithick, ->, blue] (left) to node [midway,right] {$VR$} (left');
-\draw[semithick, ->, blue] (left') to node [midway,right] {$AR$} (left'');
-
+\Dedge{mary}{tmary}; \Dedge{thinks'}{tthinks}; \Dedge{someone}{tsomeone}; \Dedge[-25]{left''}{tleft}
+\lolliedge{app1'}{la1}; \lolliedge{app2'}{la2}; \lolliedge{app3'}{la3}
+\Tedge{AR}{thinks}; \Tedge{VR}{left}; \Tedge{AR}{left'}
 \end{scope}
 
 \end{tikzpicture}
@@ -181,34 +162,34 @@
 \begin{eqnarray*}
     && \lrline{(\W{Mary}\AppL(\W{thinks}\AppR(\W{someone}\AppL\W{left})))} \ \EmptyContext \\
     & \equiv & \red{\la k.(\lrline{\W{Mary}} \ \la n.(\lrline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))} \ \la m.(k \ (m \ n))))} \ \green{\EmptyContext} \\
-    & \to_\beta & \lrline{\W{Mary}} \ \la n.(\lrline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))} \ \la m.(m \ n)) \\
+    & \tobetas & \lrline{\W{Mary}} \ \la n.(\lrline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))} \ \la m.(m \ n)) \\
     & \equiv & \red{\la k.(k\ \textsc{mary})} \ \green{\la n.(\lrline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))} \ \la m.(k \ (m \ n))} \\
-    & \to_\beta & \lrline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))} \ \la m.(m \ \textsc{mary}) \\
+    & \tobetas & \lrline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))} \ \la m.(m \ \textsc{mary}) \\
     & \equiv & \red{\la k.(\lrline{(\W{thinks}} \ \la m.(\lrline{(\W{someone}\AppL\W{left})} \ \la n.(k \ (m \ n))))} \ \green{\la m.(m \ \textsc{mary})}\\
-    & \to_\beta & \lrline{\W{thinks}} \ \la m.(\lrline{(\W{someone}\AppL\W{left})} \ \la n.((m \ n) \ \textsc{mary})) \\
-    & \equiv & \red{\la k.(k \ \textsc{thinks})} \ \green{\la m.(\lrline{(\W{someone}\AppL\W{left})} \ \la n.((m \ n) \ \textsc{mary}))} \\
-    & \to_\beta & \lrline{(\W{someone}\AppL\W{left})} \ \la n.((\textsc{thinks} \ n) \ \textsc{mary}) \\
-    & \equiv & \red{\la k.(\lrline{\W{someone}} \la n.(\lrline{\W{left}} \la m.(k \ (m \ n))))} \ \green{\la n.((\textsc{thinks} \ n) \ \textsc{mary})} \\
-    & \to_\beta & \lrline{\W{someone}} \la n.(\lrline{\W{left}} \la m.(\textsc{thinks} \ (m \ n) \ \textsc{mary} ))) \\
+    & \tobetas & \lrline{\W{thinks}} \ \la m.(\lrline{(\W{someone}\AppL\W{left})} \ \la n.(m \ n\ \textsc{mary})) \\
+    & \equiv & \red{\la k.(k \ \textsc{thinks})} \ \green{\la m.(\lrline{(\W{someone}\AppL\W{left})} \ \la n.(m \ n \ \textsc{mary}))} \\
+    & \tobetas & \lrline{(\W{someone}\AppL\W{left})} \ \la n.(\textsc{thinks} \ n \ \textsc{mary}) \\
+    & \equiv & \red{\la k.(\lrline{\W{someone}} \la n.(\lrline{\W{left}} \la m.(k \ (m \ n))))} \ \green{\la n.(\textsc{thinks} \ n \ \textsc{mary})} \\
+    & \tobetas & \lrline{\W{someone}} \la n.(\lrline{\W{left}} \la m.(\textsc{thinks} \ (m \ n) \ \textsc{mary} ))) \\
     & \equiv & \exists \la n.(\red{\la k. (k \ \textsc{left})} \ \green{\la m.(\textsc{thinks} \ (m \ n) \ \textsc{mary}))}) \\
-    & \to_\beta & \exists \la n.(\textsc{thinks} \ (\textsc{left} \ n) \ \textsc{mary})) \\
+    & \tobetas & \exists \la n.(\textsc{thinks} \ (\textsc{left} \ n) \ \textsc{mary})) \\
 \end{eqnarray*}
 
 \subsection{Right-to-left incremental}
 \begin{eqnarray*}
     && \rlline{(\W{Mary}\AppL(\W{thinks}\AppR(\W{someone}\AppL\W{left})))} \ \EmptyContext \\
     & \equiv & \red{\la k.(\rlline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))}\ \la m.(\rlline{\W{Mary}}\ \la n.(k\ (m\ n))))} \ \green{\EmptyContext} \\
-    & \to_\beta & \rlline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))}\ \la m.(\rlline{\W{Mary}}\ \la n.(m\ n)) \\
+    & \tobetas & \rlline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))}\ \la m.(\rlline{\W{Mary}}\ \la n.(m\ n)) \\
     & \equiv & \rlline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))}\ \la m.(\red{\la k.(k\ \textsc{mary})}\ \green{\la n.(m\ n)}) \\
-    & \to_\beta & \rlline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))}\ \la m.(m\ \textsc{mary}) \\
+    & \tobetas & \rlline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))}\ \la m.(m\ \textsc{mary}) \\
     & \equiv & \la k.(\rlline{(\W{someone}\AppL\W{left})}\ \la n.(\rlline{(\W{thinks})}\ \la m.(k\ (m\ n))))\ \la m.(m\ \textsc{mary}) \\
     & \equiv & \la k.(\rlline{(\W{someone}\AppL\W{left})}\ \la n.(\red{\la k.(k\ \textsc{thinks})}\ \green{\la m.(k\ (m\ n))}))\ \la m.(m\ \textsc{mary}) \\
-    & \to_\beta & \red{\la k.(\rlline{(\W{someone}\AppL\W{left})}\ \la n.(k\ (\textsc{thinks}\ n)))}\ \green{\la m.(m\ \textsc{mary})} \\
-    & \to_\beta & \rlline{(\W{someone}\AppL\W{left})}\ \la n.(\textsc{thinks}\ n\ \textsc{mary}) \\
+    & \tobetas & \red{\la k.(\rlline{(\W{someone}\AppL\W{left})}\ \la n.(k\ (\textsc{thinks}\ n)))}\ \green{\la m.(m\ \textsc{mary})} \\
+    & \tobetas & \rlline{(\W{someone}\AppL\W{left})}\ \la n.(\textsc{thinks}\ n\ \textsc{mary}) \\
     & \equiv & \la k.(\rlline{\W{left}}\ \la m.(\rlline{\W{someone}}\ \la n.(k\ (m\ n))))\ \la n.(\textsc{thinks}\ n\ \textsc{mary}) \\
     & \equiv & \red{\la k.(\la k.(k\ \textsc{left})\ \la m.(\exists \la n.(k\ (m\ n))))}\ \green{\la n.(\textsc{thinks}\ n\ \textsc{mary})} \\
-    & \to_\beta & \red{\la k.(k\ \textsc{left})}\ \green{\la m.(\exists \la n.((\textsc{thinks}\ (m\ n)\ \textsc{mary})))} \\
-    & \to_\beta & \exists \la n.((\textsc{thinks}\ (\textsc{left}\ n)\ \textsc{mary})) \\
+    & \tobetas & \red{\la k.(k\ \textsc{left})}\ \green{\la m.(\exists \la n.(\textsc{thinks}\ (m\ n)\ \textsc{mary}))} \\
+    & \tobetas & \exists \la n.((\textsc{thinks}\ (\textsc{left}\ n)\ \textsc{mary})) \\
 \end{eqnarray*}
 
 \newpage
@@ -223,28 +204,29 @@
 \W{thinks} & (\mathit{np}\bs s)/s & t \lolli ((e\lolli(t\lolli\perp)\lolli\perp) \lolli \perp) \lolli \perp &  \la k.(k\ \la t.\la k'.(k'\ \la x. \la c. (c\ (\textsc{thinks}\ t\ x)))) \\
 \end{array}\]
 %
-\\
+\\[15pt]
 \addtolength{\jot}{.3em}
 First, we compute the inner interpretations:
 \begin{eqnarray}
 	& \CBN{\W{someone}\AppL\W{left}} &\equiv \la k.(\red{\la k'.(k'\ \la x. \la k''.(k''\ (\textsc{left}\ x)))}\ \green{\la m.(\exists \la n.(m\ n\ k))}) \nonumber \\
-	&&\to_\beta \la k.(\exists \la n.(k\ (\textsc{left}\ n))) \\
+	&&\tobetas \la k.(\exists \la n.(k\ (\textsc{left}\ n))) \\
 	& \CBN{\W{thinks}\AppR(\W{someone}\AppL\W{left})} &\equiv \la k.(\CBN{\W{thinks}}\ \la m.(\CBN{\W{someone}\AppL\W{left}}\ \la n.(m\ n\ k))) \nonumber \\
 	&&\equiv \la k''.(\red{\la k.(k\ \la t. \la k'.(k'\ \la x. \la c. (c\ (\textsc{thinks}\ t\ x))))}\ \green{\la m.(\CBN{\W{someone}\AppL\W{left}}\ \la n.(m\ n\ k''))}) \nonumber \\
-	&&\to_\beta \la k''.(\CBN{\W{someone}\AppL\W{left}}\ \la n.(k''\ \la x. \la c.(c\ (\textsc{thinks}\ n\ x)))) \nonumber \\
+	&&\tobetas \la k''.(\CBN{\W{someone}\AppL\W{left}}\ \la n.(k''\ \la x. \la c.(c\ (\textsc{thinks}\ n\ x)))) \nonumber \\
 	&&\stackrel{(1)}{\equiv} \la k''.(\red{\la k.(\exists \la n.(k\ (\textsc{left}\ n)))}\ \green{\la n.(k''\ \la x. \la c.(c\ (\textsc{thinks}\ n\ x)))}) \nonumber \\
-	&&\to_\beta \la \textcolor{red}{k''}.(\exists \la n.(\textcolor{red}{k''}\ \la x. \la c.(c\ (\textsc{thinks}\ (\textsc{left}\ n)\ x))) \nonumber \\
+	&&\tobetas \la \textcolor{red}{k''}.(\exists \la n.(\textcolor{red}{k''}\ \la x. \la c.(c\ (\textsc{thinks}\ (\textsc{left}\ n)\ x))) \nonumber \\
 	&&\to_\alpha \la k.(\exists \la n.(k\ \la x. \la c.(c\ (\textsc{thinks}\ (\textsc{left}\ n)\ x)))
 \end{eqnarray}
 %
+\\[10pt]
 We can now compute the interpretation by giving the empty context ($\epsilon$) as the initial continuation:
 \begin{eqnarray*}
 	&& \CBN{\W{Mary}\AppL(\W{thinks}\AppR(\W{someone}\AppL\W{left}))}\ \epsilon \\
-	& \equiv & \red{\la k.(\CBN{\W{thinks}\AppR(\W{someone}\AppL\W{left})}\ \la m.(\la k.(k \textsc{mary})\ \la n.(m\ n\ k)))}\ \green{\EmptyContext} \\
-	& \to_\beta & \CBN{\W{thinks}\AppR(\W{someone}\AppL\W{left})}\ \la m.(\la k.(k\ \textsc{mary})\ \la n.(m\ n\ \EmptyContext)) \\
+	& \equiv & \red{\la k.(\CBN{\W{thinks}\AppR(\W{someone}\AppL\W{left})}\ \la m.(\la k.(k\ \textsc{mary})\ \la n.(m\ n\ k)))}\ \green{\EmptyContext} \\
+	& \tobetas & \CBN{\W{thinks}\AppR(\W{someone}\AppL\W{left})}\ \la m.(\la k.(k\ \textsc{mary})\ \la n.(m\ n\ \EmptyContext)) \\
 	& \stackrel{(2)}{\equiv} & \la k.(\exists \la n.(k\ \la x. \la c.(c\ (\textsc{thinks}\ (\textsc{left}\ n)\ x)))\ \la m.(\red{\la k.(k\ \textsc{mary})}\ \green{\la n.(m\ n\ \EmptyContext)}) \\
-	& \to_\beta & \red{\la k.(\exists \la n.(k\ \la x. \la c.(c\ (\textsc{thinks}\ (\textsc{left}\ n)\ x)))}\ \green{\la m.(m\ \textsc{mary}\ \EmptyContext)} \\
-	& \to_\beta & \exists \la n.(\textsc{thinks}\ (\textsc{left}\ n)\ \textsc{mary}) \\
+	& \tobetas & \red{\la k.(\exists \la n.(k\ \la x. \la c.(c\ (\textsc{thinks}\ (\textsc{left}\ n)\ x)))}\ \green{\la m.(m\ \textsc{mary}\ \EmptyContext)} \\
+	& \tobetas & \exists \la n.(\textsc{thinks}\ (\textsc{left}\ n)\ \textsc{mary}) \\
 \end{eqnarray*}
 
 \end{document}
