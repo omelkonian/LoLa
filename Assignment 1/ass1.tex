@@ -38,6 +38,7 @@
 \newcommand{\AppR}{\mathbin{\triangleleft}}
 \newcommand{\AppL}{\mathbin{\triangleright}}
 
+% Beta-reduction macros
 \newcommand{\la}{\lambda}
 \newsavebox\MBox
 \newcommand\Cline[2]{{\sbox\MBox{$#2$}%
@@ -54,6 +55,130 @@
 \maketitle
 
 \section{Hendriks}
+
+\subsection{Local Interpretation}
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}[sibling distance=5mm]
+\begin{scope}[level distance=11mm, level 3+/.style={level distance=15mm}]
+\Tree
+[.\node(app1){$\AppL$};
+	\node(mary)[label={-35:\textcolor{green}{\footnotesize{$e$}}}]{\W{Mary} $\approx \textsc{Mary}$};
+	[.{$\AppR$}
+		\node(thinks)[label={-35:\textcolor{green}{\footnotesize{$t \Ra e \Ra t$}}}]{\W{thinks} $\approx \la t. \la m. \textsc{thinks} \; t \; m$};
+		[.{$\AppL$}
+			\node(someone)[label={-35:\textcolor{green}{\footnotesize{$(e \Ra t) \Ra t$}}}]{\W{someone} $\approx \exists$};
+			[.\node(left)[label={-15:\textcolor{green}{\footnotesize{$e \Ra t$}}}]{\W{left} $\approx \la x. \textsc{left} \; x$};
+				[.\node(left')[label={-15:\textcolor{green}{\footnotesize{$((e \Ra t) \Ra t) \Ra t$}}}]{$\la k. (k \; \la x.(\textsc{left} \; x))$};
+				]
+			]
+		]
+	]
+]
+\end{scope}
+
+\begin{scope}[grow'=up, xshift=+4cm, yshift=-13cm, level distance=13mm]
+\Tree
+[.\node(la1)[label={-5:\textcolor{green}{\footnotesize{$t$}}}]{$\textsc{thinks} \; (\exists \; \la x. (\textsc{left} \; x)) \; \textsc{Mary}$};
+    [.\node(app1'){};
+    	\node(tmary){$\cdot$};
+    	[.\node(la2)[label={-10:\textcolor{green}{\footnotesize{$e \Ra t$}}}]{$\la m.(\textsc{thinks} \; (\exists \; \la x. (\textsc{left} \; x)) \; m)$};
+			[.\node(app2'){};
+				[.\node(tthinks){$\cdot$};]
+				[.\node(la3)[label={-15:\textcolor{green}{\footnotesize{$t$}}}]{$\exists \; \la x.(\textsc{left} \; x)$};
+					[.\node(app3'){};
+						\node(tsomeone){$\cdot$};
+						\node{};
+					]
+				]
+			]
+		]
+    ]
+]
+
+\draw[semithick, dashed, ->] (mary) to [bend right=25] (tmary);
+\draw[semithick, dashed, ->] (thinks) to [bend right=25] (tthinks);
+\draw[semithick, dashed, ->] (someone) to [bend right=25] (tsomeone);
+
+\draw[semithick, ->] (app1') to node [midway,left] {$E_{\lolli}$} (la1);
+\draw[semithick, ->] (app2') to node [midway,left] {$E_{\lolli}$} (la2);
+\draw[semithick, ->] (app3') to node [midway,left] {$E_{\lolli}$} (la3);
+
+\draw[semithick, ->, blue] (left) to node [midway,right] {$VR$} (left');
+
+\end{scope}
+
+\end{tikzpicture}
+\end{figure}
+
+\newpage
+
+\subsection{Non-Local Interpretation}
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}
+[
+%every tree node/.style={align=center,anchor=base},
+%font=\small,
+sibling distance=5mm,
+]
+
+\begin{scope}[level distance=13mm, level 3+/.style={level distance=17mm}]
+\Tree
+[.\node(app1){$\AppL$};
+	\node(mary)[label={-35:\textcolor{green}{\footnotesize{$e$}}}]{\W{Mary} $\approx \textsc{Mary}$};
+	[.{$\AppR$}
+		[.\node(thinks)[label={-35:\textcolor{green}{\footnotesize{$t \Ra e \Ra t$}}}]{\W{thinks} $\approx \textsc{thinks}$};
+			\node(thinks')[label={-35:\textcolor{green}{\footnotesize{$((t \Ra t) \Ra t) \Ra e \Ra t$}}}]{$\la k. \la m.(k \; \la l.(\textsc{thinks}))$};
+		]
+		[.{$\AppL$}
+			\node(someone)[label={-35:\textcolor{green}{\footnotesize{$(e \Ra t) \Ra t$}}}]{\W{someone} $\approx \exists$};
+			[.\node(left)[label={-15:\textcolor{green}{\footnotesize{$e \Ra t$}}}]{\W{left} $\approx \textsc{left}$};
+				[.\node(left')[label={-15:\textcolor{green}{\footnotesize{$e \Ra ((t \Ra t) \Ra t)$}}}]{$\la x \la w.(w \; (\textsc{left} \ x))$};
+					\node(left'')[label={-35:\textcolor{green}{\footnotesize{$((e \Ra t) \Ra t) \Ra ((t \Ra t) \Ra t)$}}}]{$\la \epsilon \la k.(\epsilon \; \la x.(k \; (\textsc{left} \ x)))$};
+				]
+			]
+		]
+	]
+]
+\end{scope}
+
+\begin{scope}[grow'=up, xshift=+4cm, yshift=-18cm, level distance=15mm]
+\Tree
+[.\node(la1)[label={-5:\textcolor{green}{\footnotesize{$t$}}}]{$\exists \la x.(\textsc{thinks} \; (\textsc{left} \; x) \; \textsc{Mary})$};
+    [.\node(app1'){};
+    	\node(tmary){$\cdot$};
+    	[.\node(la2)[label={-10:\textcolor{green}{\footnotesize{$e \Ra t$}}}]{$\la m.(\exists \la x.(\textsc{thinks} \; (\textsc{left} \; x) \; m))$};
+			[.\node(app2'){};
+				[.\node(tthinks){$\cdot$};]
+				[.\node(la3)[label={-15:\textcolor{green}{\footnotesize{$(t \Ra t) \Ra t$}}}]{$\la k.(\exists \la x.(k \; (\textsc{left} \ x)))$};
+					[.\node(app3'){};
+						\node(tsomeone){$\cdot$};
+						\node(tleft){$\cdot$};
+					]
+				]
+			]
+		]
+    ]
+]
+
+\draw[semithick, dashed, ->] (mary) to [bend right=25] (tmary);
+\draw[semithick, dashed, ->] (thinks') to [bend right=25] (tthinks);
+\draw[semithick, dashed, ->] (someone) to [bend right=25] (tsomeone);
+\draw[semithick, dashed, ->] (left'') to [bend left=15] (tleft);
+
+\draw[semithick, ->] (app1') to node [midway,left] {$E_{\lolli}$} (la1);
+\draw[semithick, ->] (app2') to node [midway,left] {$E_{\lolli}$} (la2);
+\draw[semithick, ->] (app3') to node [midway,left] {$E_{\lolli}$} (la3);
+
+\draw[semithick, ->, blue] (thinks) to node [midway,left] {$AR$} (thinks');
+\draw[semithick, ->, blue] (left) to node [midway,right] {$VR$} (left');
+\draw[semithick, ->, blue] (left') to node [midway,right] {$AR$} (left'');
+
+\end{scope}
+
+\end{tikzpicture}
+\end{figure}
 
 \section{Barker}
 
