@@ -177,8 +177,7 @@
 \section{Barker}
 
 \subsection{Left-to-right incremental}
-
-\addtolength{\jot}{.5em}
+\addtolength{\jot}{.3em}
 \begin{eqnarray*}
     && \lrline{(\W{Mary}\AppL(\W{thinks}\AppR(\W{someone}\AppL\W{left})))} \ \EmptyContext \\
     & \equiv & \red{\la k.(\lrline{\W{Mary}} \ \la n.(\lrline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))} \ \la m.(k \ (m \ n))))} \ \green{\EmptyContext} \\
@@ -196,6 +195,21 @@
 \end{eqnarray*}
 
 \subsection{Right-to-left incremental}
+\begin{eqnarray*}
+    && \rlline{(\W{Mary}\AppL(\W{thinks}\AppR(\W{someone}\AppL\W{left})))} \ \EmptyContext \\
+    & \equiv & \red{\la k.(\rlline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))}\ \la m.(\rlline{\W{Mary}}\ \la n.(k\ (m\ n))))} \ \green{\EmptyContext} \\
+    & \to_\beta & \rlline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))}\ \la m.(\rlline{\W{Mary}}\ \la n.(m\ n)) \\
+    & \equiv & \rlline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))}\ \la m.(\red{\la k.(k\ \textsc{mary})}\ \green{\la n.(m\ n)}) \\
+    & \to_\beta & \rlline{(\W{thinks}\AppR(\W{someone}\AppL\W{left}))}\ \la m.(m\ \textsc{mary}) \\
+    & \equiv & \la k.(\rlline{(\W{someone}\AppL\W{left})}\ \la n.(\rlline{(\W{thinks})}\ \la m.(k\ (m\ n))))\ \la m.(m\ \textsc{mary}) \\
+    & \equiv & \la k.(\rlline{(\W{someone}\AppL\W{left})}\ \la n.(\red{\la k.(k\ \textsc{thinks})}\ \green{\la m.(k\ (m\ n))}))\ \la m.(m\ \textsc{mary}) \\
+    & \to_\beta & \red{\la k.(\rlline{(\W{someone}\AppL\W{left})}\ \la n.(k\ (\textsc{thinks}\ n)))}\ \green{\la m.(m\ \textsc{mary})} \\
+    & \to_\beta & \rlline{(\W{someone}\AppL\W{left})}\ \la n.(\textsc{thinks}\ n\ \textsc{mary}) \\
+    & \equiv & \la k.(\rlline{\W{left}}\ \la m.(\rlline{\W{someone}}\ \la n.(k\ (m\ n))))\ \la n.(\textsc{thinks}\ n\ \textsc{mary}) \\
+    & \equiv & \red{\la k.(\la k.(k\ \textsc{left})\ \la m.(\exists \la n.(k\ (m\ n))))}\ \green{\la n.(\textsc{thinks}\ n\ \textsc{mary})} \\
+    & \to_\beta & \red{\la k.(k\ \textsc{left})}\ \green{\la m.(\exists \la n.((\textsc{thinks}\ (m\ n)\ \textsc{mary})))} \\
+    & \to_\beta & \exists \la n.((\textsc{thinks}\ (\textsc{left}\ n)\ \textsc{mary})) \\
+\end{eqnarray*}
 
 \newpage
 \section{Plotkin}
@@ -210,6 +224,7 @@
 \end{array}\]
 %
 \\
+\addtolength{\jot}{.3em}
 First, we compute the inner interpretations:
 \begin{eqnarray}
 	& \CBN{\W{someone}\AppL\W{left}} &\equiv \la k.(\red{\la k'.(k'\ \la x. \la k''.(k''\ (\textsc{left}\ x)))}\ \green{\la m.(\exists \la n.(m\ n\ k))}) \nonumber \\
@@ -225,10 +240,10 @@ First, we compute the inner interpretations:
 We can now compute the interpretation by giving the empty context ($\epsilon$) as the initial continuation:
 \begin{eqnarray*}
 	&& \CBN{\W{Mary}\AppL(\W{thinks}\AppR(\W{someone}\AppL\W{left}))}\ \epsilon \\
-	& \equiv & \red{\la k.(\CBN{\W{thinks}\AppR(\W{someone}\AppL\W{left})}\ \la m.(\la k.(k \textsc{mary})\ \la n.(m\ n\ k)))}\ \green{\la p.p} \\
-	& \to_\beta & \CBN{\W{thinks}\AppR(\W{someone}\AppL\W{left})}\ \la m.(\la k.(k\ \textsc{mary})\ \la n.(m\ n\ \la p.p)) \\
-	& \stackrel{(2)}{\equiv} & \la k.(\exists \la n.(k\ \la x. \la c.(c\ (\textsc{thinks}\ (\textsc{left}\ n)\ x)))\ \la m.(\red{\la k.(k\ \textsc{mary})}\ \green{\la n.(m\ n\ \la p.p)}) \\
-	& \to_\beta & \red{\la k.(\exists \la n.(k\ \la x. \la c.(c\ (\textsc{thinks}\ (\textsc{left}\ n)\ x)))}\ \green{\la m.(m\ \textsc{mary}\ \la p.p)} \\
+	& \equiv & \red{\la k.(\CBN{\W{thinks}\AppR(\W{someone}\AppL\W{left})}\ \la m.(\la k.(k \textsc{mary})\ \la n.(m\ n\ k)))}\ \green{\EmptyContext} \\
+	& \to_\beta & \CBN{\W{thinks}\AppR(\W{someone}\AppL\W{left})}\ \la m.(\la k.(k\ \textsc{mary})\ \la n.(m\ n\ \EmptyContext)) \\
+	& \stackrel{(2)}{\equiv} & \la k.(\exists \la n.(k\ \la x. \la c.(c\ (\textsc{thinks}\ (\textsc{left}\ n)\ x)))\ \la m.(\red{\la k.(k\ \textsc{mary})}\ \green{\la n.(m\ n\ \EmptyContext)}) \\
+	& \to_\beta & \red{\la k.(\exists \la n.(k\ \la x. \la c.(c\ (\textsc{thinks}\ (\textsc{left}\ n)\ x)))}\ \green{\la m.(m\ \textsc{mary}\ \EmptyContext)} \\
 	& \to_\beta & \exists \la n.(\textsc{thinks}\ (\textsc{left}\ n)\ \textsc{mary}) \\
 \end{eqnarray*}
 
