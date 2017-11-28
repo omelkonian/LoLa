@@ -56,8 +56,8 @@ class Grammar(object):
                 c += 1
         print('-------------- [{0} out of {1}] --------------'.format(c - 1, len(ws)))
 
-    def test_soundness(self):
-        for n in range(1, 10):
+    def test_soundness(self, n_range=range(1, 10)):
+        for n in n_range:
             d = dyck(3, n)
             for w in permutations('abc' * n):
                 s = "".join(w)
@@ -231,7 +231,16 @@ g1 = Grammar([
     (BC_, [AB, A_C_], std_abc),
     (AB_, [AB, B_B_], std_abc),
     (AC_, [AB, B_C_], std_abc),
-
+    # AB_
+    (AB_, [AB_, AA_], std_abc),
+    (BB_, [AB_, BA_], std_abc),
+    (B_B_, [AB_, BB_], std_abc),
+    (B_, [AB_, BC], std_abc),
+    (B_C, [AB_, CA_], std_abc),
+    (AB_, [AB_, CC_], std_abc),
+    (C, [AB_, A_A_], std_abc),
+    (B_B_, [AB_, AB_], std_abc),
+    (B_C_, [AB_, A_C_], std_abc),
 ])
 
 if __name__ == "__main__":
@@ -240,9 +249,13 @@ if __name__ == "__main__":
     parser.add_argument('-w', metavar='W', type=str, help='single word to check', nargs='?')
     parser.add_argument('-g', metavar='G', type=str, help='grammar to use', default='g1', nargs='?')
     parser.add_argument('--rules', help='print all rules', action='store_true')
+    parser.add_argument('--check', help='check soundness', action='store_true')
     args = parser.parse_args()
     g = globals()[args.g]
-    if args.rules:
+    if args.check:
+        assert args.n
+        g.test_soundness(n_range=[args.n])
+    elif args.rules:
         pprint(g.grammar)
     elif 'w' in vars(args) and args.w is not None:
         g.test_parse(args.w)
