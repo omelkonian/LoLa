@@ -63,7 +63,7 @@ class Grammar(object):
                 s = "".join(w)
                 if s not in d and self.parser.chart_parse(w):
                     print('[{}] UNSOUND!!!'.format(n))
-                    break
+                    return
             print('[{}] SOUND!'.format(n))
 
 

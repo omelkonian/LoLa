@@ -1,4 +1,6 @@
 from dyck import Grammar
+from itertools import permutations
+
 
 #
 # Universal constants
@@ -7,6 +9,43 @@ a, b, c = 'a', 'b', 'c'
 x, y, z, w = (0, 0), (0, 1), (1, 0), (1, 1)
 S, W, e = 'S', 'W', []
 std, std_abc = [[x, y], [z, w]], [[a, x, y], [b, z, w, c]]
+std_xyzw = [
+    [[x, y], [z, w]],
+    [[x, z], [y, w]],
+    [[x, z], [w, y]],
+    [[z, x], [y, w]],
+    [[z, x], [w, y]],
+    [[z, w], [x, y]],
+    [[x, y, z], [w]],
+    [[x], [y, z, w]],
+]
+
+
+def is_ordered(symbols, orders):
+    return all([is_ordered_single(symbols, order) for order in orders])
+
+
+def is_ordered_single(symbols, order):
+    for i, o in enumerate(order):
+        for j, symbol in enumerate(symbols):
+            if symbol != o and symbol in order:
+                return False
+            if symbol == o:
+                return is_ordered(symbol[j+1:], order[i+1:])
+    return True
+
+
+def ordered_permutations(orders):
+    return [''.join(s)
+            for s in permutations(''.join(orders))
+            if is_ordered(s, orders) ]
+
+
+def ordered_pairs(orders):
+    return [(perm[:n1 + 1], perm[n1 + 1:])
+            for n1 in range(0, len(''.join(orders)))
+            for perm in ordered_permutations(orders)]
+
 
 #
 # New grammar from scratch
@@ -15,11 +54,18 @@ std, std_abc = [[x, y], [z, w]], [[a, x, y], [b, z, w, c]]
 g2 = Grammar([
     # TOP
     (S, [W], [[x, y]]),
-    # W BASE
+
+    # W: Base
     (W, e, [[a, b, c], e]),
     (W, e, [[a, b], [c]]),
     (W, e, [[a], [b, c]]),
-    # TODO more rules
+    # (W, e, [e, [a, b, c]]),
+
+    # W: Concatenation
+    [(W, [W, W], s) for s in std_xyzw],
+
+    # W: Triple insertion
+    (W, [W], [[a, x, b], [y, c]]),
 ])
 
 
@@ -33,16 +79,7 @@ AC_, C_A, A_A, AA_, CC_, CA_, A_C, BA_, C_B, B_C, AB_, BB_, BC_ = 'AC-', 'C-A', 
 all_singles = [A, A_, B, B_, C, C_]
 all_doubles = [AA, AA_, AB, AB_, AC, AC_, BA_, BB, BB_, BC, BC_, CC, CC_, A_A_, A_B_, A_C_, B_B_, B_C_, C_C_]
 all_pairs = [(k, l) for k in all_singles for l in all_singles]
-std_xyzw = [
-    [[x, y], [z, w]],
-    # [[x, z], [y, w]],
-    # [[x, z], [w, y]],
-    # [[z, x], [y, w]],
-    # [[z, x], [w, y]],
-    [[z, w], [x, y]],
-    [[x, y, z], [w]],
-    [[x], [y, z, w]],
-]
+
 
 g1 = Grammar([
     # TOP
