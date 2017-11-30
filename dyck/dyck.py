@@ -1,6 +1,5 @@
 import argparse
-from itertools import permutations
-from pprint import pprint
+
 from MCFParser import *
 from grammars import *
 

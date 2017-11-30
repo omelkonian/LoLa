@@ -1,12 +1,19 @@
 from dyck import Grammar
 from itertools import permutations
+from pprint import pprint
 
 
 #
 # Universal constants
 #
+
 a, b, c = 'a', 'b', 'c'
 x, y, z, w = (0, 0), (0, 1), (1, 0), (1, 1)
+
+# map_vars = {
+#     (0,0): "a"
+# }
+
 S, W, e = 'S', 'W', []
 std, std_abc = [[x, y], [z, w]], [[a, x, y], [b, z, w, c]]
 std_xyzw = [
@@ -28,23 +35,62 @@ def is_ordered(symbols, orders):
 def is_ordered_single(symbols, order):
     for i, o in enumerate(order):
         for j, symbol in enumerate(symbols):
+            if symbol == o:
+                return is_ordered_single(symbols[j+1:], order[i+1:])
             if symbol != o and symbol in order:
                 return False
-            if symbol == o:
-                return is_ordered(symbol[j+1:], order[i+1:])
     return True
 
 
 def ordered_permutations(orders):
     return [''.join(s)
             for s in permutations(''.join(orders))
-            if is_ordered(s, orders) ]
+            if is_ordered(s, orders)]
 
 
 def ordered_pairs(orders):
     return [(perm[:n1 + 1], perm[n1 + 1:])
             for n1 in range(0, len(''.join(orders)))
             for perm in ordered_permutations(orders)]
+
+
+def post_process(orders):
+    return [(post_process_single(l), post_process_single(r))
+            for l, r in ordered_pairs(orders)]
+
+
+def post_process_single(order):
+    return [globals()[c] for c in order]
+
+
+def pre_process(symbols):
+    return [pre_process_single(s) for s in symbols]
+
+
+def pre_process_single(symbols):
+    ret = ""
+    for s in symbols:
+        if isinstance(s, tuple):
+            if s[0] == 0:
+                if s[1] == 0:
+                    ret += "x"
+                else:
+                    ret += "y"
+            else:
+                if s[1] == 0:
+                    ret += "z"
+                else:
+                    ret += "w"
+        elif s == []:
+            print(s)
+            ret += 'e'
+        else:
+            ret += s
+    return ret
+
+
+def all_ordered(*orders):
+    return post_process(pre_process(orders))
 
 
 #
@@ -54,18 +100,79 @@ def ordered_pairs(orders):
 g2 = Grammar([
     # TOP
     (S, [W], [[x, y]]),
-
     # W: Base
+    [(W, e, order) for order in all_ordered([a, b, c])],
     (W, e, [[a, b, c], e]),
-    (W, e, [[a, b], [c]]),
-    (W, e, [[a], [b, c]]),
-    # (W, e, [e, [a, b, c]]),
-
     # W: Concatenation
-    [(W, [W, W], s) for s in std_xyzw],
-
+    [(W, [W, W], order) for order in all_ordered([x, y], [z, w])],
     # W: Triple insertion
-    (W, [W], [[a, x, b], [y, c]]),
+    [(W, [W], order) for order in all_ordered([x, y], [a, b, c])],
+    [(W, [W, W], order) for order in all_ordered([x, y], [z, w], [a, b, c])],
+
+    # A-: Base
+    [('A-', e, order) for order in all_ordered([b, c])],
+    # A-: Double insertion (b, c)
+    [('A-', [W], order) for order in all_ordered([x, y], [b, c])],
+    # A-: Triple insertion
+    [('A-', ['A-'], order) for order in all_ordered([x, y], [a, b, c])],
+    # A- -> W
+    [(W, ['A-'], order) for order in all_ordered([a, x, y])],
+
+    # C-: Base
+    [('C-', e, order) for order in all_ordered([a, b])],
+    # C-: Double insertion (a, b)
+    [('C-', [W], order) for order in all_ordered([x, y], [a, b])],
+    # C-: Triple insertion
+    [('C-', ['C-'], order) for order in all_ordered([x, y], [a, b, c])],
+    # C- -> W
+    [(W, ['C-'], order) for order in all_ordered([x, y, c])],
+
+    # A+: Base
+    [('A+', e, order) for order in all_ordered([a])],
+    # A+: Single insertion (a)
+    [('A+', [W], order) for order in all_ordered([x, y], [a])],
+    # A+: Triple insertion
+    [('A+', ['A+'], order) for order in all_ordered([x, y], [a, b, c])],
+    # A+ -> W
+    [(W, ['A+'], order) for order in all_ordered([x, y, b, c])],
+
+    # B+: Base
+    [('B+', e, order) for order in all_ordered([b])],
+    # B+: Single insertion (a)
+    [('B+', [W], order) for order in all_ordered([x, y], [b])],
+    # B+: Triple insertion
+    [('B+', ['B+'], order) for order in all_ordered([x, y], [a, b, c])],
+    # B+ -> W
+    [(W, ['B+'], order) for order in all_ordered([a, x, y, c])],
+
+    # C+: Base
+    [('C+', e, order) for order in all_ordered([c])],
+    # C+: Single insertion (a)
+    [('C+', [W], order) for order in all_ordered([x, y], [c])],
+    # C+: Triple insertion
+    [('C+', ['C+'], order) for order in all_ordered([x, y], [a, b, c])],
+    # C+ -> W
+    [(W, ['C+'], order) for order in all_ordered([a, b, x, y])],
+
+    #
+    # Combinations
+    #
+
+    # A- /\ C- => W
+    [(W, ['A-', 'C-'], order) for order in all_ordered([a, x, y], [z, w, c])],
+
+    # A+ /\ A- => W
+    [(W, ['A+', 'A-'], order) for order in all_ordered([x, y, z, w])],
+
+    # C- /\ C+ => W
+    [(W, ['C-', 'C+'], order) for order in all_ordered([x, y, z, w])],
+
+    # A+ /\ B+ => C-
+    [('C-', ['A+', 'B+'], order) for order in all_ordered([x, y, z, w])],
+
+    # B+ /\ C+ => A-
+    [('A-', ['B+', 'C+'], order) for order in all_ordered([x, y, z, w])],
+
 ])
 
 
