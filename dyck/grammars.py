@@ -1,19 +1,13 @@
+from pprint import pprint
 from dyck import Grammar
 from itertools import permutations
-from pprint import pprint
 
 
 #
 # Universal constants
 #
-
 a, b, c = 'a', 'b', 'c'
 x, y, z, w = (0, 0), (0, 1), (1, 0), (1, 1)
-
-# map_vars = {
-#     (0,0): "a"
-# }
-
 S, W, e = 'S', 'W', []
 std, std_abc = [[x, y], [z, w]], [[a, x, y], [b, z, w, c]]
 std_xyzw = [
@@ -68,29 +62,24 @@ def pre_process(symbols):
 
 
 def pre_process_single(symbols):
-    ret = ""
-    for s in symbols:
-        if isinstance(s, tuple):
-            if s[0] == 0:
-                if s[1] == 0:
-                    ret += "x"
-                else:
-                    ret += "y"
-            else:
-                if s[1] == 0:
-                    ret += "z"
-                else:
-                    ret += "w"
-        elif s == []:
-            print(s)
-            ret += 'e'
-        else:
-            ret += s
-    return ret
+    return ''.join(
+        [{(0, 0): 'x', (0, 1): 'y', (1, 0): 'z', (1, 1): 'w'}.get(s, 'e' if s == [] else s) for s in symbols])
 
 
 def all_ordered(*orders):
     return post_process(pre_process(orders))
+
+
+# TODO consider symmetric orders
+# def remove_symmetrics(words):
+#     ret = []
+#     for w in words:
+#         from copy import deepcopy
+#         w2 = deepcopy(w).replace('x', '%x%').replace('y', '%y%').replace('z', 'x').replace('w', 'y').replace('%x%', 'z').replace('%y%', 'w')
+#         if w2 not in ret:
+#             ret += [[w]]
+#     ret = sum(ret, [])
+#     return ret
 
 
 #

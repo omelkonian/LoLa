@@ -1,4 +1,6 @@
 import argparse
+from os.path import isfile
+from pprint import pprint
 
 from MCFParser import *
 from grammars import *
@@ -19,9 +21,11 @@ def dshuffle(l, r):
         [(l, r)[i][0] + w for i in range(2) if not i or r[0] < l[0] for w in dshuffle(l[(i + 1) % 2:], r[i % 2:])]
 
 
-def dyck(k, n):
-    sigma = ''.join([chr(97+i) for i in range(k)])  # a,b,c,... (k letters)
-    return [sigma*n] if n < 2 else sum([dshuffle(sigma, w) for w in dyck(k, n-1)], [])
+def dyck(n):
+    if isfile('data/{}'.format(n)):
+        with open('data/{}'.format(n), 'r') as f:
+            return f.read().splitlines()
+    return ['abc'*n] if n < 2 else sum([dshuffle('abc', w) for w in dyck(n-1)], [])
 
 
 #
@@ -45,7 +49,7 @@ class Grammar(object):
             print(t)
 
     def test_n(self, n):
-        ws = dyck(3, n)
+        ws = dyck(n)
         c = 1
         for i, w in enumerate(ws):
             sys.stdout.write("\r{0:.2f}%".format(float(i) / float(len(ws)) * 100.0))
@@ -57,7 +61,7 @@ class Grammar(object):
 
     def test_soundness(self, n_range=range(1, 10)):
         for n in n_range:
-            d = dyck(3, n)
+            d = dyck(n)
             for w in permutations('abc' * n):
                 s = "".join(w)
                 if s not in d and self.parser.chart_parse(w):
@@ -73,9 +77,15 @@ if __name__ == "__main__":
     parser.add_argument('-g', metavar='G', type=str, help='grammar to use', default='g2', nargs='?')
     parser.add_argument('--rules', help='print all rules', action='store_true')
     parser.add_argument('--check', help='check soundness', action='store_true')
+    parser.add_argument('--gen', help='generate dyck words', action='store_true')
     args = parser.parse_args()
     g = globals()[args.g]
-    if args.check:
+    if args.gen:
+        assert args.n
+        with open('data/{}'.format(args.n), 'w') as f:
+            for w in dyck(args.n):
+                f.write('{}\n'.format(w))
+    elif args.check:
         assert args.n
         g.test_soundness(n_range=[args.n])
     elif args.rules:
