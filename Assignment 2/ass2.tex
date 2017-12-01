@@ -1,0 +1,182 @@
+\documentclass[]{article}
+\usepackage[a4paper]{geometry}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[usenames, dvipsnames]{color, xcolor}
+\definecolor{MyRed}{rgb}{0.8, 0.01, 0.04}
+\definecolor{MyGreen}{rgb}{0.0, 0.5, 0.0}
+\colorlet{green}{MyGreen}
+\colorlet{red}{MyRed}
+\usepackage{tikz-qtree}
+
+\usepackage{stmaryrd}
+\usepackage{proof}
+
+\newcommand{\LG}{\textbf{LG}}
+
+\newcommand{\bs}{\backslash}
+\newcommand{\Ra}{\rightarrow}
+
+\newcommand{\arr}[2]{#1 \longrightarrow #2}
+\newcommand{\arrr}[2]{#2 \longrightarrow #1}
+
+\newcommand{\arrow}[3]{#1:#2\longrightarrow #3}
+\newcommand{\Arrow}[3]{#2\stackrel{#1}{\longrightarrow} #3}
+
+\newcommand{\overa}[1]{\mathop{\triangleright} #1}
+\newcommand{\undera}[1]{\mathop{\triangleleft} #1}
+\newcommand{\overai}[1]{\mathop{\triangleright}^{-1} #1}
+\newcommand{\underai}[1]{\mathop{\triangleleft}^{-1} #1}
+
+\newcommand{\bovera}[1]{\mathop{\blacktriangleright} #1}
+\newcommand{\bundera}[1]{\mathop{\blacktriangleleft} #1}
+\newcommand{\boverai}[1]{\mathop{\blacktriangleright}^{-1} #1}
+\newcommand{\bunderai}[1]{\mathop{\blacktriangleleft}^{-1} #1}
+
+\newcommand{\gmal}{\mathop{\textbf{d}}}
+\newcommand{\gmar}{\mathop{\textbf{b}}}
+\newcommand{\gmcl}{\mathop{\textbf{q}}}
+\newcommand{\gmcr}{\mathop{\textbf{p}}}
+
+\newcommand{\Gmal}{\mathop{\textbf{\d{d}}}}
+\newcommand{\Gmar}{\mathop{\textbf{\d{b}}}}
+\newcommand{\Gmcl}{\mathop{\textbf{\.{q}}}}
+\newcommand{\Gmcr}{\mathop{\textbf{\.{p}}}}
+
+\newcommand{\cut}[1]{}
+
+\newcommand{\W}[1]{\textsf{#1}}
+
+\newcommand{\focus}[1]{\fbox{$#1$}}
+
+\newcommand{\nd}[2]{#1 \vdash #2}
+\newcommand{\nD}[2]{#1 \vdash \focus{#2}}
+\newcommand{\Nd}[2]{\focus{#1} \vdash #2}
+
+\newcommand{\ndO}[3]{#1 \stackrel{#3} \vdash  #2}
+\newcommand{\nDO}[3]{#1 \stackrel{#3} \vdash  \focus{#2}}
+\newcommand{\NdO}[3]{\focus{#1} \stackrel{#3} \vdash  #2}
+
+\newcommand{\ndU}[3]{#1 \underset{#3} \vdash  #2}
+\newcommand{\nDU}[3]{#1 \underset{#3} \vdash  \focus{#2}}
+\newcommand{\NdU}[3]{\focus{#1} \underset{#3} \vdash  #2}
+
+\newcommand{\seq}[2]{#1 \vdash #2}
+
+\newcommand{\otimesS}{\cdot\otimes\cdot}
+\newcommand{\slashS}{\cdot\slash\cdot}
+\newcommand{\bsS}{\cdot\bs\cdot}
+\newcommand{\oplusS}{\cdot\oplus\cdot}
+\newcommand{\oslashS}{\cdot\oslash\cdot}
+\newcommand{\obslashS}{\cdot\obslash\cdot}
+\newcommand{\Struct}[1]{\mathop{\cdot}#1\mathop{\cdot}}
+
+\newcommand{\comu}{\widetilde{\mu}}
+
+\newcommand{\Zip}[1]{\langle #1 \rangle}
+\newcommand{\cmdL}[2]{\langle #1 \upharpoonleft #2 \rangle}
+\newcommand{\cmdR}[2]{\langle #1 \upharpoonright #2 \rangle}
+
+\newcommand{\arroww}{\rule[-5pt]{0pt}{15pt}\longrightarrow}
+
+\newcommand{\CPS}[1]{\lceil#1\rceil}
+
+\newcommand{\CPSlex}[1]{#1^{\ell}}
+
+\newcommand{\Coco}[1]{\widetilde{#1}}
+\newcommand{\lolli}{\multimap}
+
+
+\title{\textbf{Logic and Language: Exercise (Week 3)}}
+\author{Orestis Melkonian [6176208], Konstantinos Kogkalidis [6230067]}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{LGa}
+\subsection{}
+
+\begin{enumerate}
+  \item Unfolding the combinator $f/g$, we get the following derivation:
+  \[\infer[]
+  	{\arrow{(\overa(f\circ(\overai 1_{A/B}))) \circ (\overa\underai((\undera\overai 1_{A/B'})\circ g))}{A/B'}{A'/B}}
+  	{\infer
+		{\arrow{\overa(f\circ(\overai 1_{A/B}))}{A/B}{A'/B}}
+		{\infer
+			{\arrow{f\circ(\overai 1_{A/B})}{A/B \otimes B}{A'}}
+			{\infer
+				{\arrow{\overai 1_{A/B}}{A/B \otimes B}{A}}
+				{\arrow{1_{A/B}}{A/B}{A/B}}
+			& \arrow{f}{A}{A'}}
+		}
+  	&\infer
+		{\arrow{\overa\underai((\undera\overai 1_{A/B'})\circ g)}{A/B'}{A/B}}
+  		{\infer
+  			{\arrow{\underai((\undera\overai 1_{A/B'})\circ g)}{(A/B') \otimes B}{A}}
+  			{\infer
+  				{\arrow{(\undera\overai 1_{A/B'})\circ g}{B}{(A/B') \bs A}}
+  				{\arrow{g}{B}{B'}
+  				&\infer
+  					{\arrow{\undera\overai 1_{A/B'}}{B'}{(A/B') \bs A}}
+  					{\infer
+  						{\arrow{\overai 1_{A/B'}}{(A/B') \otimes B'}{A}}
+  						{\arrow{1_{A/B'}}{A/B}{A/B'}}
+  					}
+  				}
+  			}
+  		}
+  	}
+  \]
+  \item Applying the arrow reversal transformation $(\cdot)^\dag$ to $f/g$, we get the reverse combinator:
+  \begin{align*}
+  (f/g)^\dag &= ((\overa(f\circ(\overai 1_{A/B}))) \circ (\overa\underai((\undera\overai 1_{A/B'})\circ g)))^\dag \\
+  &= (\overa\underai((\undera\overai 1_{A/B'})\circ g))^\dag \circ (\overa(f\circ(\overai 1_{A/B})))^\dag \\
+  &= (\bundera(\underai((\undera\overai 1_{A/B'})\circ g))^\dag) \circ (\bundera(f \circ (\overai 1_{A/B}))^\dag) \\
+  &= (\bundera\boverai((\undera\overai 1_{A/B'})\circ g)^\dag) \circ (\bundera((\overai 1_{A/B})^\dag \circ f^\dag)) \\
+  &= (\bundera\boverai(g^\dag \circ (\undera\overai 1_{A/B'})^\dag)^\dag) \circ (\bundera((\bunderai 1_{(A/B)^\dag}) \circ f^\dag)) \\
+  &= (\bundera\boverai(g^\dag \circ (\bovera(\overai 1_{A/B'})^\dag))) \circ (\bundera((\bunderai  1_{B \obslash A}) \circ f^\dag)) \\
+  &= (\bundera\boverai(g^\dag \circ (\bovera\bunderai 1_{(A/B')^\dag}))) \circ (\bundera((\bunderai  1_{B \obslash A}) \circ f^\dag)) \\
+  &= (\bundera\boverai(g^\dag \circ (\bovera\bunderai 1_{B' \obslash A}))) \circ (\bundera((\bunderai  1_{B \obslash A}) \circ f^\dag)) \\
+  \end{align*}
+  Unfolding the combinator $f/g$, we get the following derivation:
+  \[\infer[]
+  	{\arrow{(\bundera\boverai(g^\dag \circ (\bovera\bunderai 1_{B' \obslash A}))) \circ (\bundera((\bunderai  1_{B \obslash A}) \circ f^\dag))}{B \obslash A'}{B' \obslash A}}
+  	{\infer
+		{\arrow{\bundera\boverai(g^\dag \circ (\bovera\bunderai 1_{B' \obslash A}))}{B \obslash A}{B' \obslash A}}
+		{\infer
+			{\arrow{\boverai(g^\dag \circ (\bovera\bunderai 1_{B' \obslash A}))}{A}{B \oplus (B' \obslash A)}}
+			{\infer
+				{\arrow{g^\dag \circ (\bovera\bunderai 1_{B' \obslash A})}{A \oslash (B' \obslash A)}{B}}
+				{\infer
+					{\arrow{\bovera\bunderai 1_{B' \obslash A}}{A \oslash (B' \obslash A)}{B'}}
+					{\infer
+						{\arrow{\bunderai 1_{B' \obslash A}}{A}{B' \oplus (B' \obslash A)}}
+						{\arrow{1_{B' \obslash A}}{B' \obslash A}{B' \obslash A}}
+					}
+				&\arrow{g^\dag}{B'}{B}
+				}
+			}
+		}
+  	&\infer
+		{\arrow{\bundera((\bunderai  1_{B \obslash A}) \circ f^\dag)}{B \obslash A'}{B \obslash A}}
+  		{\infer
+  			{\arrow{(\bunderai  1_{B \obslash A}) \circ f^\dag}{A'}{B \oplus (B \obslash A)}}
+  			{{\arrow{f^\dag}{A'}{A}}
+  			&\infer
+  				{\arrow{\bunderai  1_{B \obslash A}}{A}{B \oplus (B \obslash A)}}
+  				{\arrow{1_{B \obslash A}}{B \obslash A}{B \obslash A}}
+  			}
+  		}
+  	}
+  \]
+
+\end{enumerate}
+
+\subsection{}
+\begin{enumerate}
+  \item $(a\oplus b)/c \arroww a/(c\oslash b)$
+  \item $(b\oplus c)\otimes a \arroww b\oplus (c\otimes a)$
+\end{enumerate}
+
+\end{document}
