@@ -40,11 +40,14 @@ class Grammar(object):
                         map(lambda r: sum(r, []) if isinstance(r, list) and not isinstance(r[0], tuple) else r,
                     rules)), [])
         # Construct rule tuples
-        self.grammar = [('r{}'.format(i), lhs, rhs, recipe) for i, (lhs, rhs, recipe) in enumerate(rules)]
+        self.grammar = [('{}: {} <- {} ({})'.format(i, lhs, rhs, recipe), lhs, rhs, recipe) for i, (lhs, rhs, recipe) in enumerate(rules)]
         self.parser = Parser(self.grammar, [initial_symbol])
 
     def test_parse(self, word):
         print(self.parser.chart_parse(list(word)))
+
+    def single_parse(self, word):
+        pprint(next(self.parser.parse(list(word))))
 
     def parse(self, word):
         for t in self.parser.parse(list(word)):
@@ -77,7 +80,8 @@ if __name__ == "__main__":
     parser.add_argument('-n', metavar='N', type=int, help='number of "abc" occurences', default=6, nargs='?')
     parser.add_argument('-w', metavar='W', type=str, help='single word to check', nargs='?')
     parser.add_argument('-ws', metavar='W', type=str, help='file containing words to check', nargs='?')
-    parser.add_argument('-p', metavar='P', type=str, help='single word to parse', nargs='?')
+    parser.add_argument('-p', metavar='P', type=str, help='single parse of a word', nargs='?')
+    parser.add_argument('-ps', metavar='P', type=str, help='multiple parses of a word', nargs='?')
     parser.add_argument('-g', metavar='G', type=str, help='grammar to use', default='g2', nargs='?')
     parser.add_argument('--rules', help='print all rules', action='store_true')
     parser.add_argument('--check', help='check soundness', action='store_true')
@@ -97,7 +101,9 @@ if __name__ == "__main__":
     elif 'w' in vars(args) and args.w is not None:
         g.test_parse(args.w)
     elif 'p' in vars(args) and args.p is not None:
-        g.parse(args.p)
+        g.single_parse(args.p)
+    elif 'ps' in vars(args) and args.ps is not None:
+        g.parse(args.ps)
     elif 'ws' in vars(args) and args.ws is not None:
         with open(args.ws, 'r') as f:
             for w in f.read().splitlines():
