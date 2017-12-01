@@ -1,9 +1,10 @@
+from MCFParser import *
+from grammars import *
+
 import argparse
 from os.path import isfile
 from pprint import pprint
-
-from MCFParser import *
-from grammars import *
+from itertools import permutations
 
 
 #
@@ -21,11 +22,12 @@ def dshuffle(l, r):
         [(l, r)[i][0] + w for i in range(2) if not i or r[0] < l[0] for w in dshuffle(l[(i + 1) % 2:], r[i % 2:])]
 
 
-def dyck(n):
-    if isfile('data/{}'.format(n)):
-        with open('data/{}'.format(n), 'r') as f:
-            return f.read().splitlines()
-    return ['abc'*n] if n < 2 else sum([dshuffle('abc', w) for w in dyck(n-1)], [])
+def dyck(k, n):
+    # if isfile('data/{}'.format(n)):
+    #     with open('data/{}'.format(n), 'r') as f:
+    #         return f.read().splitlines()
+    sigma = ''.join([chr(97+i) for i in range(k)])  # a,b,c,... (k letters)
+    return [sigma*n] if n < 2 else sum([dshuffle(sigma, w) for w in dyck(k, n-1)], [])
 
 
 #
@@ -49,7 +51,7 @@ class Grammar(object):
             print(t)
 
     def test_n(self, n):
-        ws = dyck(n)
+        ws = dyck(3, n)
         c = 1
         for i, w in enumerate(ws):
             sys.stdout.write("\r{0:.2f}%".format(float(i) / float(len(ws)) * 100.0))
@@ -61,11 +63,11 @@ class Grammar(object):
 
     def test_soundness(self, n_range=range(1, 10)):
         for n in n_range:
-            d = dyck(n)
+            d = dyck(3, n)
             for w in permutations('abc' * n):
                 s = "".join(w)
                 if s not in d and self.parser.chart_parse(w):
-                    print('[{}] UNSOUND!!!'.format(n))
+                    print('[{}] UNSOUND for {}'.format(n, s))
                     return
             print('[{}] SOUND!'.format(n))
 
@@ -74,6 +76,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Check your D3 grammar.')
     parser.add_argument('-n', metavar='N', type=int, help='number of "abc" occurences', default=6, nargs='?')
     parser.add_argument('-w', metavar='W', type=str, help='single word to check', nargs='?')
+    parser.add_argument('-ws', metavar='W', type=str, help='file containing words to check', nargs='?')
+    parser.add_argument('-p', metavar='P', type=str, help='single word to parse', nargs='?')
     parser.add_argument('-g', metavar='G', type=str, help='grammar to use', default='g2', nargs='?')
     parser.add_argument('--rules', help='print all rules', action='store_true')
     parser.add_argument('--check', help='check soundness', action='store_true')
@@ -83,7 +87,7 @@ if __name__ == "__main__":
     if args.gen:
         assert args.n
         with open('data/{}'.format(args.n), 'w') as f:
-            for w in dyck(args.n):
+            for w in dyck(3, args.n):
                 f.write('{}\n'.format(w))
     elif args.check:
         assert args.n
@@ -92,6 +96,11 @@ if __name__ == "__main__":
         pprint(g.grammar)
     elif 'w' in vars(args) and args.w is not None:
         g.test_parse(args.w)
+    elif 'p' in vars(args) and args.p is not None:
+        g.parse(args.p)
+    elif 'ws' in vars(args) and args.ws is not None:
+        with open(args.ws, 'r') as f:
+            for w in f.read().splitlines():
+                g.test_parse(w)
     else:
         g.test_n(args.n)
-
