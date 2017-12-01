@@ -99,11 +99,19 @@ g2 = Grammar([
     all_ordered_rules('A-', ['A-', W], [x, y], [z, w]),
 
     # B-: Base
+    # B- is a special case..
+    ('B-', [W], [[a,x],[y,c]]),
     all_ordered_rules('B-', e, [a, c]),
-    # B-: Double insertion (a, c)
-    all_ordered_rules('B-', [W], [x, y], [a, c]),
     # B-, W -> B-
-    all_ordered_rules('B-', ['B-', W], [x, y], [z, w]),
+    #all_ordered_rules('B-', ['B-', W], [x, y], [z, w]), // using x_y respectful orders instead
+    ('B-', ['B-', W], [[x,y],[z,w]]),
+    ('B-', ['B-', W], [[x,z],[y,w]]),
+    ('B-', ['B-', W], [[x,z,w],[y]]),
+    ('B-', ['B-', W], [[z,w,x],[y]]),
+    ('B-', ['B-', W], [[z,x,w],[y]]),
+    ('B-', ['B-', W], [[z,x],[y,w]]),
+    ('B-', ['B-', W], [[z,x],[w,y]]),
+    all_ordered_rules(W, ['B-'], [x,b,y]), 
 
     # C-: Base
     all_ordered_rules('C-', e, [a, b]),
@@ -164,7 +172,7 @@ g2 = Grammar([
 
     # A+
     all_ordered_rules('C-', ['A+', 'B+'], [x, y, z, w]),
-    all_ordered_rules('B-', ['A+', 'C+'], [x, y, z, w]),
+    all_ordered_rules('B-', ['A+', 'C+'], [x, y], [z, w]),
     all_ordered_rules(W, ['A+', 'A-'], [x, y, z, w]),
     # B+
     all_ordered_rules('A-', ['B+', 'C+'], [x, y, z, w]),
