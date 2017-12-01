@@ -98,6 +98,15 @@ g2 = Grammar([
     # A-, W -> A-
     all_ordered_rules('A-', ['A-', W], [x, y], [z, w]),
 
+    # B-: Base
+    all_ordered_rules('B-', e, [a, c]),
+    # B-: Double insertion (a, c)
+    all_ordered_rules('B-', [W], [x, y], [a, c]),
+    # B- -> W
+    all_ordered_rules(W, ['B-'], [a, x, y]),
+    # B-, W -> B-
+    all_ordered_rules('B-', ['B-', W], [x, y], [z, w]),
+
     # C-: Base
     all_ordered_rules('C-', e, [a, b]),
     # C-: Double insertion (a, b)
@@ -153,14 +162,20 @@ g2 = Grammar([
     # Meta-rule combinations
     # =============
 
-    # A-, C- -> W
     all_ordered_rules(W, ['A-', 'C-'], [a, x, y], [z, w, c]),
-    # A+, A- -> W
-    all_ordered_rules(W, ['A+', 'A-'], [x, y, z, w]),
-    # C-, C+ -> W
-    all_ordered_rules(W, ['C-', 'C+'], [x, y, z, w]),
-    # A+, B+ -> C-
+
+    # A+
     all_ordered_rules('C-', ['A+', 'B+'], [x, y, z, w]),
-    # B+, C+ -> A-
+    all_ordered_rules('B-', ['A+', 'C+'], [x, y, z, w]),
+    all_ordered_rules(W, ['A+', 'A-'], [x, y, z, w]),
+    # B+
     all_ordered_rules('A-', ['B+', 'C+'], [x, y, z, w]),
+    # C+
+    # A-
+    # B-
+    all_ordered_rules('C+', ['B-', 'A-'], [x, y, z, w]),
+    # C-
+    all_ordered_rules(W, ['C-', 'C+'], [x, y, z, w]),
+    all_ordered_rules('B+', ['C-', 'A-'], [x, y, z, w]),
+    all_ordered_rules('A+', ['C-', 'B-'], [x, y, z, w]),
 ])
