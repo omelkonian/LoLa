@@ -102,8 +102,6 @@ g2 = Grammar([
     all_ordered_rules('B-', e, [a, c]),
     # B-: Double insertion (a, c)
     all_ordered_rules('B-', [W], [x, y], [a, c]),
-    # B- -> W
-    all_ordered_rules(W, ['B-'], [a, x, y]),
     # B-, W -> B-
     all_ordered_rules('B-', ['B-', W], [x, y], [z, w]),
 
@@ -162,7 +160,7 @@ g2 = Grammar([
     # Meta-rule combinations
     # =============
 
-    all_ordered_rules(W, ['A-', 'C-'], [a, x, y], [z, w, c]),
+    # all_ordered_rules(W, ['A-', 'C-'], [a, x, y], [z, w, c]),
 
     # A+
     all_ordered_rules('C-', ['A+', 'B+'], [x, y, z, w]),
