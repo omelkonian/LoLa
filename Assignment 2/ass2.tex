@@ -174,9 +174,55 @@
 \end{enumerate}
 
 \subsection{}
+
 \begin{enumerate}
-  \item $(a\oplus b)/c \arroww a/(c\oslash b)$
-  \item $(b\oplus c)\otimes a \arroww b\oplus (c\otimes a)$
+\begin{minipage}{0.5\textwidth}
+  % This was already solved in the course notes. Maybe we want to derive it using only the inverse distributivity laws.
+  \item
+  \[\infer[\overa]
+  	{(a \oplus b)/c \arroww a/(c \oslash b)}
+  	{\infer[\underai]
+	  	{((a \oplus b)/c) \otimes (c \oslash b) \arroww a}
+  		{\infer[\Gmar]
+			{c \oslash b \arroww ((a \oplus b)/c) \bs a}
+	  		{\infer[\overai]
+		  		{((a \oplus b)/c) \otimes c \arroww a \oplus b}
+	  			{\infer[(\bs)]
+	  				{(a \oplus b)/c \arroww (a \oplus b)/c}
+	  				{\infer[(\oplus)]
+	  					{a \oplus b \arroww a \oplus b}
+	  					{\infer[1_A]{a \arroww a}{}
+	  					&\infer[1_A]{b \arroww b}{}
+	  					}
+	  				&\infer[1_A]{c \arroww c}{}}
+	  			}
+	  		}
+  		}
+  	}
+  \]
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+  \item
+  \[\infer[\Gmal^{-1}]
+  	{(b \oplus c) \otimes a \arroww b \oplus (c \otimes a)}
+  	{\infer[\bundera]
+	  	{b \obslash (b \oplus c) \arroww (c \otimes a)/a}
+  		{\infer[(\oplus)]
+			{b \oplus c \arroww b \oplus ((c \otimes a)/a)}
+	  		{\infer[1_A]{b \arroww b}{}
+	  		&\infer[\overa]
+	  			{c \arroww (c \otimes a)/a}
+	  			{\infer[(\otimes)]
+	  				{c \otimes a \arroww c \otimes a}
+	  				{\infer[1_A]{c \arroww c}{}
+	  				&\infer[1_A]{a \arroww a}{}}
+	  			}
+		  	&
+		  	}
+  		}
+  	}
+  \]
+\end{minipage}
 \end{enumerate}
 
 \end{document}
