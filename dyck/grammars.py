@@ -98,10 +98,13 @@ g2 = Grammar([
     # A-, W -> A-
     all_ordered_rules('A-', ['A-', W], [x, y], [z, w]),
 
+    # B- SPECIAL!.
     # B-: Base
-    # B- is a special case..
+    ('B-', e, [[a], [c]]),
+    # all_ordered_rules('B-', e, [a, c]),
     ('B-', [W], [[a,x],[y,c]]),
-    all_ordered_rules('B-', e, [a, c]),
+    # B- -> W
+    all_ordered_rules(W, ['B-'], [x,b,y]),
     # B-, W -> B-
     #all_ordered_rules('B-', ['B-', W], [x, y], [z, w]), // using x_y respectful orders instead
     ('B-', ['B-', W], [[x,y],[z,w]]),
@@ -111,7 +114,6 @@ g2 = Grammar([
     ('B-', ['B-', W], [[z,x,w],[y]]),
     ('B-', ['B-', W], [[z,x],[y,w]]),
     ('B-', ['B-', W], [[z,x],[w,y]]),
-    all_ordered_rules(W, ['B-'], [x,b,y]), 
 
     # C-: Base
     all_ordered_rules('C-', e, [a, b]),
@@ -155,7 +157,7 @@ g2 = Grammar([
 
     # General 3-ins
     [[(K, [K], order) for order in all_ordered([x, y], [a, b, c])]
-     for K in all_states],
+     for K in all_states if K != 'B-'],
     # General 3-ins (2x)
     all_ordered_rules(W, [W, W], [x, y], [z, w], [a, b, c]),
     [[(W, [K, L], order) for order in all_ordered([x, y, z, w], [a, b, c])]
@@ -172,7 +174,7 @@ g2 = Grammar([
 
     # A+
     all_ordered_rules('C-', ['A+', 'B+'], [x, y, z, w]),
-    all_ordered_rules('B-', ['A+', 'C+'], [x, y], [z, w]),
+    # all_ordered_rules('B-', ['A+', 'C+'], [x, y], [z, w]),
     all_ordered_rules(W, ['A+', 'A-'], [x, y, z, w]),
     # B+
     all_ordered_rules('A-', ['B+', 'C+'], [x, y, z, w]),
