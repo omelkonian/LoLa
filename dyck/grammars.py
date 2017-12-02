@@ -102,18 +102,24 @@ g2 = Grammar([
     # B-: Base
     ('B-', e, [[a], [c]]),
     # all_ordered_rules('B-', e, [a, c]),
-    ('B-', [W], [[a,x],[y,c]]),
+    ('B-', [W], [[a, x], [y, c]]),
     # B- -> W
-    all_ordered_rules(W, ['B-'], [x,b,y]),
+    all_ordered_rules(W, ['B-'], [x, b, y]),
     # B-, W -> B-
-    #all_ordered_rules('B-', ['B-', W], [x, y], [z, w]), // using x_y respectful orders instead
-    ('B-', ['B-', W], [[x,y],[z,w]]),
-    ('B-', ['B-', W], [[x,z],[y,w]]),
-    ('B-', ['B-', W], [[x,z,w],[y]]),
-    ('B-', ['B-', W], [[z,w,x],[y]]),
-    ('B-', ['B-', W], [[z,x,w],[y]]),
-    ('B-', ['B-', W], [[z,x],[y,w]]),
-    ('B-', ['B-', W], [[z,x],[w,y]]),
+    # all_ordered_rules('B-', ['B-', W], [x, y], [z, w]), // using x_y respectful orders instead
+    ('B-', ['B-', W], [[x], [y, z, w]]),
+    ('B-', ['B-', W], [[x], [z, y, w]]),
+    ('B-', ['B-', W], [[x], [z, w, y]]),
+
+    ('B-', ['B-', W], [[x, z], [y, w]]),
+    ('B-', ['B-', W], [[x, z], [w, y]]),
+
+    ('B-', ['B-', W], [[z, x], [y, w]]),
+    ('B-', ['B-', W], [[z, x], [w, y]]),
+
+    ('B-', ['B-', W], [[x, z, w], [y]]),
+    ('B-', ['B-', W], [[z, x, w], [y]]),
+    ('B-', ['B-', W], [[z, w, x], [y]]),
 
     # C-: Base
     all_ordered_rules('C-', e, [a, b]),
@@ -182,8 +188,10 @@ g2 = Grammar([
     # A-
     # B-
     all_ordered_rules('C+', ['B-', 'A-'], [x, y, z, w]),
+    all_ordered_rules('C+', ['B-', 'A-'], [x, z, w, y]),
     # C-
     all_ordered_rules(W, ['C-', 'C+'], [x, y, z, w]),
     all_ordered_rules('B+', ['C-', 'A-'], [x, y, z, w]),
     all_ordered_rules('A+', ['C-', 'B-'], [x, y, z, w]),
 ])
+all_states = [W, 'A-', 'A+', 'B-', 'B+', 'C-', 'C+']
