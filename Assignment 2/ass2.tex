@@ -121,7 +121,7 @@
   					{\arrow{\undera\overai 1_{A/B'}}{B'}{(A/B') \bs A}}
   					{\infer
   						{\arrow{\overai 1_{A/B'}}{(A/B') \otimes B'}{A}}
-  						{\arrow{1_{A/B'}}{A/B}{A/B'}}
+  						{\arrow{1_{A/B'}}{A/B'}{A/B'}}
   					}
   				}
   			}
@@ -225,4 +225,148 @@
 \end{minipage}
 \end{enumerate}
 
+\section{LGf}
+\subsection{Uniform \emph{positive} bias}
+\[\infer[rp]
+	{np \otimesS (((np \bs s)/s) \otimesS (((np/n) \otimesS n) \otimesS (np \bs s))) \vdash s}
+	{\infer[rp]
+		{((np \bs s )/s) \otimesS (((np/n) \otimesS n) \otimesS (np \bs s)) \vdash np \bsS s}
+		{\infer[rp]
+			{((np/n) \otimesS n) \otimesS (np \bs s) \vdash ((np \bs s )/s) \bsS (np \bsS s)}
+			{\infer[\leftharpoonup]
+				{(np/n) \otimesS n \vdash (((np \bs s )/s) \bsS (np \bsS s)) \slashS (np \bs s)}
+				{\infer[/ L]
+					{\focus{np/n} \otimesS n \vdash (((np \bs s )/s) \bsS (np \bsS s)) \slashS (np \bs s)}
+					{\infer[\leftharpoondown]
+						{\focus{np} \vdash (((np \bs s )/s) \bsS (np \bsS s)) \slashS (np \bs s)}
+						{\infer[rp]
+							{np \vdash (((np \bs s )/s) \bsS (np \bsS s)) \slashS (np \bs s)}
+							{\infer[\leftharpoonup]
+								{np \otimesS (np \bs s) \vdash ((np \bs s )/s) \bsS (np \bsS s)}
+								{\infer[\bs L]
+									{np \otimesS \focus{np \bs s} \vdash ((np \bs s )/s) \bsS (np \bsS s)}
+									{\infer[Ax]{np \vdash \focus{np}}{}
+									&\infer[\leftharpoondown]
+										{\focus{s} \vdash ((np \bs s )/s) \bsS (np \bsS s)}
+										{\infer[rp]
+											{s \vdash ((np \bs s )/s) \bsS (np \bsS s)}
+											{\infer[rp]
+												{((np \bs s )/s) \otimesS s \vdash np \bsS s}
+												{\infer[\leftharpoonup]
+													{np \otimesS (((np \bs s )/s) \otimesS s) \vdash s}
+													{\infer[/ L]
+														{np \otimesS (\focus{(np \bs s )/s} \otimesS s) \vdash s}
+														{\infer[\leftharpoonup]
+															{np \otimesS (np \bs s) \vdash s}
+															{\infer[\bs L]
+																{np \otimesS \focus{np \bs s} \vdash s}
+																{\infer[Ax]{np \vdash \focus{np}}{}
+																&\infer[\leftharpoondown]
+																	{\focus{s} \vdash s}
+																	{\infer[\rightharpoonup]
+																		{s \vdash s}
+																		{\infer[Ax]{s \vdash \focus{s}}{}}
+																	}
+																}
+															}
+														&\infer[Ax]{s \vdash \focus{s}}{}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					&\infer[Ax]{n \vdash \focus{n}}{}
+					}
+				}
+			}
+		}
+	}
+\]
+\subsection{Uniform \emph{negative} bias}
+\[\infer[\leftharpoonup]
+	{np \otimesS (((np \bs s)/s) \otimesS (((np/n) \otimesS n) \otimesS (np \bs s))) \vdash s}
+	{\infer[/ L]
+		{np \otimesS (\focus{(np \bs s)/s} \otimesS (((np/n) \otimesS n) \otimesS (np \bs s))) \vdash s}
+		{\infer[\bs L]
+			{np \otimesS \focus{np \bs s} \vdash s}
+			{\infer[\rightharpoondown]
+				{np \vdash \focus{np}}
+				{\infer[\leftharpoonup]
+					{np \vdash np}
+					{\infer[CoAx]{\focus{np} \vdash np}{}}
+				}
+			&\infer[CoAx]{\focus{s} \vdash s}{}
+			}
+		&\infer[\rightharpoondown]
+			{((np/n) \otimesS n) \otimesS (np \bs s) \vdash \focus{s}}
+			{\infer[\leftharpoonup]
+				{((np/n) \otimesS n) \otimesS (np \bs s) \vdash s}
+				{\infer[\bs L]
+					{((np/n) \otimesS n) \otimesS \focus{np \bs s} \vdash s}
+					{\infer[\rightharpoondown]
+						{(np/n) \otimesS n \vdash \focus{np}}
+						{\infer[\leftharpoonup]
+							{(np/n) \otimesS n \vdash np}
+							{\infer[/ L]
+								{\focus{np/n} \otimesS n \vdash np}
+								{\infer[CoAx]{\focus{np} \vdash np}{}
+								&\infer[\rightharpoondown]
+									{n \vdash \focus{n}}
+									{\infer[\leftharpoonup]
+										{n \vdash n}
+										{\infer[CoAx]{\focus{n} \vdash n}{}}
+									}
+								}
+							}
+						}
+					&\infer[CoAx]{\focus{s} \vdash s}{}					
+					}
+				}
+			}
+		}
+	}
+\]
+\subsection{Bias with negative $s$ and positive $np,n$}
+\[\infer[rp]
+	{np \otimesS (((np \bs s)/s) \otimesS (((np/n) \otimesS n) \otimesS (np \bs s))) \vdash s}
+	{\infer[\leftharpoonup]
+		{((np \bs s )/s) \otimesS (((np/n) \otimesS n) \otimesS (np \bs s)) \vdash np \bsS s}
+		{\infer[/ L]
+			{\focus{((np \bs s )/s)} \otimesS (((np/n) \otimesS n) \otimesS (np \bs s)) \vdash np \bsS s}
+			{\infer[\bs L]
+				{\focus{np \bs s} \vdash np \bsS s}
+				{\infer[Ax]{np \vdash \focus{np}}{}
+				&\infer[CoAx]{\focus{s} \vdash s}{}}
+			&\infer[\rightharpoondown]
+				{((np/n) \otimesS n) \otimesS (np \bs s) \vdash \focus{s}}
+				{\infer[rp]
+					{((np/n) \otimesS n) \otimesS (np \bs s) \vdash s}
+					{\infer[/ L]
+						{(np/n) \otimesS n \vdash s \slashS (np \bs s)}
+						{\infer[\leftharpoondown]
+							{\focus{np} \vdash s \slashS (np \bs s)}
+							{\infer[rp]
+								{np \vdash s \slashS (np \bs s)}
+								{\infer[\leftharpoonup]
+									{np \otimesS (np \bs s) \vdash s}
+									{\infer[\bs L]
+										{np \otimesS \focus{np \bs s} \vdash s}
+										{\infer[Ax]{np \vdash \focus{np}}{}
+										&\infer[CoAx]{\focus{s} \vdash s}{}
+										}
+									}
+								}
+							}
+						&\infer[Ax]{n \vdash \focus{n}}{}
+						}
+					}
+				}
+			}
+		}
+	}
+\]
 \end{document}
