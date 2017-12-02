@@ -2,8 +2,8 @@ from MCFParser import *
 from grammars import *
 
 import argparse
-from os.path import isfile
-from pprint import pprint
+from pprint import pprint, pformat
+import re
 from itertools import permutations
 
 
@@ -47,7 +47,14 @@ class Grammar(object):
         print(self.parser.chart_parse(list(word)))
 
     def single_parse(self, word):
-        pprint(next(self.parser.parse(list(word))))
+        print(re.sub('\(.*\: ', '',
+              pformat(next(self.parser.parse(list(word))), indent=3)
+              .replace('(0, 0)', 'x')
+              .replace('(0, 1)', 'y')
+              .replace('(1, 0)', 'z')
+              .replace('(1, 1)', 'w')
+              .replace(' [] ', '')
+              .replace('"', '')))
 
     def parse(self, word):
         for t in self.parser.parse(list(word)):
