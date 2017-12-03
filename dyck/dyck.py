@@ -1,6 +1,7 @@
 from MCFParser import *
 from grammars import *
 
+import time
 import argparse
 from pprint import pprint, pformat
 import re
@@ -107,14 +108,17 @@ if __name__ == "__main__":
     parser.add_argument('-p', type=str, help='single parse of a word', nargs='?')
     parser.add_argument('-minp', type=str, help='show minimal parse of a word', nargs='?')
     parser.add_argument('-ps', type=str, help='multiple parses of a word', nargs='?')
-    parser.add_argument('-g', metavar='G', type=str, help='grammar to use', default='g2', nargs='?')
+    parser.add_argument('-g', type=str, help='grammar to use', default='g2', nargs='?')
     parser.add_argument('--rules', help='print all rules', action='store_true')
     parser.add_argument('--check', help='check soundness', action='store_true')
     parser.add_argument('--gen', help='generate dyck words', action='store_true')
     parser.add_argument('--reverse', help='search in reverse', action='store_true')
     parser.add_argument('--half', help='search in reverse', action='store_true')
+    parser.add_argument('--time', help='measure execution time', action='store_true')
     args = parser.parse_args()
     g = globals()[args.g]
+    if args.time:
+        start = time.time()
     if args.gen:
         assert args.n
         with open('data/{}'.format(args.n), 'w') as f:
@@ -139,3 +143,6 @@ if __name__ == "__main__":
                 print('{}: {}'.format(w, g.test_parse(w)))
     else:
         g.test_n(args.n, reverse=args.reverse)
+
+    if args.time:
+        print('Time elapsed: {} seconds'.format(time.time() - start))
