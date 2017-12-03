@@ -10,6 +10,10 @@ x, y, z, w = (0, 0), (0, 1), (1, 0), (1, 1)
 S, W, e = 'S', 'W', []
 
 
+def symbols_from_orders(orders):
+    return ''.join(list(set(''.join(orders))))
+
+
 def is_ordered(symbols, orders):
     return all([is_ordered_single(symbols, order) for order in orders])
 
@@ -26,13 +30,13 @@ def is_ordered_single(symbols, order):
 
 def ordered_permutations(orders):
     return [''.join(s)
-            for s in permutations(''.join(orders))
+            for s in permutations(symbols_from_orders(orders))
             if is_ordered(s, orders)]
 
 
 def ordered_pairs(orders):
     return [(perm[:n1 + 1], perm[n1 + 1:])
-            for n1 in range(0, len(''.join(orders)))
+            for n1 in range(0, len(symbols_from_orders(orders)))
             for perm in ordered_permutations(orders)]
 
 
@@ -60,6 +64,12 @@ def all_ordered(*orders):
 
 def all_ordered_rules(lhs, rhs, *orders):
     return [(lhs, rhs, order) for order in all_ordered(*orders)]
+
+
+def all_constrained_rules(lhs, rhs, left=[], right=[], orders=[]):
+    return [(lhs, rhs, order) for order in all_ordered(*orders)
+            if all(map(lambda l: l in order[0], left))
+            if all(map(lambda r: r in order[1], right))]
 
 # TODO consider symmetric orders
 # def remove_symmetrics(words):
@@ -98,6 +108,30 @@ g2 = Grammar([
     # A-, W -> A-
     all_ordered_rules('A-', ['A-', W], [x, y], [z, w]),
 
+    # lA-: Base
+    ('lA-', e, [[b, c], e]),
+    # lA-: Double insertion (b, c)
+    all_constrained_rules('lA-', [W], left=[b, c], orders=[[x, y], [b, c]]),
+    # lA-, W -> A-
+    all_constrained_rules('lA-', ['lA-', W], left=[x], orders=[[x, y], [z, w]]),
+    # lA- -> W
+    # all_constrained_rules(W, ['lA-'], left=[a], orders=[[a, x], [y]]), # TODO set change
+    # lA- -> A-
+    all_ordered_rules('A-', ['lA-'], [x, y]),
+
+    # rA-: Base
+    ('rA-', e, [e, [b, c]]),
+    # rA-: Double insertion (b, c)
+    all_constrained_rules('rA-', [W], right=[b, c], orders=[[x, y], [b, c]]),
+    # rA-, W -> A-
+    all_constrained_rules('rA-', ['rA-', W], right=[y], orders=[[x, y], [z, w]]),
+    # rA- -> W
+    # all_ordered_rules(W, ['rA-'], [a, y], [x, y]),
+    all_constrained_rules(W, ['rA-'], left=[a], orders=[[x, a, y]]),
+    # all_constrained_rules(W, ['rA-'], left=[a], orders=[[a, x, y]]), # TODO set change
+    # rA- -> A-
+    all_ordered_rules('A-', ['rA-'], [x, y]),
+
     # B- SPECIAL!.
     # B-: Base
     ('B-', e, [[a], [c]]),
@@ -106,20 +140,7 @@ g2 = Grammar([
     # B- -> W
     all_ordered_rules(W, ['B-'], [x, b, y]),
     # B-, W -> B-
-    # all_ordered_rules('B-', ['B-', W], [x, y], [z, w]), // using x_y respectful orders instead
-    ('B-', ['B-', W], [[x], [y, z, w]]),
-    ('B-', ['B-', W], [[x], [z, y, w]]),
-    ('B-', ['B-', W], [[x], [z, w, y]]),
-
-    ('B-', ['B-', W], [[x, z], [y, w]]),
-    ('B-', ['B-', W], [[x, z], [w, y]]),
-
-    ('B-', ['B-', W], [[z, x], [y, w]]),
-    ('B-', ['B-', W], [[z, x], [w, y]]),
-
-    ('B-', ['B-', W], [[x, z, w], [y]]),
-    ('B-', ['B-', W], [[z, x, w], [y]]),
-    ('B-', ['B-', W], [[z, w, x], [y]]),
+    all_constrained_rules('B-', ['B-', W], left=[x], right=[y], orders=[[x, y], [z, w]]),
 
     # C-: Base
     all_ordered_rules('C-', e, [a, b]),
@@ -166,8 +187,8 @@ g2 = Grammar([
      for K in all_states if K != 'B-'],
     # General 3-ins (2x)
     all_ordered_rules(W, [W, W], [x, y], [z, w], [a, b, c]),
-    [[(W, [K, L], order) for order in all_ordered([x, y, z, w], [a, b, c])]
-     for K, L in [('C-', 'C+'), ('A+', 'A-')]],
+    # [[(W, [K, L], order) for order in all_ordered([x, y, z, w], [a, b, c])]
+    #  for K, L in [('C-', 'C+'), ('A+', 'A-')]],
     # TODO UNSOUND!!!
     # [[(W, [K, L], order) for order in all_ordered([x, y, z, w], [a, b, c])]
     #  for K, L in [(W, W), ('C-', 'C+'), ('A+', 'A-')]],
@@ -192,6 +213,6 @@ g2 = Grammar([
     # C-
     all_ordered_rules(W, ['C-', 'C+'], [x, y, z, w]),
     all_ordered_rules('B+', ['C-', 'A-'], [x, y, z, w]),
-    all_ordered_rules('A+', ['C-', 'B-'], [x, y, z, w]),
-])
+    # all_ordered_rules('A+', ['C-', 'B-'], [x, y, z, w]),
+], topdown=True, filtered=True)
 all_states = [W, 'A-', 'A+', 'B-', 'B+', 'C-', 'C+']

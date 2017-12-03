@@ -4,7 +4,7 @@ from grammars import *
 import argparse
 from pprint import pprint, pformat
 import re
-from itertools import permutations
+from itertools import permutations, chain, combinations
 
 
 #
@@ -34,36 +34,46 @@ def dyck(k, n):
 # Grammar class
 #
 class Grammar(object):
-    def __init__(self, rules, initial_symbol='S'):
+    def __init__(self, rules, initial_symbol='S', **kwargs):
         # Normalize rules
         rules = sum(map(lambda r: r if isinstance(r, list) else [r],
                         map(lambda r: sum(r, []) if isinstance(r, list) and not isinstance(r[0], tuple) else r,
                     rules)), [])
         # Construct rule tuples
         self.grammar = [('{}: {} <- {} ({})'.format(i, lhs, rhs, recipe), lhs, rhs, recipe) for i, (lhs, rhs, recipe) in enumerate(rules)]
-        self.parser = Parser(self.grammar, [initial_symbol])
+        self.parser = Parser(self.grammar, [initial_symbol], **kwargs)
+        # Print statistics
+        # self.parser.print_grammar_statistics()
+        # self.test_parse('aaaabbcabbcbccc')
+        # self.parser.print_parse_statistics()
 
     def test_parse(self, word):
-        print(self.parser.chart_parse(list(word)))
+        return self.parser.chart_parse(list(word))
 
     def single_parse(self, word):
-        print(re.sub('\(.*\: ', '',
-              pformat(next(self.parser.parse(list(word))), indent=3)
-              .replace('(0, 0)', 'x')
-              .replace('(0, 1)', 'y')
-              .replace('(1, 0)', 'z')
-              .replace('(1, 1)', 'w')
-              .replace(' [] ', '')
-              .replace('"', '')))
+        print(self.format_parse(next(self.parser.parse(list(word)))))
 
     def parse(self, word):
         for t in self.parser.parse(list(word)):
-            print(t)
+            print('{}\n'.format(self.format_parse(t)))
 
-    def test_n(self, n):
-        ws = dyck(3, n)
+    def min_parse(self, word):
+        l, min_parse = 100, None
+        for t in self.parser.parse(list(word)):
+            p = self.format_parse(t)
+            cur_l = len(p.split('\n'))
+            if cur_l < l:
+                l, min_parse = cur_l, p
+        print('{}\n'.format(min_parse))
+
+    def test_n(self, n, reverse=False, half=False):
+        ws = dyck(3, n)[::(-1 if reverse else 1)]
+        if half:
+            ws = ws[:len(ws)/2+1]
         c = 1
         for i, w in enumerate(ws):
+            if half and i > len(ws)/2:
+                break
             sys.stdout.write("\r{0:.2f}%".format(float(i) / float(len(ws)) * 100.0))
             sys.stdout.flush()
             if not self.parser.chart_parse(list(w)):
@@ -81,18 +91,28 @@ class Grammar(object):
                     return
             print('[{}] SOUND!'.format(n))
 
+    @staticmethod
+    def format_parse(s):
+        return re.sub(r'\(.*\: ', '',
+                      pformat(s, indent=3)
+                      .replace('(0, 0)', 'x').replace('(0, 1)', 'y').replace('(1, 0)', 'z')
+                      .replace('(1, 1)', 'w').replace(' [] ', '').replace('"', ''))
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Check your D3 grammar.')
-    parser.add_argument('-n', metavar='N', type=int, help='number of "abc" occurences', default=6, nargs='?')
-    parser.add_argument('-w', metavar='W', type=str, help='single word to check', nargs='?')
-    parser.add_argument('-ws', metavar='W', type=str, help='file containing words to check', nargs='?')
-    parser.add_argument('-p', metavar='P', type=str, help='single parse of a word', nargs='?')
-    parser.add_argument('-ps', metavar='P', type=str, help='multiple parses of a word', nargs='?')
+    parser.add_argument('-n', type=int, help='number of "abc" occurences', default=6, nargs='?')
+    parser.add_argument('-w', type=str, help='single word to check', nargs='?')
+    parser.add_argument('-ws', type=str, help='file containing words to check', nargs='?')
+    parser.add_argument('-p', type=str, help='single parse of a word', nargs='?')
+    parser.add_argument('-minp', type=str, help='show minimal parse of a word', nargs='?')
+    parser.add_argument('-ps', type=str, help='multiple parses of a word', nargs='?')
     parser.add_argument('-g', metavar='G', type=str, help='grammar to use', default='g2', nargs='?')
     parser.add_argument('--rules', help='print all rules', action='store_true')
     parser.add_argument('--check', help='check soundness', action='store_true')
     parser.add_argument('--gen', help='generate dyck words', action='store_true')
+    parser.add_argument('--reverse', help='search in reverse', action='store_true')
+    parser.add_argument('--half', help='search in reverse', action='store_true')
     args = parser.parse_args()
     g = globals()[args.g]
     if args.gen:
@@ -106,14 +126,16 @@ if __name__ == "__main__":
     elif args.rules:
         pprint(g.grammar)
     elif 'w' in vars(args) and args.w is not None:
-        g.test_parse(args.w)
+        print(g.test_parse(args.w))
     elif 'p' in vars(args) and args.p is not None:
         g.single_parse(args.p)
+    elif 'minp' in vars(args) and args.minp is not None:
+        g.min_parse(args.minp)
     elif 'ps' in vars(args) and args.ps is not None:
         g.parse(args.ps)
     elif 'ws' in vars(args) and args.ws is not None:
         with open(args.ws, 'r') as f:
             for w in f.read().splitlines():
-                g.test_parse(w)
+                print('{}: {}'.format(w, g.test_parse(w)))
     else:
-        g.test_n(args.n)
+        g.test_n(args.n, reverse=args.reverse)

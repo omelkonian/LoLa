@@ -1,4 +1,10 @@
+abaaacbbbcacbaccbc
+abaaacbbbaccbaccbc
 aababbacacbbacccbc
+aaabbbacacbbacccbc
+abaaacbbacbbcaccbc
+aabbacacabbbacccbc
+aabbacaacbbbacccbc
 aabbaacacbbbacccbc
 abaaacbbacbbacccbc
 aabbaacacbbbcaccbc
