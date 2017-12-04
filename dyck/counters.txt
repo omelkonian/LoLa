@@ -1,13 +1,52 @@
-abaaacbbbcacbaccbc
-abaaacbbbaccbaccbc
-aababbacacbbacccbc
-aaabbbacacbbacccbc
-abaaacbbacbbcaccbc
-aabbacacabbbacccbc
-aabbacaacbbbacccbc
-aabbaacacbbbacccbc
-abaaacbbacbbacccbc
-aabbaacacbbbcaccbc
-aabbaacbbacaccbbcc
-abaacabbbacaccbbcc
-abaaacbbbacaccbbcc
+--forward
+11.11%
+1.	 abaaacbbbcacbaccbc
+11.13%
+2.	 abaaacbbbaccbaccbc
+16.61%
+3.	 aababbacacbbacccbc
+16.62%
+4.	 aaabbbacacbbacccbc
+17.48%
+5.	 abaaacbbacbbcaccbc
+17.86%
+6.	 abaaacbbacbbacccbc
+18.57%
+7.	 aabbaacacbbbcaccbc
+19.01%
+8.	 aabbacacabbbacccbc
+19.02%
+9.	 aabbacaacbbbacccbc
+19.03%
+10.	 aabbaacacbbbacccbc
+--backward
+5.15%
+1.	 aaaabbbacacbbbcccc
+6.34%
+2.	 aabaacbbacacbbbccc
+6.34%
+3.	 abaaacbbacacbbbccc
+7.62%
+4.	 aaabbbacacacbbbccc
+7.77%
+5.	 aaabbbcacacabbbccc
+12.10%
+6.	 abaaacbbacacbbcbcc
+26.31%
+7.	 aabbaacacbbaccbbcc
+26.64%
+8.	 aabbaacacbbcacbbcc
+34.99%
+9.	 abaaacbbbacaccbbcc
+34.99%
+10.	 abaacabbbacaccbbcc
+35.19%
+11.	 aabbaacbbacaccbbcc
+35.28%
+12.	 abaaacbbbaccacbbcc
+35.31%
+13.	 abaaacbbbcacacbbcc
+35.33%
+14.	 abaaacbbcbacacbbcc
+35.38%
+15.	 aaabbacbbcacacbbcc
