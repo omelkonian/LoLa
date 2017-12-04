@@ -2,8 +2,6 @@ abaaacbbbcacbaccbc
 abaaacbbbaccbaccbc
 aababbacacbbacccbc
 aaabbbacacbbacccbc
-abaaacbbacbbcaccbc
-abaaacbbacbbacccbc
 aabbaacacbbbcaccbc
 aabbacacabbbacccbc
 aabbacaacbbbacccbc

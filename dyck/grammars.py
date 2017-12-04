@@ -119,15 +119,12 @@ g2 = Grammar([
     # A-, W -> A-
     all_ordered_rules('A-', ['A-', W], [x, y], [z, w]),
 
-    # B- SPECIAL!.
     # B-: Base
-    ('B-', e, [[a], [c]]),
-    # all_ordered_rules('B-', e, [a, c]),
-    ('B-', [W], [[a, x], [y, c]]),
-    # B- -> W
-    all_ordered_rules(W, ['B-'], [x, b, y]),
+    all_ordered_rules('B-', e, [a, c]),
+    # B-: Double insertion (a, c)
+    all_ordered_rules('B-', [W], [x, y], [a, c]),
     # B-, W -> B-
-    all_constrained_rules('B-', ['B-', W], left=[x], right=[y], orders=[[x, y], [z, w]]),
+    all_ordered_rules('B-', ['B-', W], [x, y], [z, w]),
 
     # C-: Base
     all_ordered_rules('C-', e, [a, b]),
@@ -188,7 +185,7 @@ g2 = Grammar([
 
     # A+
     all_ordered_rules('C-', ['A+', 'B+'], [x, y, z, w]),
-    # all_ordered_rules('B-', ['A+', 'C+'], [x, y], [z, w]),
+    all_ordered_rules('B-', ['A+', 'C+'], [x, y, z, w]),
     all_ordered_rules(W, ['A+', 'A-'], [x, y, z, w]),
     # B+
     all_ordered_rules('A-', ['B+', 'C+'], [x, y, z, w]),
@@ -205,6 +202,20 @@ g2 = Grammar([
     # ======================
     # Refined non-terminals
     # ======================
+
+    # lrB-: Base
+    ('lrB-', e, [[a], [c]]),
+    # W -> lrB-
+    all_constrained_rules('lrB-', [W], left=[a], right=[c], orders=[[x, y], [a, c]]),
+    # lrB- -> W
+    all_ordered_rules(W, ['lrB-'], [x, b, y]),
+    # lrB- -> B-
+    all_ordered_rules('B-', ['lrB-'], [x, y]),
+    # lrB-, W -> lrB-
+    all_constrained_rules('lrB-', ['lrB-', W], left=[x], right=[y], orders=[[x, y], [z, w]]),
+    # lrB-: 3-ins
+    all_constrained_rules('lrB-', ['lrB-'], left=[x], right=[y], orders=[[x, y], [a, b, c]])
+
 
     # lA-: Base
     # ('lA-', e, [[b, c], e]),
