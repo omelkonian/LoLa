@@ -214,32 +214,33 @@ g2 = Grammar([
     # lrB-, W -> lrB-
     all_constrained_rules('lrB-', ['lrB-', W], left=[x], right=[y], orders=[[x, y], [z, w]]),
     # lrB-: 3-ins
-    all_constrained_rules('lrB-', ['lrB-'], left=[x], right=[y], orders=[[x, y], [a, b, c]])
+    all_constrained_rules('lrB-', ['lrB-'], left=[x], right=[y], orders=[[x, y], [a, b, c]]),
 
+    # rA-: Base
+    ('rA-', e, [e, [b, c]]),
+    # rA-: Double insertion (b, c)
+    all_constrained_rules('rA-', [W], right=[b, c], orders=[[x, y], [b, c]]),
+    # rA-, W -> A-
+    all_constrained_rules('rA-', ['rA-', W], right=[y], orders=[[x, y], [z, w]]),
+    # rA- -> W
+    all_constrained_rules(W, ['rA-'], left=[a], orders=[[x, a, y]]),
+    # rA- -> A-
+    all_ordered_rules('A-', ['rA-'], [x, y]),
+    # # rA-: 3-ins
+    all_constrained_rules('rA-', ['rA-'], right=[y], orders=[[x, y], [a, b, c]]),
 
-    # lA-: Base
-    # ('lA-', e, [[b, c], e]),
-    # # lA-: Double insertion (b, c)
-    # all_constrained_rules('lA-', [W], left=[b, c], orders=[[x, y], [b, c]]),
-    # # lA-, W -> A-
-    # all_constrained_rules('lA-', ['lA-', W], left=[x], orders=[[x, y], [z, w]]),
-    # # lA- -> W
-    # # all_constrained_rules(W, ['lA-'], left=[a, x, y], orders=[[a, x], [y]]),  # TODO set change
-    # all_ordered_rules(W, ['lA-'], [a, x, y]),
-    # # lA- -> A-
-    # all_ordered_rules('A-', ['lA-'], [x, y]),
-    #
-    # # rA-: Base
-    # ('rA-', e, [e, [b, c]]),
-    # # rA-: Double insertion (b, c)
-    # all_constrained_rules('rA-', [W], right=[b, c], orders=[[x, y], [b, c]]),
-    # # rA-, W -> A-
-    # all_constrained_rules('rA-', ['rA-', W], right=[y], orders=[[x, y], [z, w]]),
-    # # rA- -> W
-    # # all_ordered_rules(W, ['rA-'], [a, y], [x, y]),
-    # all_constrained_rules(W, ['rA-'], left=[a], orders=[[x, a, y]]),
-    # # all_constrained_rules(W, ['rA-'], left=[a], orders=[[a, x, y]]), # TODO set change
-    # # rA- -> A-
-    # all_ordered_rules('A-', ['rA-'], [x, y]),
+    # lC-: Base
+    ('lC-', e, [[a, b], e]),
+    # lC-: Double insertion (a, b)
+    all_constrained_rules('lC-', [W], left=[a, b], orders=[[x, y], [a, b]]),
+    # lC-, W -> lC-
+    all_constrained_rules('lC-', ['lC-', W], left=[x], orders=[[x, y], [z, w]]),
+    # lC- -> W
+    all_ordered_rules(W, ['lC-'], [x, c, y]),
+    # lC- -> A-
+    all_ordered_rules('C-', ['lC-'], [x, y]),
+    # lC-: 3-ins
+    all_constrained_rules('lC-', ['lC-'], left=[x], orders=[[x, y], [a, b, c]]),
+
 ], topdown=True, filtered=True)
 all_states = [W, 'A-', 'A+', 'B-', 'B+', 'C-', 'C+']
