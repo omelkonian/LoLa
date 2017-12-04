@@ -73,8 +73,6 @@ class Grammar(object):
             ws = ws[:len(ws)/2+1]
         c = 1
         for i, w in enumerate(ws):
-            if half and i > len(ws)/2:
-                break
             sys.stdout.write("\r{0:.2f}%".format(float(i) / float(len(ws)) * 100.0))
             sys.stdout.flush()
             if not self.parser.chart_parse(list(w)):
@@ -142,7 +140,6 @@ if __name__ == "__main__":
             for w in f.read().splitlines():
                 print('{}: {}'.format(w, g.test_parse(w)))
     else:
-        g.test_n(args.n, reverse=args.reverse)
-
+        g.test_n(args.n, reverse=args.reverse, half=args.half)
     if args.time:
         print('Time elapsed: {} seconds'.format(time.time() - start))
