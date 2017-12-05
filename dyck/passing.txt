@@ -1,4 +1,10 @@
-aaaaaabbbbbbcccccc
+aaabbbacacacbbbccc
+aaabbbacacbbacccbc
+aababbacacbbacccbc
+abaaacbbbaccbaccbc
+abaaacbbbcacbaccbc
+aabbaacacbbaccbbcc
+abaaacbbbacaccbbcc
 aaabbbaaccbbacccbc
 aababbaaccbbacccbc
 aaabbbaaccbbacccbc
@@ -21,10 +27,3 @@ abaaacbbbcacacbbcc
 abaaacbbbaccacbbcc
 aabbaacbbacaccbbcc
 abaacabbbacaccbbcc
-abaaacbbbacaccbbcc
-aabbaacacbbaccbbcc
-abaaacbbbcacbaccbc
-abaaacbbbaccbaccbc
-aababbacacbbacccbc
-aaabbbacacbbacccbc
-aaabbbacacacbbbccc
