@@ -1,5 +1,4 @@
 from pprint import pprint
-
 from dyck import Grammar
 from itertools import permutations
 
@@ -104,9 +103,15 @@ def translate(word, **symmetries):
 # Grammar
 #
 all_states = [W, 'A-', 'A+', 'B-', 'B+', 'C-', 'C+']
-g2 = Grammar([
+g = lambda initial_symbol: Grammar([
     # TOP
     (S, [W], [[x, y]]),
+
+    # ======================
+    # Debugging non-terms
+    [(k + 'S', [k], [[x, y]])
+     for k in all_states],
+    # ======================
 
     # ======================
     # Meta-rules
@@ -145,7 +150,7 @@ g2 = Grammar([
     all_ordered_rules('C-', ['C-', W], [x, y], [z, w]),
 
     # A+: Base
-    ('A+', e, [[a], e]),
+    ('A+', e, [e, [a]]),
     # A+: Single insertion (a)
     all_ordered_rules('A+', [W], [x, y], [a]),
     # A+ -> W
@@ -154,7 +159,7 @@ g2 = Grammar([
     all_ordered_rules('A+', ['A+', W], [x, y], [z, w]),
 
     # B+: Base
-    ('B+', e, [[b], e]),
+    ('B+', e, [e, [b]]),
     # ('B+', e, [e, [b]]),
     # B+: Single insertion (b)
     all_ordered_rules('B+', [W], [x, y], [b]),
@@ -399,7 +404,9 @@ g2 = Grammar([
     # lrB-
     # lC-
     all_constrained_rules('lA+', ['lrB-', 'lC-'], left=[x], orders=[[x, y], [z, w], [z, y]]),
+    # all_constrained_rules('lA+', ['lrB-', 'lC-'], left=[z], orders=[[x, z, y], [z, w]]),
     all_ordered_rules('A+', ['lrB-', 'lC-'], [x, y], [z, w], [z, y]),
+    # all_ordered_rules('A+', ['lrB-', 'lC-'], [x, z, y], [z, w]),
     # A+
     # B+
     all_ordered_rules(W, ['lrB-', 'B+'], [x, z, w, y]),
@@ -430,4 +437,4 @@ g2 = Grammar([
     all_ordered_rules('A+', ['lC-', 'B-'], [x, y], [x, z, w]),
     # C-
 
-], topdown=True, filtered=True)
+], topdown=True, filtered=True, initial_symbol=initial_symbol)

@@ -1054,8 +1054,11 @@ def process_token_emptygrammar(k, tokens, chart, grammar, agenda, add_edge, topd
             assert k == found.end, (k, found.end, found)
             start = found.start
             nextsym = Symbol(found.cat, found.lbl)
+
             # combine
-            for active in active_chart[start][nextsym]:
+            from copy import deepcopy
+            actives = deepcopy(active_chart[start][nextsym])
+            for active in actives:
                 combine_inference_rule(active, found, sequences, active_chart, add_edge, "combine", active, found)
 
             if bottomup:
