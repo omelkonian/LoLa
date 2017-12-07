@@ -8,12 +8,17 @@ from itertools import permutations
 #
 a, b, c = 'a', 'b', 'c'
 x, y, z, w = (0, 0), (0, 1), (1, 0), (1, 1)
+k, l, m, n = (2, 0), (2, 1), (3, 0), (3, 1)
 S, W, e = 'S', 'W', []
 tuple_to_char = {
     (0, 0): 'x',
     (0, 1): 'y',
     (1, 0): 'z',
-    (1, 1): 'w'
+    (1, 1): 'w',
+    (2, 0): 'k',
+    (2, 1): 'l',
+    (3, 0): 'm',
+    (3, 1): 'n',
 }
 
 def filter_nonempty(rules):
@@ -103,14 +108,17 @@ def translate(word, **symmetries):
 # Grammar
 #
 all_states = [W, 'A-', 'A+', 'B-', 'B+', 'C-', 'C+']
+really_all_states = all_states + ['lA+', 'lB+', 'rC+', 'rA-', 'lrB-', 'lC-']
 g = lambda initial_symbol: Grammar([
     # TOP
     (S, [W], [[x, y]]),
 
     # ======================
     # Debugging non-terms
-    [(k + 'S', [k], [[x, y]])
-     for k in all_states],
+    [('_' + k, [k], [[x, y]])
+     for k in really_all_states],
+    [('$_' + k, [k], [[x, '$', y]])
+     for k in really_all_states],
     # ======================
 
     # ======================
