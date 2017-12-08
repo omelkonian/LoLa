@@ -372,10 +372,10 @@ g = lambda initial_symbol: Grammar([
     # C+
     # A-
     # B-
-    # all_ordered_rules('C+', ['B-', 'A-'], [x, y, z, w]),
+    all_ordered_rules('C+', ['B-', 'A-'], [x, y, z, w]),
     # C-
     all_ordered_rules(W, ['C-', 'C+'], [x, y, z, w]),
-    # all_ordered_rules('B+', ['C-', 'A-'], [x, y, z, w]),
-    # all_ordered_rules('A+', ['C-', 'B-'], [x, y, z, w]),
+    all_ordered_rules('B+', ['C-', 'A-'], [x, y, z, w]),
+    all_ordered_rules('A+', ['C-', 'B-'], [x, y, z, w]),
 ] + refinements, topdown=True, filtered=True, initial_symbol=initial_symbol)
 

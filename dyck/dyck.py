@@ -63,7 +63,8 @@ class Grammar(object):
                         map(lambda r: sum(r, []) if isinstance(r, list) and (not r or not isinstance(r[0], tuple)) else r,
                     rules)), [])
         # Construct rule tuples
-        self.grammar = [('r{}'.format(i), lhs, rhs, recipe) for i, (lhs, rhs, recipe) in enumerate(rules)]
+        self.grammar = [('{}: {} <- {} ({})'.format(i, lhs, rhs, recipe), lhs, rhs, recipe)
+                        for i, (lhs, rhs, recipe) in enumerate(rules)]
         self.parser = Parser(self.grammar, [initial_symbol], **kwargs)
 
     def test_parse(self, word):
