@@ -117,7 +117,6 @@ def translate(word, **symmetries):
 # Grammar
 #
 all_states = [W, 'A-', 'A+', 'B-', 'B+', 'C-', 'C+']
-really_all_states = all_states + ['lA+', 'lB+', 'rC+', 'rA-', 'lrB-', 'lC-']
 
 # ======================
 # Refined non-terminals
@@ -157,6 +156,13 @@ refinements = [
     ('rA-', ['A-'], [e, [x, y]]),
     # rA-: 3-ins
     all_constrained_rules('rA-', ['rA-'], right=[y], orders=[[x, y], [a, b, c]]),
+
+    # rB-: Base
+    all_constrained_rules('rB-', e, right=[a, c], orders=[[a], [c]]),
+    # rB-: Fallback
+    rule('B-', ['rB-']),
+    # rB-: 3-ins
+    all_constrained_rules('rB-', ['rB-'], right=[y], orders=[[x, y], [a, b, c]]),
 
     # lrB-: Base
     ('lrB-', e, [[a], [c]]),
@@ -299,34 +305,20 @@ refinements = [
     all_non_constrained_rules('A+', ['lC-', 'B-'], left=[z, w], orders=[[x, y], [x, z, w]]),
     # C-
 
-    # rB-: Base
-    # all_constrained_rules('rB-', e, right=[a, c], orders=[[a], [c]]),
-    ('rB-', e, [e, [a, c]]),
-    ('rB-', e, [e, [c, a]]),
-    # rB-: Double insertion (a, c)
-    all_constrained_rules('rB-', [W], right=[a, c], orders=[[x, y], [a], [c]]),
-    # rB-, W -> lrB-
-    all_constrained_rules('rB-', ['rB-', W], right=[y], orders=[[x, y], [z, w]]),
-    # rB-: Fallback
-    all_ordered_rules('B-', ['rB-'], [x, y]),
-    # rB-: 3-ins
-    all_constrained_rules('rB-', ['rB-'], right=[y], orders=[[x, y], [a, b, c]]),
-
     # AD-HOC
     all_constrained_rules('rC+', ['rB-', 'A-'], right=[y], orders=[[x, y], [y, z, w]]),
 ]
 # ======================
 
-g = lambda initial_symbol: Grammar(
-[
+g = lambda initial_symbol: Grammar([
     # TOP
     (S, [W], [[x, y]]),
 
     # ======================
     # Debugging
     # ======================
-    [('_' + k, [k], [[x, y]]) for k in really_all_states],
-    [('$_' + k, [k], [[x, '$', y]]) for k in really_all_states],
+    [('_' + k, [k], [[x, y]]) for k in all_states + ['lA+', 'lB+', 'rC+', 'rA-', 'lrB-', 'lC-']],
+    [('$_' + k, [k], [[x, '$', y]]) for k in all_states + ['lA+', 'lB+', 'rC+', 'rA-', 'lrB-', 'lC-']],
 
     # ======================
     # Meta-rules
@@ -336,35 +328,36 @@ g = lambda initial_symbol: Grammar(
     all_ordered_rules(W, [W, W], [x, y], [z, w], x=z, y=w),
 
     # A+: Base
-    all_ordered_rules('A+', e, [a]),
-    # A+: Refining 3-ins
-    all_constrained_rules('lA+', ['A+'], left=[x, y], orders=[[x, y], [a, b, c]]),
-
+    ('A+', e, [e, [a]]),
     # B+: Base
-    all_ordered_rules('B+', e, [b]),
-    # B+: Refining 3-ins
-    all_constrained_rules('lB+', ['B+'], left=[x, y], orders=[[x, y], [a, b, c]]),
-
+    ('B+', e, [e, [b]]),
     # C+: Base
-    all_ordered_rules('C+', e, [c]),
-    # C+: Refining 3-ins
-    all_constrained_rules('rC+', ['C+'], right=[x, y], orders=[[x, y], [a, b, c]]),
-
-    # A-: Refining 3-ins
-    all_constrained_rules('rA-', ['A-'], right=[x, y], orders=[[x, y], [a, b, c]]),
-    # B-: Refining 3-ins
-    all_constrained_rules('rB-', ['B-'], right=[x, y], orders=[[x, y], [a, b, c]]),
-    # C-: Refining 3-ins
-    all_constrained_rules('lC-', ['C-'], left=[x, y], orders=[[x, y], [a, b, c]]),
+    ('C+', e, [[c], e]),
 
     # ======================
     # Meta-meta rules
     # ======================
 
-    # General 3-ins
-    # TODO minimize
-    [[(K, [K], order) for order in all_ordered([x, y], [a, b, c])]
-     for K in all_states],
+    # ALL 3-ins
+    all_ordered_rules(W, [W], [x, y], [a, b, c]),
+    # A+
+    all_constrained_rules('lA+', ['A+'], left=[x, y], orders=[[x, y], [a, b, c]]),
+    all_non_constrained_rules('A+', ['A+'], orders=[[x, y], [a, b, c]], left=[x, y]),
+    # B+
+    all_constrained_rules('lB+', ['B+'], left=[x, y], orders=[[x, y], [a, b, c]]),
+    all_non_constrained_rules('B+', ['B+'], orders=[[x, y], [a, b, c]], left=[x, y]),
+    # C+
+    all_constrained_rules('rC+', ['C+'], right=[x, y], orders=[[x, y], [a, b, c]]),
+    all_non_constrained_rules('C+', ['C+'], orders=[[x, y], [a, b, c]], right=[x, y]),
+    # A-
+    all_constrained_rules('rA-', ['A-'], right=[x, y], orders=[[x, y], [a, b, c]]),
+    all_non_constrained_rules('A-', ['A-'], orders=[[x, y], [a, b, c]], right=[x, y]),
+    # B-
+    all_constrained_rules('rB-', ['B-'], right=[x, y], orders=[[x, y], [a, b, c]]),
+    all_non_constrained_rules('B-', ['B-'], orders=[[x, y], [a, b, c]], right=[x, y]),
+    # C-
+    all_constrained_rules('lC-', ['C-'], left=[x, y], orders=[[x, y], [a, b, c]]),
+    all_non_constrained_rules('C-', ['C-'], orders=[[x, y], [a, b, c]], left=[x, y]),
 
     # ======================
     # Meta-rule combinations
