@@ -1,3 +1,5 @@
+import numpy
+
 from MCFParser import *
 from grammars import *
 
@@ -31,6 +33,26 @@ def dyck(k, n):
     return [sigma*n] if n < 2 else sum([dshuffle(sigma, w) for w in dyck(k, n-1)], [])
 
 
+def rand_dyck(n):
+    val = {
+        'a': n,
+        'b': 0,
+        'c': 0
+    }
+    ret = ""
+    while True:
+        choices = [k for k, v in val.items() if v > 0]
+        if not choices:
+            break
+        choice = numpy.random.choice(choices)
+        ret += choice
+        val[choice] -= 1
+        if choice == 'a':
+            val['b'] += 1
+        elif choice == 'b':
+            val['c'] += 1
+    return ret
+
 #
 # Grammar class
 #
@@ -38,15 +60,11 @@ class Grammar(object):
     def __init__(self, rules, initial_symbol='S', **kwargs):
         # Normalize rules
         rules = sum(map(lambda r: r if isinstance(r, list) else [r],
-                        map(lambda r: sum(r, []) if isinstance(r, list) and not isinstance(r[0], tuple) else r,
+                        map(lambda r: sum(r, []) if isinstance(r, list) and (not r or not isinstance(r[0], tuple)) else r,
                     rules)), [])
         # Construct rule tuples
-        self.grammar = [('{}: {} <- {} ({})'.format(i, lhs, rhs, recipe), lhs, rhs, recipe) for i, (lhs, rhs, recipe) in enumerate(rules)]
+        self.grammar = [('r{}'.format(i), lhs, rhs, recipe) for i, (lhs, rhs, recipe) in enumerate(rules)]
         self.parser = Parser(self.grammar, [initial_symbol], **kwargs)
-        # Print statistics
-        # self.parser.print_grammar_statistics()
-        # self.test_parse('aaaabbcabbcbccc')
-        # self.parser.print_parse_statistics()
 
     def test_parse(self, word):
         return self.parser.chart_parse(list(word))
@@ -114,11 +132,16 @@ if __name__ == "__main__":
     parser.add_argument('--reverse', help='search in reverse', action='store_true')
     parser.add_argument('--half', help='search in reverse', action='store_true')
     parser.add_argument('--time', help='measure execution time', action='store_true')
+    parser.add_argument('--rand', help='generate random Dyck word', action='store_true')
     args = parser.parse_args()
     g = globals()[args.g](args.i)
     if args.time:
         start = time.time()
-    if args.gen:
+    if args.rand:
+        while True:
+            r = rand_dyck(args.n)
+            print('{}: {}'.format(r, g.test_parse(r)))
+    elif args.gen:
         assert args.n
         with open('data/{}'.format(args.n), 'w') as f:
             for w in dyck(3, args.n):
