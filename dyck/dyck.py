@@ -1,4 +1,6 @@
 import numpy
+from math import ceil
+from os.path import isfile
 
 from MCFParser import *
 from grammars import *
@@ -7,7 +9,7 @@ import time
 import argparse
 from pprint import pprint, pformat
 import re
-from itertools import permutations, chain, combinations
+from itertools import permutations
 
 
 #
@@ -25,10 +27,15 @@ def dshuffle(l, r):
         [(l, r)[i][0] + w for i in range(2) if not i or r[0] < l[0] for w in dshuffle(l[(i + 1) % 2:], r[i % 2:])]
 
 
+def dyck_file(n):
+    return 'data/{}.dyck'.format(n)
+
+
 def dyck(k, n):
-    # if isfile('data/{}'.format(n)):
-    #     with open('data/{}'.format(n), 'r') as f:
-    #         return f.read().splitlines()
+    # Utilize pre-generated Dyck words
+    if isfile(dyck_file(n)):
+        with open(dyck_file(n), 'r') as f:
+            return f.read().splitlines()
     sigma = ''.join([chr(97+i) for i in range(k)])  # a,b,c,... (k letters)
     return [sigma*n] if n < 2 else sum([dshuffle(sigma, w) for w in dyck(k, n-1)], [])
 
@@ -86,10 +93,12 @@ class Grammar(object):
                 l, min_parse = cur_l, p
         print('{}\n'.format(min_parse))
 
-    def test_n(self, n, reverse=False, half=False):
-        ws = dyck(3, n)[::(-1 if reverse else 1)]
-        if half:
-            ws = ws[:len(ws)/2+1]
+    def test_n(self, n, range=(0.0, 100.0)):
+        ws = dyck(3, n)
+        l = len(ws)
+        start, end = map(lambda p: int(ceil(l * (p/100))), range)
+        print('Checking {} to {}'.format(start, end))
+        ws = ws[start:end]
         c = 1
         for i, w in enumerate(ws):
             sys.stdout.write("\r{0:.2f}%".format(float(i) / float(len(ws)) * 100.0))
@@ -130,8 +139,7 @@ if __name__ == "__main__":
     parser.add_argument('--rules', help='print all rules', action='store_true')
     parser.add_argument('--check', help='check soundness', action='store_true')
     parser.add_argument('--gen', help='generate dyck words', action='store_true')
-    parser.add_argument('--reverse', help='search in reverse', action='store_true')
-    parser.add_argument('--half', help='search in reverse', action='store_true')
+    parser.add_argument('--range', type=str, default='0-100%', help='search in given percentage range')
     parser.add_argument('--time', help='measure execution time', action='store_true')
     parser.add_argument('--rand', help='generate random Dyck word', action='store_true')
     args = parser.parse_args()
@@ -144,8 +152,9 @@ if __name__ == "__main__":
             print('{}: {}'.format(r, g.test_parse(r)))
     elif args.gen:
         assert args.n
-        with open('data/{}'.format(args.n), 'w') as f:
-            for w in dyck(3, args.n):
+        ws = dyck(3, args.n)
+        with open(dyck_file(args.n), 'w') as f:
+            for w in ws:
                 f.write('{}\n'.format(w))
     elif args.check:
         assert args.n
@@ -165,6 +174,6 @@ if __name__ == "__main__":
             for w in f.read().splitlines():
                 print('{}: {}'.format(w, g.test_parse(w)))
     else:
-        g.test_n(args.n, reverse=args.reverse, half=args.half)
+        g.test_n(args.n, range=map(float, args.range.strip('%').split('-')))
     if args.time:
         print('Time elapsed: {} seconds'.format(time.time() - start))
