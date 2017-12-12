@@ -128,6 +128,8 @@ refinements = [
     ('lA+', ['A+'], [[x, y], e]),
     # lA+: 3-ins
     all_constrained_rules('lA+', ['lA+'], left=[x], orders=[[x, y], [a, b, c]]),
+    # lA+: W interaction
+    all_constrained_rules('lA+', ['lA+', W], left=[x], orders=[[x, y], [z, w]]),
 
     # lB+: Base
     ('lB+', e, [[b], e]),
@@ -137,6 +139,8 @@ refinements = [
     ('lB+', ['B+'], [[x, y], e]),
     # lB+: 3-ins
     all_constrained_rules('lB+', ['lB+'], left=[x], orders=[[x, y], [a, b, c]]),
+    # lB+: W interaction
+    all_constrained_rules('lB+', ['lB+', W], left=[x], orders=[[x, y], [z, w]]),
 
     # rC+: Base
     ('rC+', e, [e, [c]]),
@@ -146,6 +150,8 @@ refinements = [
     ('rC+', ['C+'], [e, [x, y]]),
     # rC+: 3-ins
     all_constrained_rules('rC+', ['rC+'], right=[y], orders=[[x, y], [a, b, c]]),
+    # rC+: W interaction
+    all_constrained_rules('rC+', ['rC+', W], right=[y], orders=[[x, y], [z, w]]),
 
     # rA-: Base
     ('rA-', e, [e, [b, c]]),
@@ -155,20 +161,30 @@ refinements = [
     ('rA-', ['A-'], [e, [x, y]]),
     # rA-: 3-ins
     all_constrained_rules('rA-', ['rA-'], right=[y], orders=[[x, y], [a, b, c]]),
+    # rA-: W interaction
+    all_constrained_rules('rA-', ['rA-', W], right=[y], orders=[[x, y], [z, w]]),
 
     # lB-: Base
     all_constrained_rules('lB-', e, left=[a, c], orders=[[a], [c]]),
     # lB-: Fallback
     rule('B-', ['lB-']),
+    # lB-: Co-Fallback
+    ('lB-', ['B-'], [[x, y], e]),
     # lB-: 3-ins
     all_constrained_rules('lB-', ['lB-'], left=[x], orders=[[x, y], [a, b, c]]),
+    # lB-: W interaction
+    all_constrained_rules('lB-', ['lB-', W], left=[x], orders=[[x, y], [z, w]]),
 
     # rB-: Base
     all_constrained_rules('rB-', e, right=[a, c], orders=[[a], [c]]),
     # rB-: Fallback
     rule('B-', ['rB-']),
+    # lB-: Co-Fallback
+    ('rB-', ['B-'], [e, [x, y]]),
     # rB-: 3-ins
     all_constrained_rules('rB-', ['rB-'], right=[y], orders=[[x, y], [a, b, c]]),
+    # rB-: W interaction
+    all_constrained_rules('rB-', ['rB-', W], right=[y], orders=[[x, y], [z, w]]),
 
     # lrB-: Base
     ('lrB-', e, [[a], [c]]),
@@ -176,6 +192,17 @@ refinements = [
     rule('B-', ['lrB-']),
     # lrB-: 3-ins
     all_constrained_rules('lrB-', ['lrB-'], left=[x], right=[y], orders=[[x, y], [a, b, c]]),
+    # lrB-: W interaction
+    all_constrained_rules('lrB-', ['lrB-', W], left=[x], right=[y], orders=[[x, y], [z, w]]),
+
+    # rlB-: Base
+    ('rlB-', e, [[c], [a]]),
+    # rlB-: Fallback
+    rule('B-', ['rlB-']),
+    # rlB-: 3-ins
+    all_constrained_rules('rlB-', ['rlB-'], left=[x], right=[y], orders=[[x, y], [a, b, c]]),
+    # rlB-: W interaction
+    all_constrained_rules('rlB-', ['rlB-', W], left=[x], right=[y], orders=[[x, y], [z, w]]),
 
     # lC-: Base
     ('lC-', e, [[a, b], e]),
@@ -185,6 +212,8 @@ refinements = [
     ('lC-', ['C-'], [[x, y], e]),
     # lC-: 3-ins
     all_constrained_rules('lC-', ['lC-'], left=[x], orders=[[x, y], [a, b, c]]),
+    # lC-: W interaction
+    all_constrained_rules('lC-', ['lC-', W], left=[x], orders=[[x, y], [z, w]]),
 
     # ==================
     # lA+
@@ -194,28 +223,32 @@ refinements = [
     all_constrained_rules('lC-', ['lA+', 'lB+'], left=[x, z], orders=[[x, y], [z, w], [x, z]]),
     all_non_constrained_rules('C-', ['lA+', 'lB+'], left=[x, z], orders=[[x, y], [z, w], [x, z]]),
     # rC+
-    all_constrained_rules('lrB-', ['lA+', 'rC+'], left=[x], right=[w], orders=[[x, y], [z, w], [x, w]]),
+    all_constrained_rules('lB-', ['lA+', 'rC+'], left=[x, w], orders=[[x, y], [z, w], [x, w]]),
     all_constrained_rules('rB-', ['lA+', 'rC+'], right=[x, w], orders=[[x, y], [z, w], [x, w]]),
+    all_constrained_rules('lrB-', ['lA+', 'rC+'], left=[x], right=[w], orders=[[x, y], [z, w], [x, w]]),
+    all_constrained_rules('rlB-', ['lA+', 'rC+'], left=[w], right=[x], orders=[[x, y], [z, w], [x, w]]),
     all_non_constrained_rules('B-', ['lA+', 'rC+'], left=[x], right=[w], orders=[[x, y], [z, w], [x, w]]),  # TODO spurious
     # rA-
     all_ordered_rules(W, ['lA+', 'rA-'], [x, y], [z, w], [x, w]),
     # lB-
     # rB-
     # lrB-
+    # rlB-
     # lC-
     # A+
     # B+
     all_constrained_rules('lC-', ['lA+', 'B+'], left=[x, z, w], orders=[[x, y], [z, w], [x, z]]),
     all_non_constrained_rules('C-', ['lA+', 'B+'], left=[x, z, w], orders=[[x, y], [z, w], [x, z]]),
     # C+
-    all_constrained_rules('lrB-', ['lA+', 'C+'], left=[x], right=[z, w], orders=[[x, y], [z, w]]),
+    all_constrained_rules('lB-', ['lA+', 'C+'], left=[x, z, w], orders=[[x, y], [z, w]]),
     all_constrained_rules('rB-', ['lA+', 'C+'], right=[x, z, w], orders=[[x, y], [z, w]]),
+    all_constrained_rules('lrB-', ['lA+', 'C+'], left=[x], right=[z, w], orders=[[x, y], [z, w]]),
+    all_constrained_rules('rlB-', ['lA+', 'C+'], left=[z, w], right=[x], orders=[[x, y], [z, w]]),
     all_non_constrained_rules('B-', ['lA+', 'C+'], left=[x], right=[z, w], orders=[[x, y], [z, w]]),  # TODO spurious
     # A-
     all_ordered_rules(W, ['lA+', 'A-'], [x, y], [z, w], [x, z]),
     # B-
     # C-
-
     # ==================
     # lB+
     # ==================
@@ -228,6 +261,7 @@ refinements = [
     # rB-
     # lrB-
     all_ordered_rules(W, ['lB+', 'lrB-'], [x, y], [z, x, w]),
+    # rlB-
     # lC-
     # A+
     all_constrained_rules('lC-', ['lB+', 'A+'], left=[z, w, x], orders=[[x, y], [z, w, x]]),
@@ -239,19 +273,22 @@ refinements = [
     # A-
     # B-
     # C-
-
     # ==================
     # rC+
     # ==================
     # rC+
     # rA-
     # lB-
+    # rB-
     # lrB-
+    # rlB-
     # lC-
     all_ordered_rules(W, ['rC+', 'lC-'], [x, y], [z, w], [z, y]),
     # A+
-    all_constrained_rules('lrB-', ['rC+', 'A+'], left=[z, w], right=[y], orders=[[x, y], [z, w]]),
+    all_constrained_rules('lB-', ['rC+', 'A+'], left=[z, w, y], orders=[[x, y], [z, w]]),
     all_constrained_rules('rB-', ['rC+', 'A+'], right=[z, w, y], orders=[[x, y], [z, w]]),
+    all_constrained_rules('lrB-', ['rC+', 'A+'], left=[z, w], right=[y], orders=[[x, y], [z, w]]),
+    all_constrained_rules('rlB-', ['rC+', 'A+'], left=[y], right=[z, w], orders=[[x, y], [z, w]]),
     all_non_constrained_rules('B-', ['rC+', 'A+'], right=[z, w, y], orders=[[x, y], [z, w]]),
     # B+
     all_constrained_rules('rA-', ['rC+', 'B+'], right=[z, w, y], orders=[[x, y], [z, w, y]]),
@@ -261,23 +298,22 @@ refinements = [
     # B-
     # C-
     all_ordered_rules(W, ['rC+', 'C-'], [x, y], [z, w, y]),
-
     # ==================
     # rA-
     # ==================
     # rA-
-    # rB-
-    all_constrained_rules('rC+', ['rA-', 'rB-'], right=[w], orders=[[x, y], [z, w, y]]),
-    all_non_constrained_rules('C+', ['rA-', 'rB-'], right=[w], orders=[[x, y], [z, w, y]]),
-    # # lB-
-    # all_constrained_rules('rC+', ['rA-', 'lB-'], right=[w], orders=[[x, y], [z, w], [z, y]]),
-    # all_non_constrained_rules('C+', ['rA-', 'lB-'], right=[w], orders=[[x, y], [z, w], [z, y]]),
+    # lB-
+    all_constrained_rules('rC+', ['rA-', 'lB-'], right=[z], orders=[[x, y], [z, w], [z, y]]),
+    all_non_constrained_rules('C+', ['rA-', 'lB-'], right=[z], orders=[[x, y], [z, w], [z, y]]),
     # rB-
     all_constrained_rules('rC+', ['rA-', 'rB-'], right=[w], orders=[[x, y], [z, w], [w, y]]),
     all_non_constrained_rules('C+', ['rA-', 'rB-'], right=[w], orders=[[x, y], [z, w], [w, y]]),
     # lrB-
     all_constrained_rules('rC+', ['rA-', 'lrB-'], right=[w], orders=[[x, y], [z, w], [z, y]]),
     all_non_constrained_rules('C+', ['rA-', 'lrB-'], right=[w], orders=[[x, y], [z, w], [z, y]]),
+    # rlB-
+    all_constrained_rules('rC+', ['rA-', 'rlB-'], right=[z], orders=[[x, y], [z, w], [w, y]]),
+    all_non_constrained_rules('C+', ['rA-', 'rlB-'], right=[z], orders=[[x, y], [z, w], [w, y]]),
     # lC-
     all_constrained_rules('lB+', ['rA-', 'lC-'], left=[z], orders=[[x, y], [z, w], [z, y]]),
     all_non_constrained_rules('B+', ['rA-', 'lC-'], left=[z], orders=[[x, y], [z, w], [z, y]]),
@@ -292,11 +328,50 @@ refinements = [
     # C-
     all_constrained_rules('lB+', ['rA-', 'C-'], left=[z, w], orders=[[x, y], [z, w, y]]),
     all_non_constrained_rules('B+', ['rA-', 'C-'], left=[z, w], orders=[[x, y], [z, w, y]]),
-
+    # ==================
+    # lB-
+    # ==================
+    # lB-
+    # rB-
+    # lrB-
+    # rlB-
+    # lC-
+    all_constrained_rules('lA+', ['lB-', 'lC-'], left=[x], orders=[[x, y], [z, w], [z, x]]),
+    all_non_constrained_rules('A+', ['lB-', 'lC-'], left=[x], orders=[[x, y], [z, w], [z, x]]),
+    # A+
+    # B+
+    # C+
+    # A-
+    all_constrained_rules('rC+', ['lB-', 'A-'], right=[x], orders=[[x, y], [x, z, w]]),
+    all_non_constrained_rules('C+', ['lB-', 'A-'], right=[x], orders=[[x, y], [x, z, w]]),
+    # B-
+    # C-
+    all_constrained_rules('lA+', ['lB-', 'C-'], left=[x], orders=[[x, y], [z, w, x]]),
+    all_non_constrained_rules('A+', ['lB-', 'C-'], left=[x], orders=[[x, y], [z, w, x]]),
+    # ==================
+    # rB-
+    # ==================
+    # rB-
+    # lrB-
+    # rlB-
+    # lC-
+    all_constrained_rules('lA+', ['rB-', 'lC-'], left=[y], orders=[[x, y], [z, w], [z, y]]),
+    all_non_constrained_rules('A+', ['rB-', 'lC-'], left=[y], orders=[[x, y], [z, w], [z, y]]),
+    # A+
+    # B+
+    # C+
+    # A-
+    all_constrained_rules('rC+', ['rB-', 'A-'], right=[y], orders=[[x, y], [y, z, w]]),
+    all_non_constrained_rules('C+', ['rB-', 'A-'], right=[y], orders=[[x, y], [y, z, w]]),
+    # B-
+    # C-
+    all_constrained_rules('lA+', ['rB-', 'C-'], left=[y], orders=[[x, y], [z, w, y]]),
+    all_non_constrained_rules('A+', ['rB-', 'C-'], left=[y], orders=[[x, y], [z, w, y]]),
     # ==================
     # lrB-
     # ==================
     # lrB-
+    # rlB-
     # lC-
     all_constrained_rules('lA+', ['lrB-', 'lC-'], left=[x], orders=[[x, y], [z, w], [z, y]]),
     all_non_constrained_rules('A+', ['lrB-', 'lC-'], left=[x], orders=[[x, y], [z, w], [z, y]]),
@@ -311,25 +386,23 @@ refinements = [
     # C-
     all_constrained_rules('lA+', ['lrB-', 'C-'], left=[x], orders=[[x, y], [z, w, y]]),
     all_non_constrained_rules('A+', ['lrB-', 'C-'], left=[x], orders=[[x, y], [z, w, y]]),
-    # C-
-
     # ==================
-    # rB-
+    # rlB-
     # ==================
+    # rlB-
     # lC-
-    all_constrained_rules('lA+', ['rB-', 'lC-'], left=[y], orders=[[x, y], [z, w], [z, y]]),
-    all_non_constrained_rules('A+', ['rB-', 'lC-'], left=[y], orders=[[x, y], [z, w], [z, y]]),
+    all_constrained_rules('lA+', ['rlB-', 'lC-'], left=[y], orders=[[x, y], [z, w], [z, x]]),
+    all_non_constrained_rules('A+', ['rlB-', 'lC-'], left=[y], orders=[[x, y], [z, w], [z, x]]),
     # A+
     # B+
     # C+
     # A-
-    all_constrained_rules('rC+', ['rB-', 'A-'], right=[y], orders=[[x, y], [y, z, w]]),
-    all_non_constrained_rules('C+', ['rB-', 'A-'], right=[y], orders=[[x, y], [y, z, w]]),
+    all_constrained_rules('rC+', ['rlB-', 'A-'], right=[x], orders=[[x, y], [y, z, w]]),
+    all_non_constrained_rules('C+', ['rlB-', 'A-'], right=[x], orders=[[x, y], [y, z, w]]),
     # B-
     # C-
-    all_constrained_rules('lA+', ['rB-', 'C-'], left=[y], orders=[[x, y], [z, w, y]]),
-    all_non_constrained_rules('A+', ['rB-', 'C-'], left=[y], orders=[[x, y], [z, w, y]]),
-
+    all_constrained_rules('lA+', ['rlB-', 'C-'], left=[y], orders=[[x, y], [z, w, x]]),
+    all_non_constrained_rules('A+', ['rlB-', 'C-'], left=[y], orders=[[x, y], [z, w, x]]),
     # ==================
     # lC-
     # ==================
@@ -344,7 +417,6 @@ refinements = [
     all_constrained_rules('lA+', ['lC-', 'B-'], left=[z, w], orders=[[x, y], [x, z, w]]),
     all_non_constrained_rules('A+', ['lC-', 'B-'], left=[z, w], orders=[[x, y], [x, z, w]]),
     # C-
-
 ]
 # ======================
 
@@ -391,8 +463,8 @@ g = lambda initial_symbol: Grammar([
     all_constrained_rules('rA-', ['A-'], right=[x, y], orders=[[x, y], [a, b, c]]),
     all_non_constrained_rules('A-', ['A-'], orders=[[x, y], [a, b, c]], right=[x, y]),
     # B-
-    all_constrained_rules('rB-', ['B-'], right=[x, y], orders=[[x, y], [a, b, c]]),
     all_constrained_rules('lB-', ['B-'], left=[x, y], orders=[[x, y], [a, b, c]]),
+    all_constrained_rules('rB-', ['B-'], right=[x, y], orders=[[x, y], [a, b, c]]),
     all_non_constrained_rules('B-', ['B-'], orders=[[x, y], [a, b, c]], right=[x, y]),
     # C-
     all_constrained_rules('lC-', ['C-'], left=[x, y], orders=[[x, y], [a, b, c]]),
