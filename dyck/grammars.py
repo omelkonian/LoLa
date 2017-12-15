@@ -118,7 +118,6 @@ def translate(word, **symmetries):
 all_states = [W, 'A-', 'A+', 'B-', 'B+', 'C-', 'C+']
 
 # ======================
-# Refined non-terminals
 refinements = [
     # lA+: Base
     ('lA+', e, [[a], e]),
@@ -128,6 +127,8 @@ refinements = [
     ('lA+', ['A+'], [[x, y], e]),
     # lA+: 3-ins
     all_c('lA+', ['lA+'], left=[x], orders=[[x, y], [a, b, c]]),
+    all_c('lA+', ['lA+'], left=[a], orders=[[x, y], [x, b, c], [a]]),
+    all_c('A+', ['lA+'], right=[a], orders=[[x, y], [x, b, c], [a]]),
     # lA+: W interaction
     all_c('lA+', ['lA+', W], left=[x], orders=[[x, y], [z, w]]),
 
@@ -139,6 +140,8 @@ refinements = [
     ('lB+', ['B+'], [[x, y], e]),
     # lB+: 3-ins
     all_c('lB+', ['lB+'], left=[x], orders=[[x, y], [a, b, c]]),
+    all_c('lB+', ['lB+'], left=[b], orders=[[x, y], [a, x, c], [b]]),
+    all_c('B+', ['lB+'], right=[b], orders=[[x, y], [a, x, c], [b]]),
     # lB+: W interaction
     all_c('lB+', ['lB+', W], left=[x], orders=[[x, y], [z, w]]),
 
@@ -150,6 +153,8 @@ refinements = [
     ('rC+', ['C+'], [e, [x, y]]),
     # rC+: 3-ins
     all_c('rC+', ['rC+'], right=[y], orders=[[x, y], [a, b, c]]),
+    all_c('C+', ['rC+'], left=[c], orders=[[x, y], [a, b, y], [c]]),
+    all_c('rC+', ['rC+'], right=[c], orders=[[x, y], [a, b, y], [c]]),
     # rC+: W interaction
     all_c('rC+', ['rC+', W], right=[y], orders=[[x, y], [z, w]]),
 
@@ -161,6 +166,9 @@ refinements = [
     ('rA-', ['A-'], [e, [x, y]]),
     # rA-: 3-ins
     all_c('rA-', ['rA-'], right=[y], orders=[[x, y], [a, b, c]]),
+    all_c('A-', ['rA-'], left=[b, c], orders=[[x, y], [a, y], [b, c]]),
+    all_c('rA-', ['rA-'], right=[b, c], orders=[[x, y], [a, y], [b, c]]),
+    all_c('lrA-', ['rA-'], left=[b], right=[c], orders=[[x, y], [a, y], [b, c]]),
     # rA-: W interaction
     all_c('rA-', ['rA-', W], right=[y], orders=[[x, y], [z, w]]),
 
@@ -169,7 +177,22 @@ refinements = [
     # lrA-: Fallback
     rule('A-', ['lrA-']),
     # lrA-: 3-ins
+    all_c('A-', ['lrA-'], left=[x, y], orders=[[x, y], [a, b, c]]),
+    all_c('rA-', ['lrA-'], right=[x, y], orders=[[x, y], [a, b, c]]),
     all_c('lrA-', ['lrA-'], left=[x], right=[y], orders=[[x, y], [a, b, c]]),
+
+    all_c('A-', ['lrA-'], left=[b, c], orders=[[a, x, y], [b, c]]),
+    all_c('rA-', ['lrA-'], right=[b, c], orders=[[a, x, y], [b, c]]),
+    all_c('lrA-', ['lrA-'], left=[b], right=[c], orders=[[a, x, y], [b, c]]),
+
+    all_c('A-', ['lrA-'], left=[x, c], orders=[[x, y], [a, b, y], [x, c]]),
+    all_c('rA-', ['lrA-'], right=[x, c], orders=[[x, y], [a, b, y], [x, c]]),
+    all_c('lrA-', ['lrA-'], left=[x], right=[c], orders=[[x, y], [a, b, y], [x, c]]),
+
+    all_c('A-', ['lrA-'], left=[b, y], orders=[[x, y], [a, x, c], [b, y]]),
+    all_c('rA-', ['lrA-'], right=[b, y], orders=[[x, y], [a, x, c], [b, y]]),
+    all_c('lrA-', ['lrA-'], left=[b], right=[y], orders=[[x, y], [a, x, c], [b, y]]),
+
     # lrA-: W interaction
     all_c('lrA-', ['lrA-', W], left=[x], right=[y], orders=[[x, y], [z, w]]),
 
@@ -181,6 +204,18 @@ refinements = [
     ('lB-', ['B-'], [[x, y], e]),
     # lB-: 3-ins
     all_c('lB-', ['lB-'], left=[x], orders=[[x, y], [a, b, c]]),
+    all_c('rB-', ['lB-'], right=[x], orders=[[x, y], [a, b, c]]),
+
+    all_c('lB-', ['lB-'], left=[x, a], orders=[[x, y], [x, b, c], [a]]),
+    all_c('rB-', ['lB-'], right=[x, a], orders=[[x, y], [x, b, c], [a]]),
+    all_c('rlB-', ['lB-'], left=[x], right=[a], orders=[[x, y], [x, b, c], [a]]),
+    all_c('lrB-', ['lB-'], left=[a], right=[x], orders=[[x, y], [x, b, c], [a]]),  # TODO EMERGENT!!!!!!!!
+
+    all_c('lB-', ['lB-'], left=[c, x], orders=[[x, y], [a, b, x], [c]]),
+    all_c('rB-', ['lB-'], right=[c, x], orders=[[x, y], [a, b, x], [c]]),
+    all_c('rlB-', ['lB-'], left=[c], right=[x], orders=[[x, y], [a, b, x], [c]]),
+    all_c('lrB-', ['lB-'], left=[x], right=[c], orders=[[x, y], [a, b, x], [c]]),
+
     # lB-: W interaction
     all_c('lB-', ['lB-', W], left=[x], orders=[[x, y], [z, w]]),
 
@@ -192,6 +227,18 @@ refinements = [
     ('rB-', ['B-'], [e, [x, y]]),
     # rB-: 3-ins
     all_c('rB-', ['rB-'], right=[y], orders=[[x, y], [a, b, c]]),
+    all_c('lB-', ['rB-'], left=[y], orders=[[x, y], [a, b, c]]),
+
+    all_c('lB-', ['rB-'], left=[y, c], orders=[[x, y], [a, b, y], [c]]),
+    all_c('rB-', ['rB-'], right=[y, c], orders=[[x, y], [a, b, y], [c]]),
+    all_c('lrB-', ['rB-'], left=[y], right=[c], orders=[[x, y], [a, b, y], [c]]),
+    all_c('rlB-', ['rB-'], left=[c], right=[y], orders=[[x, y], [a, b, y], [c]]),
+
+    all_c('lB-', ['rB-'], left=[a, y], orders=[[x, y], [y, b, c], [a]]),
+    all_c('rB-', ['rB-'], right=[a, y], orders=[[x, y], [y, b, c], [a]]),
+    all_c('lrB-', ['rB-'], left=[a], right=[y], orders=[[x, y], [y, b, c], [a]]),
+    all_c('rlB-', ['rB-'], left=[y], right=[a], orders=[[x, y], [y, b, c], [a]]),
+
     # rB-: W interaction
     all_c('rB-', ['rB-', W], right=[y], orders=[[x, y], [z, w]]),
 
@@ -201,6 +248,24 @@ refinements = [
     rule('B-', ['lrB-']),
     # lrB-: 3-ins
     all_c('lrB-', ['lrB-'], left=[x], right=[y], orders=[[x, y], [a, b, c]]),
+    all_c('lB-', ['lrB-'], left=[x, y], orders=[[x, y], [a, b, c]]),
+    all_c('rB-', ['lrB-'], right=[x, y], orders=[[x, y], [a, b, c]]),
+
+    all_c('lrB-', ['lrB-'], left=[a], right=[y], orders=[[x, y], [x, b, c], [a]]),
+    all_c('lB-', ['lrB-'], left=[a, y], orders=[[x, y], [x, b, c], [a]]),
+    all_c('rB-', ['lrB-'], right=[a, y], orders=[[x, y], [x, b, c], [a]]),
+    all_c('rlB-', ['lrB-'], left=[y], right=[a], orders=[[x, y], [x, b, c], [a]]),
+
+    all_c('lrB-', ['lrB-'], left=[x], right=[c], orders=[[x, y], [a, b, y], [c]]),
+    all_c('lB-', ['lrB-'], left=[x, c], orders=[[x, y], [a, b, y], [c]]),
+    all_c('rB-', ['lrB-'], right=[x, c], orders=[[x, y], [a, b, y], [c]]),
+    all_c('rlB-', ['lrB-'], left=[c], right=[x], orders=[[x, y], [a, b, y], [c]]),
+
+    all_c('lrB-', ['lrB-'], left=[a], right=[c], orders=[[x, y], [x, b, y], [a], [c]]),
+    all_c('lB-', ['lrB-'], left=[a, c], orders=[[x, y], [x, b, y], [a], [c]]),
+    all_c('rB-', ['lrB-'], right=[a, c], orders=[[x, y], [x, b, y], [a], [c]]),
+    all_c('rlB-', ['lrB-'], left=[c], right=[a], orders=[[x, y], [x, b, y], [a], [c]]),
+
     # lrB-: W interaction
     all_c('lrB-', ['lrB-', W], left=[x], right=[y], orders=[[x, y], [z, w]]),
 
@@ -210,6 +275,19 @@ refinements = [
     rule('B-', ['rlB-']),
     # rlB-: 3-ins
     all_c('rlB-', ['rlB-'], left=[x], right=[y], orders=[[x, y], [a, b, c]]),
+    all_c('lB-', ['rlB-'], left=[x, y], orders=[[x, y], [a, b, c]]),
+    all_c('rB-', ['rlB-'], right=[x, y], orders=[[x, y], [a, b, c]]),
+
+    all_c('rlB-', ['rlB-'], left=[c], right=[y], orders=[[x, y], [a, b, x], [c]]),
+    all_c('lB-', ['rlB-'], left=[c, y], orders=[[x, y], [a, b, x], [c]]),
+    all_c('rB-', ['rlB-'], right=[c, y], orders=[[x, y], [a, b, x], [c]]),
+    all_c('lrB-', ['rlB-'], left=[y], right=[c], orders=[[x, y], [a, b, x], [c]]),
+
+    all_c('rlB-', ['rlB-'], left=[x], right=[a], orders=[[x, y], [y, b, c], [a]]),
+    all_c('lB-', ['rlB-'], left=[x, a], orders=[[x, y], [y, b, c], [a]]),
+    all_c('rB-', ['rlB-'], right=[x, a], orders=[[x, y], [y, b, c], [a]]),
+    all_c('lrB-', ['rlB-'], left=[a], right=[x], orders=[[x, y], [y, b, c], [a]]),
+
     # rlB-: W interaction
     all_c('rlB-', ['rlB-', W], left=[x], right=[y], orders=[[x, y], [z, w]]),
 
@@ -221,6 +299,20 @@ refinements = [
     ('lC-', ['C-'], [[x, y], e]),
     # lC-: 3-ins
     all_c('lC-', ['lC-'], left=[x], orders=[[x, y], [a, b, c]]),
+    all_c('C-', ['lC-'], right=[x], orders=[[x, y], [a, b, c]]),
+
+    all_c('lC-', ['lC-'], left=[a, x], orders=[[x, y], [x, b, c], [a, x]]),
+    all_c('C-', ['lC-'], right=[a, x], orders=[[x, y], [x, b, c], [a, x]]),
+    all_c('lrC-', ['lC-'], left=[a], right=[x], orders=[[x, y], [x, b, c], [a, x]]),
+
+    all_c('lC-', ['lC-'], left=[b, x], orders=[[x, y], [a, x, c], [x, b]]),
+    all_c('C-', ['lC-'], right=[b, x], orders=[[x, y], [a, x, c], [x, b]]),
+    all_c('lrC-', ['lC-'], left=[x], right=[b], orders=[[x, y], [a, x, c], [x, b]]),
+
+    all_c('lC-', ['lC-'], left=[a, b], orders=[[x, y], [x, c], [a, b]]),
+    all_c('C-', ['lC-'], right=[a, b], orders=[[x, y], [x, c], [a, b]]),
+    all_c('lrC-', ['lC-'], left=[a], right=[b], orders=[[x, y], [x, c], [a, b]]),
+
     # lC-: W interaction
     all_c('lC-', ['lC-', W], left=[x], orders=[[x, y], [z, w]]),
 
@@ -230,6 +322,21 @@ refinements = [
     rule('C-', ['lrC-']),
     # lrC-: 3-ins
     all_c('lrC-', ['lrC-'], left=[x], right=[y], orders=[[x, y], [a, b, c]]),
+    all_c('lC-', ['lrC-'], left=[x, y], orders=[[x, y], [a, b, c]]),
+    all_c('C-', ['lrC-'], right=[x, y], orders=[[x, y], [a, b, c]]),
+
+    all_c('lrC-', ['lrC-'], left=[a], right=[y], orders=[[x, y], [x, b, c], [a, y]]),
+    all_c('lC-', ['lrC-'], left=[a, y], orders=[[x, y], [x, b, c], [a, y]]),
+    all_c('C-', ['lrC-'], right=[a, y], orders=[[x, y], [x, b, c], [a, y]]),
+
+    all_c('lrC-', ['lrC-'], left=[x], right=[b], orders=[[x, y], [a, y, c], [x, b]]),
+    all_c('lC-', ['lrC-'], left=[x, b], orders=[[x, y], [a, y, c], [x, b]]),
+    all_c('C-', ['lrC-'], right=[x, b], orders=[[x, y], [a, y, c], [x, b]]),
+
+    all_c('lrC-', ['lrC-'], left=[a], right=[b], orders=[[x, y, c], [a, b]]),
+    all_c('lC-', ['lrC-'], left=[a, b], orders=[[x, y, c], [a, b]]),
+    all_c('C-', ['lrC-'], right=[a, b], orders=[[x, y, c], [a, b]]),
+
     # lrC-: W interaction
     all_c('lrC-', ['lrC-', W], left=[x], right=[y], orders=[[x, y], [z, w]]),
 
@@ -518,6 +625,7 @@ refinements = [
     # TODO Superceded
     # C-
 ]
+# Refined non-terminals
 # ======================
 
 g = lambda initial_symbol: Grammar([

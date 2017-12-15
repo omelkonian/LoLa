@@ -28,3 +28,4 @@ abaaacbbbaccbaccbc
 aababbacacbbacccbc
 aaabbbacacbbacccbc
 aaabbbacacacbbbccc
+aabbaaaccbbbcaaccababccbbcc
