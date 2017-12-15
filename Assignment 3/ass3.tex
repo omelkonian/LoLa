@@ -18,74 +18,7 @@
 \newcommand{\Ra}{\rightarrow}
 \newcommand{\La}{\leftarrow}
 
-\newcommand{\arr}[2]{#1 \rightarrow #2}
-\newcommand{\arrr}[2]{#2 \rightarrow #1}
-
-\newcommand{\arrow}[3]{#1:#2\rightarrow #3}
-\newcommand{\Arrow}[3]{#2\stackrel{#1}{\rightarrow} #3}
-
-\newcommand{\overa}[1]{\mathop{\triangleright} #1}
-\newcommand{\undera}[1]{\mathop{\triangleleft} #1}
-\newcommand{\overai}[1]{\mathop{\triangleright}^{-1} #1}
-\newcommand{\underai}[1]{\mathop{\triangleleft}^{-1} #1}
-
-\newcommand{\bovera}[1]{\mathop{\blacktriangleright} #1}
-\newcommand{\bundera}[1]{\mathop{\blacktriangleleft} #1}
-\newcommand{\boverai}[1]{\mathop{\blacktriangleright}^{-1} #1}
-\newcommand{\bunderai}[1]{\mathop{\blacktriangleleft}^{-1} #1}
-
-\newcommand{\gmal}{\mathop{\textbf{d}}}
-\newcommand{\gmar}{\mathop{\textbf{b}}}
-\newcommand{\gmcl}{\mathop{\textbf{q}}}
-\newcommand{\gmcr}{\mathop{\textbf{p}}}
-
-\newcommand{\Gmal}{\mathop{\textbf{\d{d}}}}
-\newcommand{\Gmar}{\mathop{\textbf{\d{b}}}}
-\newcommand{\Gmcl}{\mathop{\textbf{\.{q}}}}
-\newcommand{\Gmcr}{\mathop{\textbf{\.{p}}}}
-
-\newcommand{\cut}[1]{}
-
 \newcommand{\W}[1]{\textsf{#1}}
-
-\newcommand{\focus}[1]{\fbox{$#1$}}
-
-\newcommand{\nd}[2]{#1 \vdash #2}
-\newcommand{\nD}[2]{#1 \vdash \focus{#2}}
-\newcommand{\Nd}[2]{\focus{#1} \vdash #2}
-
-\newcommand{\ndO}[3]{#1 \stackrel{#3} \vdash  #2}
-\newcommand{\nDO}[3]{#1 \stackrel{#3} \vdash  \focus{#2}}
-\newcommand{\NdO}[3]{\focus{#1} \stackrel{#3} \vdash  #2}
-
-\newcommand{\ndU}[3]{#1 \underset{#3} \vdash  #2}
-\newcommand{\nDU}[3]{#1 \underset{#3} \vdash  \focus{#2}}
-\newcommand{\NdU}[3]{\focus{#1} \underset{#3} \vdash  #2}
-
-\newcommand{\seq}[2]{#1 \vdash #2}
-
-\newcommand{\otimesS}{\cdot\otimes\cdot}
-\newcommand{\slashS}{\cdot\slash\cdot}
-\newcommand{\bsS}{\cdot\bs\cdot}
-\newcommand{\oplusS}{\cdot\oplus\cdot}
-\newcommand{\oslashS}{\cdot\oslash\cdot}
-\newcommand{\obslashS}{\cdot\obslash\cdot}
-\newcommand{\Struct}[1]{\mathop{\cdot}#1\mathop{\cdot}}
-
-\newcommand{\comu}{\widetilde{\mu}}
-
-\newcommand{\Zip}[1]{\langle #1 \rangle}
-\newcommand{\cmdL}[2]{\langle #1 \upharpoonleft #2 \rangle}
-\newcommand{\cmdR}[2]{\langle #1 \upharpoonright #2 \rangle}
-
-\newcommand{\arroww}{\rule[-5pt]{0pt}{15pt}\rightarrow}
-
-\newcommand{\CPS}[1]{\lceil#1\rceil}
-
-\newcommand{\CPSlex}[1]{#1^{\ell}}
-
-\newcommand{\Coco}[1]{\widetilde{#1}}
-\newcommand{\lolli}{\multimap}
 
 \newcommand{\tsc}{\textsc}
 \newcommand{\ceil}[1]{\lceil #1 \rceil}
@@ -110,20 +43,20 @@
 \maketitle
 \section{LG: continuation semantics}
 \subsection{}
-\[\begin{array}{cc}
-\textsc{term} & \textsc{type}\\
+\[\begin{array}{ccc}
+\tsc{term} & \tsc{type} & \tsc{type}^\ell\\
 \hline
-\w{some} & (e^\bot \otimes e^\bot)^\bot \\
-\w{popular} & (e^{\bot^\bot} \otimes e^\bot)^\bot \\
-\w{saint} & e^\bot \\
-\w{arrived} & (e^\bot \otimes \bot^{\bot})^\bot \\
-\alpha & \bot^\bot \\
-z & e^\bot \\
-y & e^\bot \\
+\w{some} & (np^\bot \otimes n)^\bot & (e^\bot \otimes e^\bot)^\bot \\
+\w{popular} & (n^\bot \otimes n)^\bot & (e^{\bot^\bot} \otimes e^\bot)^\bot \\
+\w{saint} & n & e^\bot \\
+\w{arrived} & (np \otimes s^\bot)^\bot & (e \otimes t^\bot)^\bot \\
+\alpha & s^\bot & t^\bot \\
+z & np & e \\
+y & n & e^\bot \\
 \end{array}\]
 \subsection{}
 \[\begin{array}{ccc}
-\textsc{source type} & \textsc{constant} & \CPS{.}^l\\
+\textsc{source type} & \textsc{constant} & \ceil{.}^\ell\\
 \hline 
 n/n & \textsf{popular} & \lambda\langle c,y \rangle. (c\ (\lambda z.\ \wedge (y\ z)\ (\tsc{popular}\ z)))\\
 \end{array}\]
