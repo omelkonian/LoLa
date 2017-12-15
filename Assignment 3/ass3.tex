@@ -1,0 +1,180 @@
+\documentclass[]{article}
+\usepackage[a4paper]{geometry}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[usenames, dvipsnames]{color, xcolor}
+\definecolor{MyRed}{rgb}{0.8, 0.01, 0.04}
+\definecolor{MyGreen}{rgb}{0.0, 0.5, 0.0}
+\colorlet{green}{MyGreen}
+\colorlet{red}{MyRed}
+\usepackage{tikz-qtree}
+
+\usepackage{stmaryrd}
+\usepackage{proof}
+
+\newcommand{\LG}{\textbf{LG}}
+
+\newcommand{\bs}{\backslash}
+\newcommand{\Ra}{\rightarrow}
+
+\newcommand{\arr}[2]{#1 \longrightarrow #2}
+\newcommand{\arrr}[2]{#2 \longrightarrow #1}
+
+\newcommand{\arrow}[3]{#1:#2\longrightarrow #3}
+\newcommand{\Arrow}[3]{#2\stackrel{#1}{\longrightarrow} #3}
+
+\newcommand{\overa}[1]{\mathop{\triangleright} #1}
+\newcommand{\undera}[1]{\mathop{\triangleleft} #1}
+\newcommand{\overai}[1]{\mathop{\triangleright}^{-1} #1}
+\newcommand{\underai}[1]{\mathop{\triangleleft}^{-1} #1}
+
+\newcommand{\bovera}[1]{\mathop{\blacktriangleright} #1}
+\newcommand{\bundera}[1]{\mathop{\blacktriangleleft} #1}
+\newcommand{\boverai}[1]{\mathop{\blacktriangleright}^{-1} #1}
+\newcommand{\bunderai}[1]{\mathop{\blacktriangleleft}^{-1} #1}
+
+\newcommand{\gmal}{\mathop{\textbf{d}}}
+\newcommand{\gmar}{\mathop{\textbf{b}}}
+\newcommand{\gmcl}{\mathop{\textbf{q}}}
+\newcommand{\gmcr}{\mathop{\textbf{p}}}
+
+\newcommand{\Gmal}{\mathop{\textbf{\d{d}}}}
+\newcommand{\Gmar}{\mathop{\textbf{\d{b}}}}
+\newcommand{\Gmcl}{\mathop{\textbf{\.{q}}}}
+\newcommand{\Gmcr}{\mathop{\textbf{\.{p}}}}
+
+\newcommand{\cut}[1]{}
+
+\newcommand{\W}[1]{\textsf{#1}}
+
+\newcommand{\focus}[1]{\fbox{$#1$}}
+
+\newcommand{\nd}[2]{#1 \vdash #2}
+\newcommand{\nD}[2]{#1 \vdash \focus{#2}}
+\newcommand{\Nd}[2]{\focus{#1} \vdash #2}
+
+\newcommand{\ndO}[3]{#1 \stackrel{#3} \vdash  #2}
+\newcommand{\nDO}[3]{#1 \stackrel{#3} \vdash  \focus{#2}}
+\newcommand{\NdO}[3]{\focus{#1} \stackrel{#3} \vdash  #2}
+
+\newcommand{\ndU}[3]{#1 \underset{#3} \vdash  #2}
+\newcommand{\nDU}[3]{#1 \underset{#3} \vdash  \focus{#2}}
+\newcommand{\NdU}[3]{\focus{#1} \underset{#3} \vdash  #2}
+
+\newcommand{\seq}[2]{#1 \vdash #2}
+
+\newcommand{\otimesS}{\cdot\otimes\cdot}
+\newcommand{\slashS}{\cdot\slash\cdot}
+\newcommand{\bsS}{\cdot\bs\cdot}
+\newcommand{\oplusS}{\cdot\oplus\cdot}
+\newcommand{\oslashS}{\cdot\oslash\cdot}
+\newcommand{\obslashS}{\cdot\obslash\cdot}
+\newcommand{\Struct}[1]{\mathop{\cdot}#1\mathop{\cdot}}
+
+\newcommand{\comu}{\widetilde{\mu}}
+
+\newcommand{\Zip}[1]{\langle #1 \rangle}
+\newcommand{\cmdL}[2]{\langle #1 \upharpoonleft #2 \rangle}
+\newcommand{\cmdR}[2]{\langle #1 \upharpoonright #2 \rangle}
+
+\newcommand{\arroww}{\rule[-5pt]{0pt}{15pt}\longrightarrow}
+
+\newcommand{\CPS}[1]{\lceil#1\rceil}
+
+\newcommand{\CPSlex}[1]{#1^{\ell}}
+
+\newcommand{\Coco}[1]{\widetilde{#1}}
+\newcommand{\lolli}{\multimap}
+
+
+\title{\textbf{Logic and Language: Exercise (Week 5)}}
+\author{Orestis Melkonian [6176208], Konstantinos Kogkalidis [6230067]}
+\date{}
+\begin{document}
+\maketitle
+\section{}
+\section{Pregroups}
+\subsection{}
+\begin{enumerate}
+\item[(4)]
+Forward direction:
+\[
+\infer[\longrightarrow]{ 1^l \longrightarrow 1}{\infer[(1)]{1^l \longrightarrow 1^l1}{}
+&\infer[(1)]{1^l1 \longrightarrow 1}{}}
+\]
+Backward direction:
+\[
+\infer[(1)]{1^l}{
+	\infer[(2)]{1 \longrightarrow 1^l1}{}
+}
+\]
+\item[(5)]
+Forward direction:
+\[
+\infer[\rightarrow]{A^{rl} \rightarrow A}{
+\infer[\rightarrow]{A^{rl} \rightarrow 1A} {
+	\infer[(1)]{A^{rl} \rightarrow (A^{rl}A^r)A}{
+		\infer[\rightarrow]{A^{rl} \rightarrow A^{rl}(A^rA)}{
+			\infer[(1)]{A^{rl} \rightarrow A^{rl}1}{}
+			&
+			\infer[(2)]{1 \rightarrow A^rA}{}
+		}	
+	}
+	&
+	\infer[(2)]{A^{rl}A^r \rightarrow 1}{}
+}
+&\infer[(1)]{1A \rightarrow A}{}}
+\]
+Backward direction:
+\[
+\infer[\rightarrow]{A \rightarrow A^{rl}}{
+	\infer[\rightarrow]{A \rightarrow 1A^{rl}}{
+		\infer[(1)]{A \rightarrow (AA^r)A^{rl}}{
+			\infer[\rightarrow]{A \rightarrow A(A^rA^{rl})}{
+				\infer[(1)]{A \rightarrow A1}{}
+				&
+				\infer[(2)]{1 \rightarrow A^rA^{rl}}{}
+			}
+		}
+		&
+		\infer[(3)]{AA^r \rightarrow 1}{}
+	}
+	&
+	\infer[(1)]{1A^{rl} \rightarrow A^{rl}}{}
+}
+\]
+\item[(6)]
+Forward direction:
+\[
+\infer[(5)]{(AB)^l \rightarrow B^lA^l}{
+	\infer[\rightarrow]{(AB)^l \rightarrow ((B^lA^l)^r)^l}{
+		\infer[todo]{(AB)^l \rightarrow ((B^lA^l)^r1)^l}{
+			\infer[\rightarrow]{(AB)^l \rightarrow ((B^lA^l)^r(B^lB))^l}{
+				\infer[\rightarrow]{(AB)^l \rightarrow ((B^lA^l)^r(B^l(1B)))^l}{
+					\infer[(1)]{(AB)^l \rightarrow ((B^lA^l)^r(B^l((A^lA)B)))}{
+						\infer[(1)]{(AB)^l \rightarrow ((B^lA^l)^r(B^l(A^l(AB))))}{
+							\infer[(1)]{(AB)^l \rightarrow ((B^lA^l)^r((B^lA^l)(AB)))^l}{
+								\infer[\rightarrow]{(AB)^l \rightarrow (((B^lA^l)^r(B^lA^l))(AB))^l}{\
+									\infer[\rightarrow]{(AB)^l \rightarrow (1(AB))^l}{}
+									&
+									\infer[(3)]{1 \rightarrow (B^lA^l)^r(B^lA^l)}{}
+								}
+							}
+						}
+					}
+					&
+					\infer[(2)]{A^lA \rightarrow 1}{}
+				}
+				&
+				\infer[(1)]{1B \rightarrow B}{}
+			}
+			&
+			\infer[(2)]{B^lB \rightarrow 1}{}
+		}
+		&
+		\infer[(1)]{(B^lA^l)^r1 \rightarrow (B^lA^l)^r}{}
+	}
+}
+\]
+\end{enumerate}
+\end{document}
