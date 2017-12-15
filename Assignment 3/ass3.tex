@@ -87,13 +87,130 @@
 \newcommand{\Coco}[1]{\widetilde{#1}}
 \newcommand{\lolli}{\multimap}
 
+\newcommand{\tsc}{\textsc}
+\newcommand{\ceil}[1]{\lceil #1 \rceil}
+\newcommand{\w}[1]{\ceil{\mathbf{#1}}}
+\newcommand{\wl}[1]{\w{#1}^\ell}
+\newcommand{\la}{\lambda}
+\newcommand{\pair}[2]{\langle #1, #2 \rangle}
+\newcommand{\lap}[2]{\la \pair{#1}{#2}}
+\newcommand{\conj}[2]{\land \ (#1) \ (#2)}
+\newcommand{\tobeta}{\to_\beta}
+\newcommand{\tobetas}{\to_{\beta}^{*}}
+\newsavebox\MBox
+\newcommand\Cline[2]{{\sbox\MBox{$#2$}%
+  \rlap{\usebox\MBox}\color{#1}\rule[-1\dp\MBox]{\wd\MBox}{0.5pt}}}
+\newcommand\red[1]{\Cline{red}{#1}}
+\newcommand\green[1]{\Cline{green}{#1}}
 
 \title{\textbf{Logic and Language: Exercise (Week 5)}}
 \author{Orestis Melkonian [6176208], Konstantinos Kogkalidis [6230067]}
 \date{}
 \begin{document}
 \maketitle
-\section{}
+\section{LG: continuation semantics}
+\subsection{}
+\[\begin{array}{cc}
+\textsc{term} & \textsc{type}\\
+\hline
+\w{some} & (e^\bot \otimes e^\bot)^\bot \\
+\w{popular} & (e^{\bot^\bot} \otimes e^\bot)^\bot \\
+\w{saint} & e^\bot \\
+\w{arrived} & (e^\bot \otimes \bot^{\bot})^\bot \\
+\alpha & \bot^\bot \\
+z & e^\bot \\
+y & e^\bot \\
+\end{array}\]
+\subsection{}
+\[\begin{array}{ccc}
+\textsc{source type} & \textsc{constant} & \CPS{.}^l\\
+\hline 
+n/n & \textsf{popular} & \lambda\langle c,y \rangle. (c\ (\lambda z.\ \wedge (y\ z)\ (\tsc{popular}\ z)))\\
+\end{array}\]
+\subsection{}
+\begin{enumerate}
+\item We compute the interpretation below:
+\[ \ceil{\ddag} = \la a_0.(
+	\w{arrived} \ \pair
+		{\la \beta_0.(
+			\w{some} \ \pair
+				{\beta_0}
+				{\la \gamma_0.(
+					\w{popular} \ \pair
+						{\gamma_0}
+						{\la a_1.(\w{saint} \ a_1)}
+				)}
+		)}
+		{a_0}
+	)
+\]
+\item The adjucted $\cdot^\ell$ translations are the following:
+\begin{align*}
+\wl{some} &= \lap{x}{k}.(\exists\la z.(\conj{k \ \la\theta.(\theta \ z)}{x \ z})) \\
+\wl{popular} &= \lap{c}{k}.(c \ (\la z.(\conj{\tsc{POPULAR} \ z}{k \ \la\theta.(\theta \ z)}))) \\
+\wl{saint} &= \la c.(c \ \tsc{SAINT}) \\
+\wl{arrived} &= \lap{k}{c}.(k \ \la z.(c \ (\tsc{ARRIVED} \ z))) \\
+\end{align*}
+We can now corroborate the $\alpha$-equivalence of the two $\cdot^\ell$ translations:
+\begin{align*}
+\ceil{\ddag}^\ell
+&= \la a_0.(
+	\red{\lap{k}{c}.(k \ \la z.(c \ (\tsc{ARRIVED} \ z)))} \\&\quad\quad \pair
+		{\la \beta_0.(
+			 \lap{x}{k}.(\exists\la z.(\conj{k \ \la\theta.(\theta \ z)}{x \ z})) \ \pair
+				{\beta_0}
+				{\la \gamma_0.( \\&\quad\quad\quad
+					\lap{c}{k}.(c \ (\la z.(\conj{\tsc{POP} \ z}{k \ \la\theta.(\theta \ z)}))) \ \pair
+						{\gamma_0}
+						{\la a_1.(
+							\la c.(c \ \tsc{SAINT}) \ a_1
+						)}
+				)}
+		)}
+		{a_0}
+	)
+\\
+&\tobetas \la a_0.(
+	\red{\lap{x}{k}.(\exists\la z.(\conj{k \ \la\theta.(\theta \ z)}{x \ z}))} \ \pair
+				{\la z.(a_0 \ (\tsc{ARRIVED} \ z))}
+				{\la \gamma_0.( \\&\quad\quad\quad
+					\lap{c}{k}.(c \ (\la z.(\conj{\tsc{POPULAR} \ z}{k \ \la\theta.(\theta \ z)}))) \ \pair
+						{\gamma_0}
+						{\la a_1.(
+							\la c.(c \ \tsc{SAINT}) \ a_1
+						)}
+				)}
+)
+\\
+&\tobetas \la a_0.(\exists\la z.(\conj{
+	\red{\lap{c}{k}.(c \ (\la z.(\conj{\tsc{POPULAR} \ z}{k \ \la\theta.(\theta \ z)})))}\\&\quad\quad \pair
+		{\la\theta.(\theta \ z)}
+		{\la a_1.(\la c.(c \ \tsc{SAINT}) \ a_1)}
+	}
+	{a_0 \ (\tsc{ARRIVED} \ z)})
+\\
+&\tobetas \la a_0.(\exists\la z.(\conj
+	{
+	\red{\la\theta.(\theta \ z)} \ (\la z.(\conj{\tsc{POPULAR} \ z}{\red{\la c.(c \ \tsc{SAINT})} \ (\la\theta.(\theta \ z))}))
+	}
+	{a_0 \ (\tsc{ARRIVED} \ z)})
+\\
+&\tobetas \la \textcolor{red}{a_0}.(\exists\la z.(\conj
+	{\conj{\tsc{POPULAR} \ z}{\tsc{SAINT} \ z}}
+	{\textcolor{red}{a_0} \ (\tsc{ARRIVED} \ z)})
+\\
+&\to_\alpha \la c.(\exists\la \textcolor{red}{z}.(\conj
+	{\conj{\tsc{POPULAR} \ \textcolor{red}{z}}{\tsc{SAINT} \ \textcolor{red}{z}}}
+	{c \ (\tsc{ARRIVED} \ \textcolor{red}{z})})
+\\
+&\to_\alpha \la c.(\exists\la x.(\conj
+	{\conj{\tsc{POPULAR} \ x}{\tsc{SAINT} \ x}}
+	{c \ (\tsc{ARRIVED} \ x)})
+\\
+&= \ceil{\dag}^\ell
+\end{align*}
+\end{enumerate}
+
 \section{Pregroups}
 \subsection{}
 \begin{enumerate}
