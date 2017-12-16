@@ -89,6 +89,10 @@ def all_c(lhs, rhs, left=[], right=[], orders=[], **symmetries):
             if all(map(lambda l: l in order[0], left))
             if all(map(lambda r: r in order[1], right))]
 
+# def all_cc(lhs, rhs, left=[], right=[], orders=[], **symmetries):
+#     return [(lhs, rhs, order) for order in all_ordered(*orders, **symmetries)
+#             if all(map(lambda l: l in order[0], left))
+#             if all(map(lambda r: r in order[1], right))]
 
 def all_nc(lhs, rhs, left=[], right=[], orders=[], **symmetries):
     allOrd = all_ordered(*orders, **symmetries)
@@ -628,15 +632,16 @@ refinements = [
 # Refined non-terminals
 # ======================
 
-g = lambda initial_symbol: Grammar([
+g = lambda initial_symbol: Grammar(
+[
     # TOP
     (S, [W], [[x, y]]),
 
     # ======================
     # Debugging
     # ======================
-    [('_' + k, [k], [[x, y]]) for k in all_states + ['lA+', 'lB+', 'rC+', 'rA-', 'lrB-', 'lC-']],
-    [('$_' + k, [k], [[x, '$', y]]) for k in all_states + ['lA+', 'lB+', 'rC+', 'rA-', 'lrB-', 'rB-', 'lC-']],
+    # [('_' + k, [k], [[x, y]]) for k in all_states + ['lA+', 'lB+', 'rC+', 'rA-', 'lrB-', 'lC-']],
+    # [('$_' + k, [k], [[x, '$', y]]) for k in all_states + ['lA+', 'lB+', 'rC+', 'rA-', 'lrB-', 'rB-', 'lC-']],
 
     # ======================
     # Meta-rules
@@ -685,6 +690,17 @@ g = lambda initial_symbol: Grammar([
     all_nc('B-', ['B-'], left=[x, y], orders=[[x, y], [a, b, c]]),
     all_c('rB-', ['B-'], right=[x, y], orders=[[x, y], [a, b, c]]),
     all_nc('B-', ['B-'], right=[x, y], orders=[[x, y], [a, b, c]]),
+
+    all_c('lB-', ['B-'], left=[x, y, c], orders=[[x, y], [a, b, x], [c]]),
+    all_c('rB-', ['B-'], right=[x, y, c], orders=[[x, y], [a, b, x], [c]]),
+    all_c('lrB-', ['B-'], left=[x, y], right=[c], orders=[[x, y], [a, b, x], [c]]),
+    all_c('rlB-', ['B-'], left=[c], right=[x, y], orders=[[x, y], [a, b, x], [c]]),
+
+    all_c('lB-', ['B-'], left=[a, x, y], orders=[[x, y], [y, b, c], [a]]),
+    all_c('rB-', ['B-'], right=[a, x, y], orders=[[x, y], [y, b, c], [a]]),
+    all_c('lrB-', ['B-'], left=[a], right=[x, y], orders=[[x, y], [y, b, c], [a]]),
+    all_c('rlB-', ['B-'], left=[x, y], right=[a], orders=[[x, y], [y, b, c], [a]]),
+
     # C-
     all_c('lrC-', ['C-'], left=[a], right=[b], orders=[[x, y, c], [a, b]]),
     all_nc('C-', ['C-'], left=[a], right=[b], orders=[[x, y, c], [a, b]]),
