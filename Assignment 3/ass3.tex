@@ -24,6 +24,7 @@
 
 \newcommand{\la}{\lambda}
 \newcommand{\pair}[2]{\langle #1, #2 \rangle}
+\newcommand{\gpair}[2]{\textcolor{green}{\langle} #1, #2 \textcolor{green}{\rangle}}
 \newcommand{\lap}[2]{\la \pair{#1}{#2}}
 \newcommand{\conj}[2]{\land \ (#1) \ (#2)}
 \newcommand{\tobeta}{\to_\beta}
@@ -129,7 +130,7 @@ We can now corroborate the $\alpha$-equivalence of the two $\cdot^\ell$ translat
 \begin{align*}
 \ceil{\ddag}^\ell
 &= \la a_0.(
-	\red{\lap{k}{c}.(k \ \la z.(c \ (\tsc{ARRIVED} \ z)))} \\&\quad\quad \pair
+	\red{\lap{k}{c}.(k \ \la z.(c \ (\tsc{ARRIVED} \ z)))} \\&\quad\quad \gpair
 		{\la \beta_0.(
 			 \lap{x}{k}.(\exists\la z.(\conj{k \ \la\theta.(\theta \ z)}{x \ z})) \ \pair
 				{\beta_0}
@@ -145,7 +146,7 @@ We can now corroborate the $\alpha$-equivalence of the two $\cdot^\ell$ translat
 	)
 \\
 &\tobetas \la a_0.(
-	\red{\lap{x}{k}.(\exists\la z.(\conj{k \ \la\theta.(\theta \ z)}{x \ z}))} \ \pair
+	\red{\lap{x}{k}.(\exists\la z.(\conj{k \ \la\theta.(\theta \ z)}{x \ z}))} \ \gpair
 				{\la z.(a_0 \ (\tsc{ARRIVED} \ z))}
 				{\la \gamma_0.( \\&\quad\quad\quad
 					\lap{c}{k}.(c \ (\la z.(\conj{\tsc{POPULAR} \ z}{k \ \la\theta.(\theta \ z)}))) \ \pair
@@ -157,7 +158,7 @@ We can now corroborate the $\alpha$-equivalence of the two $\cdot^\ell$ translat
 )
 \\
 &\tobetas \la a_0.(\exists\la z.(\conj{
-	\red{\lap{c}{k}.(c \ (\la z.(\conj{\tsc{POPULAR} \ z}{k \ \la\theta.(\theta \ z)})))}\\&\quad\quad\quad \pair
+	\red{\lap{c}{k}.(c \ (\la z.(\conj{\tsc{POPULAR} \ z}{k \ \la\theta.(\theta \ z)})))}\\&\quad\quad\quad \gpair
 		{\la\theta.(\theta \ z)}
 		{\la a_1.(\la c.(c \ \tsc{SAINT}) \ a_1)}
 	}
@@ -165,7 +166,7 @@ We can now corroborate the $\alpha$-equivalence of the two $\cdot^\ell$ translat
 \\
 &\tobetas \la a_0.(\exists\la z.(\conj
 	{
-	\red{\la\theta.(\theta \ z)} \ (\la z.(\conj{\tsc{POPULAR} \ z}{\red{\la c.(c \ \tsc{SAINT})} \ (\la\theta.(\theta \ z))}))
+	\red{\la\theta.(\theta \ z)} \ \textcolor{green}{(}\la z.(\conj{\tsc{POPULAR} \ z}{\red{\la c.(c \ \tsc{SAINT})} \ \green{(\la\theta.(\theta \ z))}})\textcolor{green}{)}
 	}
 	{a_0 \ (\tsc{ARRIVED} \ z)})
 \\
