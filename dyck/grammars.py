@@ -80,7 +80,7 @@ def all_ordered(*orders, **symmetries):
     return post_process(pre_process(orders), **symmetries)
 
 
-def all_ordered_rules(lhs, rhs, *orders, **symmetries):
+def all_o(lhs, rhs, *orders, **symmetries):
     return [(lhs, rhs, order) for order in all_ordered(*orders, **symmetries)]
 
 
@@ -359,7 +359,7 @@ refinements = [
     all_c('rlB-', ['lA+', 'rC+'], left=[w], right=[x], orders=[[x, y], [z, w], [x, w]]),
     all_nc('B-', ['lA+', 'rC+'], left=[x], right=[w], orders=[[x, y], [z, w], [x, w]]),  # TODO spurious
     # rA-
-    all_ordered_rules(W, ['lA+', 'rA-'], [x, y], [z, w], [x, w]),
+    all_o(W, ['lA+', 'rA-'], [x, y], [z, w], [x, w]),
     # lrA-
     # lB-
     # rB-
@@ -379,7 +379,7 @@ refinements = [
     all_c('rlB-', ['lA+', 'C+'], left=[z, w], right=[x], orders=[[x, y], [z, w]]),
     all_nc('B-', ['lA+', 'C+'], left=[x], right=[z, w], orders=[[x, y], [z, w]]),  # TODO spurious
     # A-
-    all_ordered_rules(W, ['lA+', 'A-'], [x, y], [z, w], [x, z]),
+    all_o(W, ['lA+', 'A-'], [x, y], [z, w], [x, z]),
     # B-
     # C-
     # ==================
@@ -395,7 +395,7 @@ refinements = [
     # lB-
     # rB-
     # lrB-
-    all_ordered_rules(W, ['lB+', 'lrB-'], [x, y], [z, x, w]),
+    all_o(W, ['lB+', 'lrB-'], [x, y], [z, x, w]),
     # rlB-
     # lC-
     # lrC-
@@ -422,10 +422,10 @@ refinements = [
     # lrB-
     # rlB-
     # lC-
-    all_ordered_rules(W, ['rC+', 'lC-'], [x, y], [z, w], [z, y]),
+    all_o(W, ['rC+', 'lC-'], [x, y], [z, w], [z, y]),
     # lrC-
     # TODO Superceded
-    # all_ordered_rules(W, ['rC+', 'lrC-'], [x, y], [z, w], [z, y]),
+    # all_o(W, ['rC+', 'lrC-'], [x, y], [z, w], [z, y]),
     # A+
     all_c('lB-', ['rC+', 'A+'], left=[z, w, y], orders=[[x, y], [z, w]]),
     all_c('rB-', ['rC+', 'A+'], right=[z, w, y], orders=[[x, y], [z, w]]),
@@ -440,7 +440,7 @@ refinements = [
     # A-
     # B-
     # C-
-    all_ordered_rules(W, ['rC+', 'C-'], [x, y], [z, w, y]),
+    all_o(W, ['rC+', 'C-'], [x, y], [z, w, y]),
     # ==================
     # rA-
     # ==================
@@ -465,7 +465,7 @@ refinements = [
     all_c('lB+', ['rA-', 'lrC-'], left=[w], orders=[[x, y], [z, w], [z, y]]),
     all_nc('B+', ['rA-', 'lrC-'], left=[w], orders=[[x, y], [z, w], [z, y]]),
     # A+
-    all_ordered_rules(W, ['rA-', 'A+'], [x, y], [z, w], [z, w, y]),
+    all_o(W, ['rA-', 'A+'], [x, y], [z, w], [z, w, y]),
     # B+
     # C+
     # A-
@@ -505,7 +505,7 @@ refinements = [
     all_nc('B+', ['lrA-', 'lC-'], left=[x], orders=[[x, y], [z, w], [z, x]]),
     # A+
     # TODO Superceded
-    # all_ordered_rules(W, ['lrA-', 'A+'], [x, y], [z, w], [z, w, y]),
+    # all_o(W, ['lrA-', 'A+'], [x, y], [z, w], [z, w, y]),
     # B+
     # C+
     # A-
@@ -572,7 +572,7 @@ refinements = [
     all_nc('A+', ['lrB-', 'lrC-'], left=[z], orders=[[x, w, y], [z, w]]),
     # A+
     # B+
-    all_ordered_rules(W, ['lrB-', 'B+'], [x, z, w, y]),
+    all_o(W, ['lrB-', 'B+'], [x, z, w, y]),
     # C+
     # A-
     all_c('rC+', ['lrB-', 'A-'], right=[y], orders=[[x, y], [x, z, w]]),
@@ -607,7 +607,7 @@ refinements = [
     # lrC-
     # A+
     # C+
-    all_ordered_rules(W, ['lC-', 'C+'], [x, y], [x, z, w]),
+    all_o(W, ['lC-', 'C+'], [x, y], [x, z, w]),
     # A-
     all_c('lB+', ['lC-', 'A-'], left=[x], orders=[[x, y], [x, z, w]]),
     all_nc('B+', ['lC-', 'A-'], left=[x], orders=[[x, y], [x, z, w]]),
@@ -648,7 +648,7 @@ g = lambda initial_symbol: Grammar(
     # ======================
 
     # W: Concatenation
-    all_ordered_rules(W, [W, W], [x, y], [z, w], x=z, y=w),
+    all_o(W, [W, W], [x, y], [z, w], x=z, y=w),
 
     # A+: Base
     ('A+', e, [e, [a]]),
@@ -662,7 +662,7 @@ g = lambda initial_symbol: Grammar(
     # ======================
 
     # ALL 3-ins
-    all_ordered_rules(W, [W], [x, y], [a, b, c]),
+    all_o(W, [W], [x, y], [a, b, c]),
     # A+
     all_c('lA+', ['A+'], left=[a], orders=[[x, y, b, c], [a]]),
     all_nc('A+', ['A+'], left=[a], orders=[[x, y, b, c], [a]]),
@@ -714,18 +714,30 @@ g = lambda initial_symbol: Grammar(
     # ======================
 
     # A+
-    all_ordered_rules('C-', ['A+', 'B+'], [x, y, z, w]),
-    all_ordered_rules('B-', ['A+', 'C+'], [x, y], [z, w]),
-    all_ordered_rules(W, ['A+', 'A-'], [x, y, z, w]),
+    all_o('C-', ['A+', 'B+'], [x, y, z, w]),
+    ('lrC-', ['A+', 'B+'], [[x, y], [z, w]]),
+
+    all_o('B-', ['A+', 'C+'], [x, y], [z, w]),
+    ('lrB-', ['A+', 'C+'], [[x, y], [z, w]]),
+    ('rlB-', ['A+', 'C+'], [[z, w], [x, y]]),
+
+    all_o(W, ['A+', 'A-'], [x, y, z, w]),
+
     # B+
-    all_ordered_rules('A-', ['B+', 'C+'], [x, y, z, w]),
+    all_o('A-', ['B+', 'C+'], [x, y, z, w]),
+    ('lrA-', ['B+', 'C+'], [[x, y], [z, w]]),
+
     # C+
     # A-
     # B-
-    all_ordered_rules('C+', ['B-', 'A-'], [x, y, z, w]),
+    all_o('C+', ['B-', 'A-'], [x, y, z, w]),
+
     # C-
-    all_ordered_rules(W, ['C-', 'C+'], [x, y, z, w]),
-    all_ordered_rules('B+', ['C-', 'A-'], [x, y, z, w]),
-    all_ordered_rules('A+', ['C-', 'B-'], [x, y, z, w]),
+    all_o(W, ['C-', 'C+'], [x, y, z, w]),
+
+    all_o('B+', ['C-', 'A-'], [x, y, z, w]),
+
+    all_o('A+', ['C-', 'B-'], [x, y, z, w]),
+
 ] + refinements, topdown=True, filtered=True, initial_symbol=initial_symbol)
 
