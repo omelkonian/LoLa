@@ -49,16 +49,43 @@
 \maketitle
 \section{LG: continuation semantics}
 \subsection{}
-\[\begin{array}{ccc}
-\tsc{term} & \tsc{type} & \tsc{type}^\ell\\
+For each term, we compute the ILL type by first observing the polarity of the sequent and then using the table to interpret complex types.
+\begin{align*}
+& \w{some} \\
+=& \ceil{np \otimes n}^\bot \note{Negative Hypothesis} \\
+=& (\ceil{np}^\bot \otimes \ceil{n})^\bot \note{ $\ceil{A \otimes B}$ with A and B positive} \\
+\\
+& \w{popular} \\
+=& \ceil{n \otimes n}^\bot \note{Negative Hypothesis}\\
+=& (\ceil{n}^\bot \otimes \ceil{n})^\bot \ \note{ $\ceil{A \otimes B}$ with A and B positive}\\
+\\
+& \w{saint} \\
+=& \ceil{n} \note{Positive Hypothesis}\\
+\\
+& \w{arrived} \\
+=& \ceil{np \otimes s}^\bot \note{Negative Hypothesis} \\
+=& (\ceil{np} \otimes \ceil{s}^\bot)^\bot \note{$\ceil{A \otimes B}$ with A positive and B negative}\\
+\\
+& \alpha \\
+=& \ceil{s}^\bot \note{Negative Hypohesis} \\
+\\
+& z \\
+=& \ceil{np} \note{Positive Hypothesis}\\
+\\
+& y \\
+=& \ceil{n} \note{Positive Hypothesis}\\
+\end{align*}
+The ILL types then are:
+\[\begin{array}{cc}
+\tsc{term} & \tsc{type}\\
 \hline
-\w{some} & (np^\bot \otimes n)^\bot & (e^\bot \otimes e^\bot)^\bot \\
-\w{popular} & (n^\bot \otimes n)^\bot & (e^{\bot^\bot} \otimes e^\bot)^\bot \\
-\w{saint} & n & e^\bot \\
-\w{arrived} & (np \otimes s^\bot)^\bot & (e \otimes t^\bot)^\bot \\
-\alpha & s^\bot & t^\bot \\
-z & np & e \\
-y & n & e^\bot \\
+\w{some} & (\ceil{np}^\bot \otimes \ceil{n})^\bot \\
+\w{popular} & (\ceil{n}^\bot \otimes \ceil{n})^\bot \\
+\w{saint} & \ceil{n} \\
+\w{arrived} &  (\ceil{np} \otimes \ceil{s}^\bot)^\bot \\
+\alpha & \ceil{s}^\bot \\
+z & \ceil{np} \\
+y & \ceil{n} \\
 \end{array}\]
 \subsection{}
 \[\begin{array}{ccc}
