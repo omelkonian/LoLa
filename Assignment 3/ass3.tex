@@ -7,23 +7,20 @@
 \definecolor{MyGreen}{rgb}{0.0, 0.5, 0.0}
 \colorlet{green}{MyGreen}
 \colorlet{red}{MyRed}
-\usepackage{tikz-qtree}
 
 \usepackage{stmaryrd}
 \usepackage{proof}
-
-\newcommand{\LG}{\textbf{LG}}
 
 \newcommand{\bs}{\backslash}
 \newcommand{\Ra}{\rightarrow}
 \newcommand{\La}{\leftarrow}
 
 \newcommand{\W}[1]{\textsf{#1}}
-
 \newcommand{\tsc}{\textsc}
 \newcommand{\ceil}[1]{\lceil #1 \rceil}
 \newcommand{\w}[1]{\ceil{\mathbf{#1}}}
 \newcommand{\wl}[1]{\w{#1}^\ell}
+
 \newcommand{\la}{\lambda}
 \newcommand{\pair}[2]{\langle #1, #2 \rangle}
 \newcommand{\lap}[2]{\la \pair{#1}{#2}}
@@ -35,6 +32,15 @@
   \rlap{\usebox\MBox}\color{#1}\rule[-1\dp\MBox]{\wd\MBox}{0.5pt}}}
 \newcommand\red[1]{\Cline{red}{#1}}
 \newcommand\green[1]{\Cline{green}{#1}}
+
+\newcommand{\note}[1]{\quad\quad\{\text{\textit{#1}}\}}
+\usepackage{tikz}
+\usetikzlibrary{calc,shapes,arrows,positioning}
+
+\newcommand{\tikzmark}[1]{\tikz[overlay,remember picture] \node (#1) {};}
+\tikzset{
+	string/.style = {-,thick,shorten >=3pt,shorten <=3pt,transform canvas={yshift=-.5mm,xshift=.5mm}}
+}
 
 \title{\textbf{Logic and Language: Exercise (Week 5)}}
 \author{Orestis Melkonian [6176208], Konstantinos Kogkalidis [6230067]}
@@ -116,7 +122,7 @@ We can now corroborate the $\alpha$-equivalence of the two $\cdot^\ell$ translat
 )
 \\
 &\tobetas \la a_0.(\exists\la z.(\conj{
-	\red{\lap{c}{k}.(c \ (\la z.(\conj{\tsc{POPULAR} \ z}{k \ \la\theta.(\theta \ z)})))}\\&\quad\quad \pair
+	\red{\lap{c}{k}.(c \ (\la z.(\conj{\tsc{POPULAR} \ z}{k \ \la\theta.(\theta \ z)})))}\\&\quad\quad\quad \pair
 		{\la\theta.(\theta \ z)}
 		{\la a_1.(\la c.(c \ \tsc{SAINT}) \ a_1)}
 	}
@@ -245,4 +251,27 @@ We can now corroborate the $\alpha$-equivalence of the two $\cdot^\ell$ translat
 }
 \]
 \end{enumerate}
+
+\subsection{}
+We first calculate the pregroup translation of the given sequent:
+\begin{align*}
+& \overline{(p/((q/q)/r))/r} \\
+=& \overline{(p/((q/q)/r))} \ r^\ell \\
+=& p \ \overline{((q/q)/r)}^\ell \ r^\ell \\
+=& p \ (\overline{(q/q)} \ r^\ell)^\ell \ r^\ell \\
+=& p \ ((q \ q^\ell) \ r^\ell)^\ell \ r^\ell \\
+=& p \ (q \ (q^\ell \ r^\ell))^\ell \ r^\ell \note{rule (1) from 2.1}& \\
+=& p \ (q^\ell \ r^\ell)^\ell \ q^\ell \ r^\ell \ \note{rule (6) from 2.1} \\
+=& p \ r^{\ell^\ell} \ q^{\ell^\ell} \ q^\ell \ r^\ell \ \ \note{rule (6) from 2.1} \\
+\end{align*}
+Finally, we prove the sequent by drawing a string diagram:
+\begin{equation*}
+ \tikzmark{p}p \ \tikzmark{r}r^{\ell^\ell} \ \tikzmark{q}q^{\ell^\ell} \ \tikzmark{q'}q^\ell \ \tikzmark{r'}r^\ell
+ \begin{tikzpicture}[overlay,remember picture]
+    \draw[string] (q.center) to [bend right=90] (q'.center);
+    \draw[string] (r.center) to [bend right=60] (r'.center);
+	\draw[string] (p.center) to +(0, -.8cm);
+  \end{tikzpicture}
+\end{equation*}
+
 \end{document}
