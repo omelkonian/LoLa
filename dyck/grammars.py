@@ -82,8 +82,9 @@ g = lambda _: Grammar(
     # base
     [(v, [], [list(k[0]), list(k[1])]) for k, v in states.items() if v != 'W'],
 
-    # 3-ins
-    [all_o(v, [v], [x, y], [a, b, c]) for v in all_states],
+    # # 3-ins
+    # [all_o(v, [v], [x, y], [a, b, c]) for v in all_states],
+    [list(triple_ins(v[0], v[1])) for v in states],
 
     [list(prog(L, R)) for L, R in all_state_pairs()],
 ])
@@ -98,7 +99,6 @@ def all_state_pairs():
                 yield (L, R)
 
 
-all_states = []
 states = {
     (e, e): 'W',
 
@@ -132,10 +132,10 @@ states = {
     (a, b): 'lrC-',
     (b, a): 'ulrC-',
 }
-
+all_states = states.values()
 
 def eliminate((l, r)):
-    lr = l + '%' +  r
+    lr = l + '%' + r
     a_choices = [i for i, ch in enumerate(lr) if ch == 'a']
     b_choices = [i for i, ch in enumerate(lr) if ch == 'b']
     c_choices = [i for i, ch in enumerate(lr) if ch == 'c']
@@ -153,6 +153,32 @@ def eliminate((l, r)):
         eliminated = "".join([ch for ch in lr2 if ch != '$'])
         yield tuple(eliminated.split('%'))
 
+def triple_ins(_x, _y):
+    # _x: "b"
+    # _y: "a"
+    d = {x:_x, y:_y}
+    rhs = states[(_x, _y)]
+    perms = all_ordered([x, y], [a], [b], [c])
+    # pprint(perms)
+
+    def transform(l):
+        return ''.join(map(lambda elem: d[elem] if isinstance(elem, tuple) else elem, l))
+
+    perms2 = map(lambda (l1, l2): (transform(l1), transform(l2)), perms)
+
+    for perm, _perm in zip(perms2, perms):
+
+        eliminated = list(eliminate(perm))[0]
+        # print("Eliminated: {}".format(eliminated))
+
+        try:
+            state = states[eliminated]
+            rule = (state, [rhs], [_perm[0], _perm[1]])
+            yield rule
+        except KeyError:
+            continue
+
+# print(list(triple_ins(a, b))[0])
 
 def prog((_x, _y), (_z, _w)):
     # try:
@@ -192,12 +218,11 @@ def prog((_x, _y), (_z, _w)):
             """
             try:
                 eliminated_state = states[eliminated]
-            except (KeyError, TypeError):
+            except KeyError:
                 continue
             """e.g.
             eliminated_state = "rB+"
             """
-            # TODO map(lambda t: t.replace(e, '')
             yield (eliminated_state, [L, R], [element1, element2])
     # except KeyError as e:
     #     print(e)
