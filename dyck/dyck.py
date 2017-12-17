@@ -1,4 +1,4 @@
-import numpy
+import pickle
 from math import ceil
 from os.path import isfile
 
@@ -59,6 +59,7 @@ def rand_dyck(n):
         elif choice == 'b':
             val['c'] += 1
     return ret
+
 
 #
 # Grammar class
@@ -143,10 +144,14 @@ if __name__ == "__main__":
     parser.add_argument('--time', help='measure execution time', action='store_true')
     parser.add_argument('--rand', help='generate random Dyck word', action='store_true')
     parser.add_argument('--full', help='stress test given word', action='store_true')
+    parser.add_argument('--serialize', help='serialize grammar to file', action='store_true')
     args = parser.parse_args()
     if args.full:
         args.i = '$_W'
-    g = globals()[args.g](args.i)
+    if '.grammar' in args.g:
+        g = pickle.load(args.g)
+    else:
+        g = globals()[args.g](args.i)
     if args.time:
         start = time.time()
     if args.rand:
@@ -163,7 +168,14 @@ if __name__ == "__main__":
         assert args.n
         g.test_soundness(n_range=[args.n])
     elif args.rules:
-        pprint(g.grammar)
+        if args.serialize:
+            with open('g.grammar', 'w') as f:
+                import pickle
+                pickle.dump(g, f)
+        ret = pformat(g.grammar)
+        for k, v in tuple_to_char.items():
+            ret = ret.replace(str(k), v)
+        print(ret)
     elif 'w' in vars(args) and args.w is not None:
         if args.full:
             choices = range(0, len(args.w) + 1)
