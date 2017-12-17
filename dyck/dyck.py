@@ -142,7 +142,10 @@ if __name__ == "__main__":
     parser.add_argument('--range', type=str, default='0-100%', help='search in given percentage range')
     parser.add_argument('--time', help='measure execution time', action='store_true')
     parser.add_argument('--rand', help='generate random Dyck word', action='store_true')
+    parser.add_argument('--full', help='stress test given word', action='store_true')
     args = parser.parse_args()
+    if args.full:
+        args.i = '$_W'
     g = globals()[args.g](args.i)
     if args.time:
         start = time.time()
@@ -162,7 +165,13 @@ if __name__ == "__main__":
     elif args.rules:
         pprint(g.grammar)
     elif 'w' in vars(args) and args.w is not None:
-        print(g.test_parse(args.w))
+        if args.full:
+            choices = range(0, len(args.w) + 1)
+            for index in choices:
+                new_w = args.w[:index] + '$' + args.w[index:]
+                print('{}: {}'.format(new_w, g.test_parse(new_w)))
+        else:
+            print(g.test_parse(args.w))
     elif 'p' in vars(args) and args.p is not None:
         g.single_parse(args.p)
     elif 'minp' in vars(args) and args.minp is not None:

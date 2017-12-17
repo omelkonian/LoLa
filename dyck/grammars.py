@@ -7,12 +7,14 @@ from itertools import permutations
 # Universal constants
 #
 a, b, c, e = 'a', 'b', 'c', ''
-x, y, z, w = (0, 0), (0, 1), (1, 0), (1, 1)
+x, y, z, w, l, m = (0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)
 tuple_to_char = {
     (0, 0): 'x',
     (0, 1): 'y',
     (1, 0): 'z',
     (1, 1): 'w',
+    (2, 0): 'l',
+    (2, 1): 'm',
 }
 
 def symbols_from_orders(orders):
@@ -74,7 +76,7 @@ def all_o(lhs, rhs, *orders):
 #
 # Grammar
 #
-g = lambda _: Grammar(
+g = lambda initial_symbol: Grammar(
 [
     # TOP
     ('S', ['W'], [[x, y]]),
@@ -82,12 +84,24 @@ g = lambda _: Grammar(
     # base
     [(v, [], [list(k[0]), list(k[1])]) for k, v in states.items() if v != 'W'],
 
-    # # 3-ins
-    # [all_o(v, [v], [x, y], [a, b, c]) for v in all_states],
+    # 3-ins
     [list(triple_ins(v[0], v[1])) for v in states],
 
     [list(prog(L, R)) for L, R in all_state_pairs()],
-])
+    # [list(prog3(L, C, R)) for L, C, R in all_state_pairs3()],
+
+    # all_o('W', ['lABC'], [x, y]),
+    # all_o('W', ['lArBC'], [x, y]),
+    # all_o('W', ['lABrC'], [x, y]),
+    # all_o('W', ['rABC'], [x, y]),
+
+    all_o('W', ['W']*3, [x, y], [z, w], [l, m]),
+
+    # DEBUG
+    [('_' + k, [k], [[x, y]]) for k in all_states],
+    [('$_' + k, [k], [[x, '$', y]]) for k in all_states],
+
+], topdown=True, filtered=True, initial_symbol=initial_symbol)
 
 
 def all_state_pairs():
@@ -98,41 +112,97 @@ def all_state_pairs():
                 cur.append((L, R))
                 yield (L, R)
 
+def all_state_pairs3():
+    cur = []
+    for L in states:
+        for R in states:
+            for C in states:
+                # Exclude X-
+                if any(map(lambda t: '-' in states[t], [L, R, C])):
+                    continue
+                if all(map(lambda t: t not in cur, [(L, R, C), (R, L, C), (R, C, L), (C, L, R), (C, R, L)])):
+                    cur.append((L, C, R))
+                    yield (L, C, R)
 
 states = {
-    (e, e): 'W',
-
-    (a, e): 'lA+',
-    (e, a): 'rA+',
-
-    (b, e): 'lB+',
-    (e, b): 'rB+',
-
-    (c, e): 'lC+',
-    (e, c): 'rC+',
-
-    (b + c, e): 'lA-',
-    (c + b, e): 'ulA-',
-    (e, b + c): 'rA-',
-    (e, c + b): 'urA-',
-    (b, c): 'lrA-',
-    (c, b): 'ulrA-',
-
-    (a + c, e): 'lB-',
-    (c + a, e): 'ulB-',
-    (e, a + c): 'rB-',
-    (e, c + a): 'urB-',
-    (a, c): 'lrB-',
-    (c, a): 'ulrB-',
-
-    (a + b, e): 'lC-',
-    (b + a, e): 'ulC-',
-    (e, a + b): 'rC-',
-    (e, b + a): 'urC-',
-    (a, b): 'lrC-',
-    (b, a): 'ulrC-',
+    # 0 Symbol
+    ('', ''): 'W',
+    # 1 Symbol
+    ("a", ''): 'lA+',
+    ('', "a"): 'rA+',
+    # ------------------
+    ("b", ''): 'lB+',
+    ('', "b"): 'rB+',
+    # ------------------
+    ("c", ''): 'lC+',
+    ('', "c"): 'rC+',
+    # 2 Symbols
+    ("bc", ""): 'lA-',
+    ("cb", ""): 'ulA-',
+    ("", "bc"): 'rA-',
+    ("", "cb"): 'urA-',
+    ("b", "c"): 'lrA-',
+    ("c", "b"): 'ulrA-',
+    # ------------------
+    ("ac", ""): 'lB-',
+    ("ca", ""): 'ulB-',
+    ("", "ac"): 'rB-',
+    ("", "ca"): 'urB-',
+    ("a", "c"): 'lrB-',
+    ("c", "a"): 'ulrB-',
+    # ------------------
+    ("ab", ""): 'lC-',
+    ("ba", ""): 'ulC-',
+    ("", "ab"): 'rC-',
+    ("", "ba"): 'urC-',
+    ("a", "b"): 'lrC-',
+    ("b", "a"): 'ulrC-',
+    # ------------------
+    ("aa", ""): 'lA++',
+    ("a", "a"): 'lrA++',
+    ("", "aa"): 'rA++',
+    # ------------------
+    ("bb", ""): 'lB++',
+    ("b", "b"): 'lrB++',
+    ("", "bb"): 'rB++',
+    # ------------------
+    ("cc", ""): 'lC++',
+    ("c", "c"): 'lrC++',
+    ("", "cc"): 'rC++',
+    # ------------------
+    # 3 Symbols
+    # ("abc", ""): 'lABC',
+    # ("ab", "c"): 'lABrC',
+    # ("a", "bc"): 'lArBC',
+    # ("", "abc"): 'rABC',
+    # # ------------------
+    # ("acb", ""): 'lACB',
+    # ("ac", "b"): 'lACrB',
+    # ("a", "cb"): 'lArCB',
+    # ("", "acb"): 'rACB',
+    # # ------------------
+    # ("bac", ""): 'lBAC',
+    # ("ba", "c"): 'lBArC',
+    # ("b", "ac"): 'lBrAC',
+    # ("", "bac"): 'rBAC',
+    # # ------------------
+    # ("bca", ""): 'lBCA',
+    # ("bc", "a"): 'lBCrA',
+    # ("b", "ca"): 'lBrCA',
+    # ("", "bca"): 'rBCA',
+    # # ------------------
+    # ("cab", ""): 'lCAB',
+    # ("ca", "b"): 'lCArB',
+    # ("c", "ab"): 'lCrAB',
+    # ("", "cab"): 'rCAB',
+    # # ------------------
+    # ("cba", ""): 'lCBA',
+    # ("cb", "a"): 'lCBrA',
+    # ("c", "ba"): 'lCrBA',
+    # ("", "cba"): 'rCBA',
 }
 all_states = states.values()
+
 
 def eliminate((l, r)):
     lr = l + '%' + r
@@ -151,7 +221,11 @@ def eliminate((l, r)):
         temp[c_i] = '$'
         lr2 = "".join(temp)
         eliminated = "".join([ch for ch in lr2 if ch != '$'])
-        yield tuple(eliminated.split('%'))
+        rule = tuple(eliminated.split('%'))
+        yield rule # W <- ....
+        if rule == (e, e):
+            yield (l, r)
+
 
 def triple_ins(_x, _y):
     # _x: "b"
@@ -159,18 +233,11 @@ def triple_ins(_x, _y):
     d = {x:_x, y:_y}
     rhs = states[(_x, _y)]
     perms = all_ordered([x, y], [a], [b], [c])
-    # pprint(perms)
-
     def transform(l):
         return ''.join(map(lambda elem: d[elem] if isinstance(elem, tuple) else elem, l))
-
     perms2 = map(lambda (l1, l2): (transform(l1), transform(l2)), perms)
-
     for perm, _perm in zip(perms2, perms):
-
         eliminated = list(eliminate(perm))[0]
-        # print("Eliminated: {}".format(eliminated))
-
         try:
             state = states[eliminated]
             rule = (state, [rhs], [_perm[0], _perm[1]])
@@ -178,10 +245,8 @@ def triple_ins(_x, _y):
         except KeyError:
             continue
 
-# print(list(triple_ins(a, b))[0])
 
 def prog((_x, _y), (_z, _w)):
-    # try:
     L = states[(_x, _y)]
     R = states[(_z, _w)]
     """e.g.
@@ -224,8 +289,51 @@ def prog((_x, _y), (_z, _w)):
             eliminated_state = "rB+"
             """
             yield (eliminated_state, [L, R], [element1, element2])
-    # except KeyError as e:
-    #     print(e)
-    #     yield []
 
-# pprint(list(prog((a, e), (b, e))))
+
+def prog3((_x, _y), (_z, _w), (_l, _m)):
+    L = states[(_x, _y)]
+    C = states[(_z, _w)]
+    R = states[(_l, _m)]
+    """e.g.
+    _x: a
+    _y: b
+    _z: b
+    _w: c
+    _l: e
+    _m: a
+    """
+    d = {x:_x, y:_y, z:_z, w:_w, l: _l, m: _m}
+    for element1, element2 in all_ordered([x, y], [z, w], [l, m]):
+        """e.g.
+        element1 = [x, z, l]
+        element2 = [y, w, m]
+        """
+        desc1, desc2 = "", ""
+        for elem in element1:
+            desc1 += d[elem]
+        for elem in element2:
+            desc2 += d[elem]
+        descriptor = (desc1, desc2)
+        """e.g.
+        descriptor = ("ab", "bc")
+        """
+        eliminated_list = eliminate(descriptor)
+        """e.g.
+        eliminatedList = [
+            (e, "b"),
+            ("b", e)
+        ]
+        """
+        for eliminated in eliminated_list:
+            """e.g.
+            eliminated = (e, "b")
+            """
+            try:
+                eliminated_state = states[eliminated]
+            except KeyError:
+                continue
+            """e.g.
+            eliminated_state = "rB+"
+            """
+            yield (eliminated_state, [L, C, R], [element1, element2])
