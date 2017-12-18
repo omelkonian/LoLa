@@ -130,9 +130,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Check your D3 grammar.')
     parser.add_argument('-n', type=int, help='number of "abc" occurences', default=6, nargs='?')
     parser.add_argument('-w', type=str, help='single word to check', nargs='?')
+    parser.add_argument('-p', help='single parse of a word', action='store_true')
+    parser.add_argument('-minp', help='show minimal parse of a word', action='store_true')
+    parser.add_argument('-r', help='single word to check in reverse', action='store_true')
     parser.add_argument('-ws', type=str, help='file containing words to check', nargs='?')
-    parser.add_argument('-p', type=str, help='single parse of a word', nargs='?')
-    parser.add_argument('-minp', type=str, help='show minimal parse of a word', nargs='?')
     parser.add_argument('-ps', type=str, help='multiple parses of a word', nargs='?')
     parser.add_argument('-g', type=str, help='grammar to use', default='g', nargs='?')
     parser.add_argument('-i', type=str, help='initial symbol to use', default='S', nargs='?')
@@ -144,6 +145,9 @@ if __name__ == "__main__":
     parser.add_argument('--rand', help='generate random Dyck word', action='store_true')
     parser.add_argument('--full', help='stress test given word', action='store_true')
     args = parser.parse_args()
+    if args.r:
+        args.w = ''.join(list(reversed(args.w.replace('a', '$').replace('c', 'a').replace('$', 'c'))))
+        print(args.w)
     if args.full:
         args.i = '$_W'
     g = globals()[args.g](args.i)
@@ -171,11 +175,12 @@ if __name__ == "__main__":
                 new_w = args.w[:index] + '$' + args.w[index:]
                 print('{}: {}'.format(new_w, g.test_parse(new_w)))
         else:
-            print(g.test_parse(args.w))
-    elif 'p' in vars(args) and args.p is not None:
-        g.single_parse(args.p)
-    elif 'minp' in vars(args) and args.minp is not None:
-        g.min_parse(args.minp)
+            if args.p:
+                g.single_parse(args.w)
+            elif args.minp:
+                g.min_parse(args.w)
+            else:
+                print(g.test_parse(args.w))
     elif 'ps' in vars(args) and args.ps is not None:
         g.parse(args.ps)
     elif 'ws' in vars(args) and args.ws is not None:

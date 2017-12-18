@@ -112,6 +112,7 @@ def all_state_pairs():
                 cur.append((L, R))
                 yield (L, R)
 
+
 def all_state_pairs3():
     cur = []
     for L in states:
@@ -123,6 +124,7 @@ def all_state_pairs3():
                 if all(map(lambda t: t not in cur, [(L, R, C), (R, L, C), (R, C, L), (C, L, R), (C, R, L)])):
                     cur.append((L, C, R))
                     yield (L, C, R)
+
 
 states = {
     # 0 Symbol
@@ -158,17 +160,17 @@ states = {
     ("a", "b"): 'lrC-',
     ("b", "a"): 'ulrC-',
     # ------------------
-    ("aa", ""): 'lA++',
-    ("a", "a"): 'lrA++',
-    ("", "aa"): 'rA++',
-    # ------------------
-    ("bb", ""): 'lB++',
-    ("b", "b"): 'lrB++',
-    ("", "bb"): 'rB++',
-    # ------------------
-    ("cc", ""): 'lC++',
-    ("c", "c"): 'lrC++',
-    ("", "cc"): 'rC++',
+    # ("aa", ""): 'lA++',
+    # ("a", "a"): 'lrA++',
+    # ("", "aa"): 'rA++',
+    # # ------------------
+    # ("bb", ""): 'lB++',
+    # ("b", "b"): 'lrB++',
+    # ("", "bb"): 'rB++',
+    # # ------------------
+    # ("cc", ""): 'lC++',
+    # ("c", "c"): 'lrC++',
+    # ("", "cc"): 'rC++',
     # ------------------
     # 3 Symbols
     # ("abc", ""): 'lABC',
