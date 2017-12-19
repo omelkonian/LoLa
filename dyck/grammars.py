@@ -34,6 +34,8 @@ def translate(word, **symmetries):
     symmetries = {k: (tuple_to_char[v] if isinstance(v, tuple) else v) for k, v in symmetries.items()}
     symmetries = dict(symmetries, **{v: k for k, v in symmetries.items()})  # add inverse translations
     return ''.join([symmetries.get(c, c) for c in word])
+
+
 def symbols_from_orders(orders):
     return ''.join(list(set(''.join(orders))))
 
@@ -60,14 +62,15 @@ def ordered_permutations(orders, **symmetries):
 
 
 def ordered_pairs(orders, **symmetries):
-    return [(perm[:n1], perm[n1:])
-            for n1 in range(0, len(symbols_from_orders(orders)))
+    return [(perm[:i1], perm[i1:i2], perm[i2:])
+            for i1 in range(0, len(symbols_from_orders(orders)) + 1)
+            for i2 in range(i1, len(symbols_from_orders(orders)) + 1) or [len(symbols_from_orders(orders))]
             for perm in ordered_permutations(orders, **symmetries)]
 
 
 def post_process(orders, **symmetries):
-    return [(post_process_single(l), post_process_single(r))
-            for l, r in ordered_pairs(orders, **symmetries)]
+    return [(post_process_single(l), post_process_single(c), post_process_single(r))
+            for l, c, r in ordered_pairs(orders, **symmetries)]
 
 
 def post_process_single(order):
@@ -86,8 +89,6 @@ def pre_process_single(symbols):
 def all_ordered(*orders, **symmetries):
     return post_process(pre_process(orders), **symmetries)
 
-# pprint(all_ordered([a, b, c], [x, y, z], [x, b], [b, y], [c, z]))
-
 
 def all_o(lhs, rhs, *orders, **symmetries):
     return [(lhs, rhs, order) for order in all_ordered(*orders, **symmetries)]
@@ -98,10 +99,6 @@ def all_c(lhs, rhs, left=[], right=[], orders=[], **symmetries):
             if all(map(lambda l: l in order[0], left))
             if all(map(lambda r: r in order[1], right))]
 
-# def all_cc(lhs, rhs, left=[], right=[], orders=[], **symmetries):
-#     return [(lhs, rhs, order) for order in all_ordered(*orders, **symmetries)
-#             if all(map(lambda l: l in order[0], left))
-#             if all(map(lambda r: r in order[1], right))]
 
 def all_nc(lhs, rhs, left=[], right=[], orders=[], **symmetries):
     allOrd = all_ordered(*orders, **symmetries)
@@ -111,98 +108,20 @@ def all_nc(lhs, rhs, left=[], right=[], orders=[], **symmetries):
     return [(lhs, rhs, o) for o in allOrd if o not in allCon]
 
 
-
+# pprint(all_o('W', e, [a, b, c]))
 
 g = lambda initial_symbol: Grammar(
 [
     # TOP
     ('S', ['W'], [[x, y, z]]),
+    # Base
+    # ('W', e, [[], [], []]),
+    # Concatenation
+    all_o('W', ['W', 'W'], [x, y, z], [k, l, m], x=k, y=l, z=m),
+    # 3-ins
+    # all_o('W', ['W'], [x, y, z], [a, b, c]),
 
-    # Transformations
-    ('W', ['W'], [[], [x, y], [z]]),
-    ('W', ['W'], [[x], [], [y, z]]),
-    ('W', ['W'], [[], [x], [y, z]]),
-    ('W', ['W'], [[], [], [x, y, z]]),
-
-    ('W', ['W', 'W'], [[], [x, y], [z]]),
-
-    # Inserts first-match
-    ('W', ['W'], [[], [], [a, b, c, x, y, z]]),
-    ('W', ['W'], [[], [a], [b, c, x, y, z]]),
-    ('W', ['W'], [[a], [], [b, c, x, y, z]]),
-    ('W', ['W'], [[], [a, b], [c, x, y, z]]),
-    ('W', ['W'], [[a], [b], [c, x, y, z]]),
-
-    ('W', ['W'], [[], [], [a, b, x, c, y, z]]),
-    ('W', ['W'], [[], [a], [b, x, c, y, z]]),
-    ('W', ['W'], [[a], [], [b, x, c, y, z]]),
-    ('W', ['W'], [[], [a, b], [x, c, y, z]]),
-    ('W', ['W'], [[a], [b], [x, c, y, z]]),
-    ('W', ['W'], [[], [a, b, x], [c, y, z]]),
-    ('W', ['W'], [[a], [b, x], [c, y, z]]),
-
-    ('W', ['W'], [[], [], [a, b, x, y, c, z]]),
-    ('W', ['W'], [[], [a], [b, x, y, c, z]]),
-    ('W', ['W'], [[a], [], [b, x, y, c, z]]),
-    ('W', ['W'], [[], [a, b], [x, y, c, z]]),
-    ('W', ['W'], [[a], [b], [x, y, c, z]]),
-    ('W', ['W'], [[], [a, b, x], [y, c, z]]),
-    ('W', ['W'], [[a], [b, x], [y, c, z]]),
-    ('W', ['W'], [[], [a, b, x, y], [c, z]]),
-    ('W', ['W'], [[a], [b, x, y], [c, z]]),
-
-    ('W', ['W'], [[], [], [a, x, b, c, y, z]]),
-    ('W', ['W'], [[], [a], [x, b, c, y, z]]),
-    ('W', ['W'], [[a], [], [x, b, c, y, z]]),
-    ('W', ['W'], [[], [a, x], [b, c, y, z]]),
-    ('W', ['W'], [[a], [x], [b, c, y, z]]),
-    ('W', ['W'], [[a, x], [], [b, c, y, z]]),
-    ('W', ['W'], [[], [a, x, b], [c, y, z]]),
-    ('W', ['W'], [[a], [x, b], [c, y, z]]),
-    ('W', ['W'], [[a, x], [b], [c, y, z]]),
-
-    ('W', ['W'], [[], [], [x, a, b, c, y, z]]),
-    ('W', ['W'], [[], [x], [a, b, c, y, z]]),
-    ('W', ['W'], [[x], [], [a, b, c, y, z]]),
-    ('W', ['W'], [[], [x, a], [b, c, y, z]]),
-    ('W', ['W'], [[x], [a], [b, c, y, z]]),
-    ('W', ['W'], [[x, a], [], [b, c, y, z]]),
-    ('W', ['W'], [[], [x, a, b], [c, y, z]]),
-    ('W', ['W'], [[x], [a, b], [c, y, z]]),
-    ('W', ['W'], [[x, a], [b], [c, y, z]]),
-
-    ('W', ['W'], [[], [], [a, x, b, y, c, z]]),
-    ('W', ['W'], [[], [a], [x, b, y, c, z]]),
-    ('W', ['W'], [[a], [], [x, b, y, c, z]]),
-    ('W', ['W'], [[], [a, x], [b, y, c, z]]),
-    ('W', ['W'], [[a], [x], [b, y, c, z]]),
-    ('W', ['W'], [[a, x], [], [b, y, c, z]]),
-    ('W', ['W'], [[], [a, x, b], [y, c, z]]),
-    ('W', ['W'], [[a], [x, b], [y, c, z]]),
-    ('W', ['W'], [[a, x], [b], [y, c, z]]),
-    ('W', ['W'], [[], [a, x, b, y], [c, z]]),
-    ('W', ['W'], [[a], [x, b, y], [c, z]]),
-    ('W', ['W'], [[a, x], [b, y], [c, z]]),
-
-    ('W', ['W'], [[], [], [x, a, b, y, c, z]]),
-    ('W', ['W'], [[], [x], [a, b, y, c, z]]),
-    ('W', ['W'], [[x], [], [a, b, y, c, z]]),
-    ('W', ['W'], [[], [x, a], [b, y, c, z]]),
-    ('W', ['W'], [[x], [a], [b, y, c, z]]),
-    ('W', ['W'], [[x, a], [], [b, y, c, z]]),
-    ('W', ['W'], [[], [x, a, b], [y, c, z]]),
-    ('W', ['W'], [[x], [a, b], [y, c, z]]),
-    ('W', ['W'], [[x, a], [b], [y, c, z]]),
-    ('W', ['W'], [[], [x, a, b, y], [c, z]]),
-    ('W', ['W'], [[x], [a, b, y], [c, z]]),
-    ('W', ['W'], [[x, a], [b, y], [c, z]]),
-
-    # ABC in order
-    ('W', e, [[], [], [a, b, c]]),
-    ('W', e, [[], [a], [b, c]]),
-    ('W', e, [[a], [], [b, c]]),
-    ('W', e, [[], [a, b], [c]]),
-    ('W', e, [[a], [b], [c]]),
+    all_o('W', e, [a, b, c])
 
 ], topdown=True, filtered=True, initial_symbol=initial_symbol)
 
