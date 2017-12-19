@@ -13,6 +13,7 @@
 
 \newcommand{\bs}{\backslash}
 \newcommand{\Ra}{\rightarrow}
+\newcommand{\Rn}[1]{\overset{(#1)}{\longrightarrow}}
 \newcommand{\La}{\leftarrow}
 \newcommand\ol{\overline}
 
@@ -34,6 +35,8 @@
   \rlap{\usebox\MBox}\color{#1}\rule[-1\dp\MBox]{\wd\MBox}{0.5pt}}}
 \newcommand\red[1]{\Cline{red}{#1}}
 \newcommand\green[1]{\Cline{green}{#1}}
+\newcommand\rd[1]{\textcolor{red}{#1}}
+\newcommand\gr[1]{\textcolor{green}{#1}}
 
 \newcommand{\otimesS}{\cdot\otimes\cdot}
 \newcommand{\focus}[1]{\fbox{$#1$}}
@@ -42,6 +45,9 @@
 \newcommand{\oplusS}{\cdot\oplus\cdot}
 \newcommand{\oslashS}{\cdot\oslash\cdot}
 \newcommand{\obslashS}{\cdot\obslash\cdot}
+
+\newcommand{\aL}[1]{#1^{\ell}}
+\newcommand{\aR}[1]{#1^{r}}
 
 \newcommand{\note}[1]{\{\text{\textit{#1}}\}}
 \usepackage{tikz}
@@ -112,7 +118,8 @@ n/n & \textsf{popular} & \lambda\langle c,y \rangle. (c\ (\lambda z.\ \wedge (y\
 \end{array}\]
 \subsection{}
 \begin{enumerate}
-\item 
+\item
+\scriptsize
 \[
 \infer[\rightharpoondown]{(np/n) \otimesS ((n/n) \otimesS n)) \otimesS (np \bs s) \vdash \focus{\lambda \alpha_0 . ( \ceil{arrived} \langle \lambda \beta_0 . \ceil{some} \langle \beta_0 , \lambda \gamma_0 . ( \ceil{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \ceil{saint} \ \alpha_1 ) \rangle ) \rangle ) , \alpha_0 \rangle ) : s}}{
 	\infer[\leftharpoonup]{(\ceil{arrived} \langle \beta_0. (\ceil{some} \langle \beta_0, \lambda \gamma_0.(\ceil{popular} \langle \gamma_0 , \lambda \alpha_1 .(\ceil{saint} \alpha_1) \rangle ) \rangle ), \alpha_0 \rangle ) : np \bs s \vdash \alpha_0 : ((np/n) \otimesS ((n/n) \otimes n)) \bsS  s}{
@@ -144,6 +151,7 @@ n/n & \textsf{popular} & \lambda\langle c,y \rangle. (c\ (\lambda z.\ \wedge (y\
 	}
 }
 \]
+\normalsize
 \item We compute the interpretation below:
 \[ \ceil{\ddag} = \la a_0.(
 	\w{arrived} \ \pair
@@ -230,102 +238,30 @@ We can now corroborate the $\alpha$-equivalence of the two $\cdot^\ell$ translat
 \subsection{}
 \begin{enumerate}
 \item[(4)]
-\begin{minipage}{0.5\textwidth}
-\center{($\Ra$)}
-\[
-\infer[\Ra ]
-	{ 1^l \Ra 1}
-	{\infer[(1)]
-		{1^l \Ra 1^l1}
-		{}
-	&\infer[(2)]
-		{1^l1 \Ra 1}
-		{}
-	}
-\]
+\begin{minipage}{0.5\textwidth} \center{($\Ra$)}
+\[ \aL{1} \Rn{1} \aL{1}\gr{1} \Rn{2} 1 \]
 \end{minipage}
-\begin{minipage}{0.5\textwidth}
-\center{($\La$)}
-\[
-\infer[\Ra]
-	{1 \Ra 1^l}
-	{\infer[(2)]
-		{1 \Ra 1^l1}
-		{}
-	&\infer[(1)]
-		{1^l1 \Ra 1^l}
-		{}
-	}
-\]
-\end{minipage}
+\begin{minipage}{0.5\textwidth} \center{($\La$)}
+\[ 1 \Rn{2} \gr{1\aL{1}} \Rn{1} \aL{1} \]
+\end{minipage} \\
 \item[(5)]
-($\Ra$):
-\[
-\infer[\Ra]{A^{rl} \Ra A}{
-\infer[\Ra]{A^{rl} \Ra 1A} {
-	\infer[(1)]{A^{rl} \Ra (A^{rl}A^r)A}{
-		\infer[\Ra]{A^{rl} \Ra A^{rl}(A^rA)}{
-			\infer[(1)]{A^{rl} \Ra A^{rl}1}{}
-			&
-			\infer[(2)]{1 \Ra A^rA}{}
-		}	
-	}
-	&
-	\infer[(2)]{A^{rl}A^r \Ra 1}{}
-}
-&\infer[(1)]{1A \Ra A}{}}
-\]
-($\La$):
-\[
-\infer[\Ra]{A \Ra A^{rl}}{
-	\infer[\Ra]{A \Ra 1A^{rl}}{
-		\infer[(1)]{A \Ra (AA^r)A^{rl}}{
-			\infer[\Ra]{A \Ra A(A^rA^{rl})}{
-				\infer[(1)]{A \Ra A1}{}
-				&
-				\infer[(2)]{1 \Ra A^rA^{rl}}{}
-			}
-		}
-		&
-		\infer[(3)]{AA^r \Ra 1}{}
-	}
-	&
-	\infer[(1)]{1A^{rl} \Ra A^{rl}}{}
-}
-\]
+\makebox[\textwidth]{($\Ra$)} \[
+A^{rl} \Rn{1} A^{rl}\gr{1} \Rn{3} A^{rl}(\gr{\aR{A}A}) \Rn{1} (\rd{A^{rl}\aR{A}})A \Rn{2} 1A \Rn{1} A
+\] \\
+\makebox[\textwidth]{($\La$)} \[
+A \Rn{1} A\gr{1} \Rn{2} A(\gr{\aR{A}A^{rl}}) \Rn{1} (\rd{A\aR{A}})A^{rl} \Rn{3} 1A^{rl} \Rn{1} A^{rl}
+\] \\
 \item[(6)]
-($\Ra$):
-\[
-\infer[(5)]{(AB)^l \Ra B^lA^l}{
-	\infer[\Ra]{(AB)^l \Ra ((B^lA^l)^r)^l}{
-		\infer[todo]{(AB)^l \Ra ((B^lA^l)^r1)^l}{
-			\infer[\Ra]{(AB)^l \Ra ((B^lA^l)^r(B^lB))^l}{
-				\infer[\Ra]{(AB)^l \Ra ((B^lA^l)^r(B^l(1B)))^l}{
-					\infer[(1)]{(AB)^l \Ra ((B^lA^l)^r(B^l((A^lA)B)))}{
-						\infer[(1)]{(AB)^l \Ra ((B^lA^l)^r(B^l(A^l(AB))))}{
-							\infer[(1)]{(AB)^l \Ra ((B^lA^l)^r((B^lA^l)(AB)))^l}{
-								\infer[\Ra]{(AB)^l \Ra (((B^lA^l)^r(B^lA^l))(AB))^l}{\
-									\infer[\Ra]{(AB)^l \Ra (1(AB))^l}{}
-									&
-									\infer[(3)]{1 \Ra (B^lA^l)^r(B^lA^l)}{}
-								}
-							}
-						}
-					}
-					&
-					\infer[(2)]{A^lA \Ra 1}{}
-				}
-				&
-				\infer[(1)]{1B \Ra B}{}
-			}
-			&
-			\infer[(2)]{B^lB \Ra 1}{}
-		}
-		&
-		\infer[(1)]{(B^lA^l)^r1 \Ra (B^lA^l)^r}{}
-	}
-}
-\]
+\makebox[\textwidth]{($\Ra$)} \[
+\aL{(AB)} \Rn{1} \aL{(\gr{1}AB)} \Rn{3} \aL{((\gr{\aR{(\aL{B}\aL{A})}(\aL{B}\aL{A})})AB)} \Rn{1^*} \aL{(\aR{(\aL{B}\aL{A})}\aL{B}(\rd{\aL{A}A})B)} \Rn{2+1} \] \[
+\aL{(\aR{(\aL{B}\aL{A})}\rd{\aL{B}B})} \Rn{2+1} (\aL{B}\aL{A})^{\rd{rl}} \Rn{5} \aL{B}\aL{A}
+\] \\
+\makebox[\textwidth]{($\La$)} \[
+\aL{B}\aL{A} \Rn{1} \aL{B}\aL{A}\gr{1} \Rn{2} \aL{B}\aL{A}\gr{(AB)\aL{(AB)}} \Rn{1} \aL{B}(\rd{\aL{A}A})B\aL{(AB)} \Rn{2+1} (\rd{\aL{B}B})\aL{(AB)} \Rn{2+1} \aL{(AB)}
+\] \\
+\item[(7)] \[
+\aL{B} \Rn{1} \aL{B}\gr{1} \Rn{2} \aL{B}\gr{A\aL{A}} \Rn{A \Ra B} \rd{\aL{B}B}\aL{A} \Rn{2+1} \aL{A} \]
+
 \end{enumerate}
 
 \subsection{}
