@@ -35,6 +35,14 @@
 \newcommand\red[1]{\Cline{red}{#1}}
 \newcommand\green[1]{\Cline{green}{#1}}
 
+\newcommand{\otimesS}{\cdot\otimes\cdot}
+\newcommand{\focus}[1]{\fbox{$#1$}}
+\newcommand{\slashS}{\cdot\slash\cdot}
+\newcommand{\bsS}{\cdot\bs\cdot}
+\newcommand{\oplusS}{\cdot\oplus\cdot}
+\newcommand{\oslashS}{\cdot\oslash\cdot}
+\newcommand{\obslashS}{\cdot\obslash\cdot}
+
 \newcommand{\note}[1]{\{\text{\textit{#1}}\}}
 \usepackage{tikz}
 \usetikzlibrary{calc,shapes,arrows,positioning}
@@ -104,6 +112,38 @@ n/n & \textsf{popular} & \lambda\langle c,y \rangle. (c\ (\lambda z.\ \wedge (y\
 \end{array}\]
 \subsection{}
 \begin{enumerate}
+\item 
+\[
+\infer[\rightharpoondown]{(np/n) \otimesS ((n/n) \otimesS n)) \otimesS (np \bs s) \vdash \focus{\lambda \alpha_0 . ( \ceil{arrived} \langle \lambda \beta_0 . \ceil{some} \langle \beta_0 , \lambda \gamma_0 . ( \ceil{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \ceil{saint} \ \alpha_1 ) \rangle ) \rangle ) , \alpha_0 \rangle ) : s}}{
+	\infer[\leftharpoonup]{(\ceil{arrived} \langle \beta_0. (\ceil{some} \langle \beta_0, \lambda \gamma_0.(\ceil{popular} \langle \gamma_0 , \lambda \alpha_1 .(\ceil{saint} \alpha_1) \rangle ) \rangle ), \alpha_0 \rangle ) : np \bs s \vdash \alpha_0 : ((np/n) \otimesS ((n/n) \otimes n)) \bsS  s}{
+		\infer[\bs L]{\focus{(\ceil{arrived} \langle \beta_0. (\ceil{some} \langle \beta_0, \lambda \gamma_0.(\ceil{popular} \langle \gamma_0 , \lambda \alpha_1 .(\ceil{saint} \alpha_1) \rangle ) \rangle ), \alpha_0 \rangle ) : np \bs s \vdash \alpha_0 : ((np/n) \otimesS ((n/n) \otimesS n)) \bsS s}}{
+			\infer[\rightharpoondown]{(np/n) \otimesS ((n/n) \otimesS n) \vdash \focus{\lambda \beta_0 . ( \ceil{some} \langle \beta_0 , \lambda \gamma_0 . ( \ceil{popular} \langle \gamma_0 , \lambda \alpha_1 (\ceil{saint} \ \alpha_1) \rangle ) \rangle ) : np}}{
+				\infer[\leftharpoonup]{(\ceil{some} \langle \beta_0 , \lambda \gamma_0 . (\ceil{popular} \langle \gamma_0 , \lambda \alpha_1 . (\ceil{saint} \ \alpha_1 ) \rangle ) \rangle ) : np/n \vdash \beta_0 : np \slashS ((n/n) \otimesS n)}{
+					\infer[/ L]{\focus {\langle \beta_0 , \lambda \gamma_0 . (\ceil{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \ceil{saint} \ \alpha_1 ) \rangle ) \rangle ) : np/n }}{
+						\infer[CoAx]{\focus{ \beta_0 : np} \vdash np}{\beta_0}
+						&
+						\infer[\rightharpoondown]{(n/n) \otimesS n \vdash \focus{\lambda \gamma_0 . ( \ceil{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \ceil{saint} \ \alpha_1 ) \rangle ) : n}}{
+							\infer[\rightharpoonup]{(\ceil{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \ceil{saint} \ \alpha_1) \rangle ) : n/n \vdash \gamma_0 : n \slashS n}{
+								\infer[/ L]{\focus{\langle \gamma_0 , \lambda \alpha_1 . ( \ceil{saint} \ \alpha_1) \rangle : n/n} \vdash \gamma_0 : n \slashS n}{
+									\infer[CoAx]{\focus{\gamma_0 : n} \vdash n}{\gamma_0}
+									&
+									\infer[\rightharpoondown]{n \vdash \focus{\lambda \alpha_1 . ( \ceil{saint} \ \alpha_1 ) : n}}{
+										\infer[\leftharpoonup]{\ceil{saint} \ \alpha_1 : n \vdash \alpha_1 : n}{
+											\infer[CoAx]{\focus{\alpha_1 : n} \vdash n}{ \alpha_1}
+										}
+									}								
+								}
+							}
+						}
+					}
+				}
+			}
+			&
+			\infer[CoAx]{\focus{\alpha_0 : s \vdash s}}{\alpha_0}
+		}
+	}
+}
+\]
 \item We compute the interpretation below:
 \[ \ceil{\ddag} = \la a_0.(
 	\w{arrived} \ \pair
