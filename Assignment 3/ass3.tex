@@ -118,7 +118,7 @@ n/n & \textsf{popular} & \lambda\langle c,y \rangle. (c\ (\lambda z.\ \wedge (y\
 \end{array}\]
 \subsection{}
 \begin{enumerate}
-\item
+\item We compute the interpretation below:
 \scriptsize
 \[
 \infer[\rightharpoondown]{(np/n) \otimesS ((n/n) \otimesS n)) \otimesS (np \bs s) \vdash \focus{\lambda \alpha_0 . ( \ceil{arrived} \langle \lambda \beta_0 . \ceil{some} \langle \beta_0 , \lambda \gamma_0 . ( \ceil{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \ceil{saint} \ \alpha_1 ) \rangle ) \rangle ) , \alpha_0 \rangle ) : s}}{
@@ -130,7 +130,7 @@ n/n & \textsf{popular} & \lambda\langle c,y \rangle. (c\ (\lambda z.\ \wedge (y\
 						\infer[CoAx]{\focus{ \beta_0 : np} \vdash np}{\beta_0}
 						&
 						\infer[\rightharpoondown]{(n/n) \otimesS n \vdash \focus{\lambda \gamma_0 . ( \ceil{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \ceil{saint} \ \alpha_1 ) \rangle ) : n}}{
-							\infer[\rightharpoonup]{(\ceil{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \ceil{saint} \ \alpha_1) \rangle ) : n/n \vdash \gamma_0 : n \slashS n}{
+							\infer[\leftharpoonup]{(\ceil{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \ceil{saint} \ \alpha_1) \rangle ) : n/n \vdash \gamma_0 : n \slashS n}{
 								\infer[/ L]{\focus{\langle \gamma_0 , \lambda \alpha_1 . ( \ceil{saint} \ \alpha_1) \rangle : n/n} \vdash \gamma_0 : n \slashS n}{
 									\infer[CoAx]{\focus{\gamma_0 : n} \vdash n}{\gamma_0}
 									&
@@ -152,21 +152,6 @@ n/n & \textsf{popular} & \lambda\langle c,y \rangle. (c\ (\lambda z.\ \wedge (y\
 }
 \]
 \normalsize
-\item We compute the interpretation below:
-\[ \ceil{\ddag} = \la a_0.(
-	\w{arrived} \ \pair
-		{\la \beta_0.(
-			\w{some} \ \pair
-				{\beta_0}
-				{\la \gamma_0.(
-					\w{popular} \ \pair
-						{\gamma_0}
-						{\la a_1.(\w{saint} \ a_1)}
-				)}
-		)}
-		{a_0}
-	)
-\]
 \item The adjucted $\cdot^\ell$ translations are the following:
 \begin{align*}
 \wl{some} &= \lap{x}{k}.(\exists\la z.(\conj{k \ \la\theta.(\theta \ z)}{x \ z})) \\
