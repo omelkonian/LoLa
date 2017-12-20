@@ -121,20 +121,20 @@ n/n & \textsf{popular} & \lambda\langle c,y \rangle. (c\ (\lambda z.\ \wedge (y\
 \item We compute the interpretation below:
 \scriptsize
 \[
-\infer[\rightharpoondown]{(np/n) \otimesS ((n/n) \otimesS n)) \otimesS (np \bs s) \vdash \focus{\lambda \alpha_0 . ( \ceil{arrived} \langle \lambda \beta_0 . \ceil{some} \langle \beta_0 , \lambda \gamma_0 . ( \ceil{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \ceil{saint} \ \alpha_1 ) \rangle ) \rangle ) , \alpha_0 \rangle ) : s}}{
-	\infer[\leftharpoonup]{(\ceil{arrived} \langle \beta_0. (\ceil{some} \langle \beta_0, \lambda \gamma_0.(\ceil{popular} \langle \gamma_0 , \lambda \alpha_1 .(\ceil{saint} \alpha_1) \rangle ) \rangle ), \alpha_0 \rangle ) : np \bs s \vdash \alpha_0 : ((np/n) \otimesS ((n/n) \otimes n)) \bsS  s}{
-		\infer[\bs L]{\focus{(\ceil{arrived} \langle \beta_0. (\ceil{some} \langle \beta_0, \lambda \gamma_0.(\ceil{popular} \langle \gamma_0 , \lambda \alpha_1 .(\ceil{saint} \alpha_1) \rangle ) \rangle ), \alpha_0 \rangle ) : np \bs s \vdash \alpha_0 : ((np/n) \otimesS ((n/n) \otimesS n)) \bsS s}}{
-			\infer[\rightharpoondown]{(np/n) \otimesS ((n/n) \otimesS n) \vdash \focus{\lambda \beta_0 . ( \ceil{some} \langle \beta_0 , \lambda \gamma_0 . ( \ceil{popular} \langle \gamma_0 , \lambda \alpha_1 (\ceil{saint} \ \alpha_1) \rangle ) \rangle ) : np}}{
-				\infer[\leftharpoonup]{(\ceil{some} \langle \beta_0 , \lambda \gamma_0 . (\ceil{popular} \langle \gamma_0 , \lambda \alpha_1 . (\ceil{saint} \ \alpha_1 ) \rangle ) \rangle ) : np/n \vdash \beta_0 : np \slashS ((n/n) \otimesS n)}{
-					\infer[/ L]{\focus {\langle \beta_0 , \lambda \gamma_0 . (\ceil{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \ceil{saint} \ \alpha_1 ) \rangle ) \rangle ) : np/n }}{
+\infer[\rightharpoondown]{(np/n) \otimesS ((n/n) \otimesS n)) \otimesS (np \bs s) \vdash \focus{\lambda \alpha_0 . ( \w{arrived} \langle \lambda \beta_0 . \w{some} \langle \beta_0 , \lambda \gamma_0 . ( \w{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \w{saint} \ \alpha_1 ) \rangle ) \rangle ) , \alpha_0 \rangle ) : s}}{
+	\infer[\leftharpoonup]{(\w{arrived} \langle \lambda\beta_0. (\ceil{some} \langle \beta_0, \lambda \gamma_0.(\w{popular} \langle \gamma_0 , \lambda \alpha_1 .(\w{saint} \alpha_1) \rangle ) \rangle ), \alpha_0 \rangle ) : np \bs s \vdash \alpha_0 : ((np/n) \otimesS ((n/n) . \otimes . n)) \bsS  s}{
+		\infer[\bs L]{\focus{(\w{arrived} \langle \lambda\beta_0. (\w{some} \langle \beta_0, \lambda \gamma_0.(\w{popular} \langle \gamma_0 , \lambda \alpha_1 .(\w{saint} \alpha_1) \rangle ) \rangle ), \alpha_0 \rangle ) : np \bs s} \vdash \alpha_0 : ((np/n) \otimesS ((n/n) \otimesS n)) \bsS s}{
+			\infer[\rightharpoondown]{(np/n) \otimesS ((n/n) \otimesS n) \vdash \focus{\lambda \beta_0 . ( \w{some} \langle \beta_0 , \lambda \gamma_0 . ( \w{popular} \langle \gamma_0 , \lambda \alpha_1 (\w{saint} \ \alpha_1) \rangle ) \rangle ) : np}}{
+				\infer[\leftharpoonup]{(\w{some} \langle \beta_0 , \lambda \gamma_0 . (\w{popular} \langle \gamma_0 , \lambda \alpha_1 . (\w{saint} \ \alpha_1 ) \rangle ) \rangle ) : np/n \vdash \beta_0 : np \slashS ((n/n) \otimesS n)}{
+					\infer[/ L]{\focus {\langle \beta_0 , \lambda \gamma_0 . (\w{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \w{saint} \ \alpha_1 ) \rangle ) \rangle ) : np/n }}{
 						\infer[CoAx]{\focus{ \beta_0 : np} \vdash np}{\beta_0}
 						&
-						\infer[\rightharpoondown]{(n/n) \otimesS n \vdash \focus{\lambda \gamma_0 . ( \ceil{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \ceil{saint} \ \alpha_1 ) \rangle ) : n}}{
-							\infer[\leftharpoonup]{(\ceil{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \ceil{saint} \ \alpha_1) \rangle ) : n/n \vdash \gamma_0 : n \slashS n}{
-								\infer[/ L]{\focus{\langle \gamma_0 , \lambda \alpha_1 . ( \ceil{saint} \ \alpha_1) \rangle : n/n} \vdash \gamma_0 : n \slashS n}{
+						\infer[\rightharpoondown]{(n/n) \otimesS n \vdash \focus{\lambda \gamma_0 . ( \w{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \w{saint} \ \alpha_1 ) \rangle ) : n}}{
+							\infer[\leftharpoonup]{(\w{popular} \langle \gamma_0 , \lambda \alpha_1 . ( \w{saint} \ \alpha_1) \rangle ) : n/n \vdash \gamma_0 : n \slashS n}{
+								\infer[/ L]{\focus{\langle \gamma_0 , \lambda \alpha_1 . ( \w{saint} \ \alpha_1) \rangle : n/n} \vdash \gamma_0 : n \slashS n}{
 									\infer[CoAx]{\focus{\gamma_0 : n} \vdash n}{\gamma_0}
 									&
-									\infer[\rightharpoondown]{n \vdash \focus{\lambda \alpha_1 . ( \ceil{saint} \ \alpha_1 ) : n}}{
+									\infer[\rightharpoondown]{n \vdash \focus{\lambda \alpha_1 . ( \w{saint} \ \alpha_1 ) : n}}{
 										\infer[\leftharpoonup]{\ceil{saint} \ \alpha_1 : n \vdash \alpha_1 : n}{
 											\infer[CoAx]{\focus{\alpha_1 : n} \vdash n}{ \alpha_1}
 										}
@@ -146,11 +146,26 @@ n/n & \textsf{popular} & \lambda\langle c,y \rangle. (c\ (\lambda z.\ \wedge (y\
 				}
 			}
 			&
-			\infer[CoAx]{\focus{\alpha_0 : s \vdash s}}{\alpha_0}
+			\infer[CoAx]{\focus{\alpha_0 : s} \vdash s}{\alpha_0}
 		}
 	}
 }
 \]
+Hence,
+\[ \ceil{\ddag} = \la a_0.(		
+	\w{arrived} \ \pair		
+ 		{\la \beta_0.(		
+ 			\w{some} \ \pair		
+ 				{\beta_0}		
+ 				{\la \gamma_0.(		
+ 					\w{popular} \ \pair		
+ 						{\gamma_0}		
+ 						{\la a_1.(\w{saint} \ a_1)}		
+ 				)}		
+ 		)}		
+ 	{a_0}		
+ 	)		
+ \]
 \normalsize
 \item The adjucted $\cdot^\ell$ translations are the following:
 \begin{align*}
