@@ -1,0 +1,84 @@
+\documentclass[]{article}
+
+\usepackage[a4paper]{geometry}
+
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{proof}
+
+\newcommand{\W}[1]{\textsf{#1}}
+\newcommand{\Wv}[1]{\mathbf{#1}}
+\newcommand{\bs}{\backslash}
+\newcommand{\arr}[2]{#1\longrightarrow #2}
+
+\newcommand{\xrighta}{\alpha_{\diamond}^{r}}
+\newcommand{\xrightc}{\sigma_{\diamond}^{r}}
+
+\newcommand{\Xrighta}{\widehat{\alpha}_{\diamond}^{r}}
+\newcommand{\Xrightc}{\widehat{\sigma}_{\diamond}^{r}}
+
+\newcommand{\F}[1]{\lceil #1 \rceil}
+\newcommand{\Arrow}[1]{\xlongrightarrow{\displaystyle #1}}
+
+\title{\textbf{Logic and Language: Exercise (Week 6)}}
+\author{Orestis Melkonian [6176208], Konstantinos Kogkalidis [6230067]}
+\date{}
+
+\begin{document}
+\maketitle
+\section{Syntax}
+\subsection{}
+\[
+\infer[todo]{n \otimes ((n \bs n)/(s/ \Diamond \Box np)) \otimes ((np / n) \otimes n) \otimes ((np \bs s) / np)) \vdash n}{
+	\infer[todo]{((n \bs n) / (s/ \Diamond \Box np)) \otimes (((np/n) \otimes ((np \bs s)/np)) \vdash n \bs n}{
+		\infer[todo]{(np/n \otimes n) (np \bs s) /np \vdash ((n \bs n) / (s/ \Diamond \Box np)) \bs (n \bs n)}{
+			\infer[todo]{np/n \otimes n \vdash (((n \bs n) /(s / \Diamond \Box np)) \bs (n \bs n)) / ((np \bs s)/np))}{
+				\infer[todo]{np/n \vdash ((((n \bs n)/(s / \Diamond \Box np)) \bs (n \bs n)) / ((np \bs s)/np))/n}{
+					\infer[todo]{np \vdash ((n \bs n) / (s/ \Diamond \Box np)) \bs (n \bs n))/((np \bs s)/np))}{
+						\infer[todo]{np \otimes ((np \bs s)/np) \vdash ((n \bs n)/(s \Diamond \Box np)) \bs (n \bs n)}{
+							\infer[todo]{(n\bs n)/(s / \Diamond \Box np) \vdash (n \bs n)/(np \otimes ((np \bs s)/np)))}{
+								\infer[todo]{n \bs n \vdash n \bs n}{
+									\infer[todo]{n \vdash n}{}
+									&
+									\infer[todo]{n \vdash n}{}
+								}
+								&
+								\infer[todo]{np \otimes ((np \bs s)/np) \vdash s / \Diamond \Box np \vdash s}{
+									\infer[todo]{(np \otimes (np \bs s)/np) \otimes \Diamond \Box np \vdash s}{
+										\infer[todo]{np \otimes (((np \bs s)/np) \otimes \Diamond \Box np) \vdash s}{
+											\infer[todo]{((np \bs s)/np) \otimes \Diamond \Box np \vdash np \bs s}{
+												\infer[todo]{\Diamond \Box np \vdash ((np \bs s)/np) \bs (np \bs s)}{
+													\infer[todo]{\Box (np \vdash \Box ((np \bs s)/np) \bs (np \bs s))}{
+														\infer[todo]{np \vdash ((np \bs s)/np) \bs (np \bs s)}{
+															\infer[todo]{(np \bs s)/np \otimes np \vdash np \bs s}{
+																\infer[todo]{(np \bs s) / np \vdash (np \bs s)/np}{
+																	\infer[todo]{np \bs s \vdash np \bs s}{
+																		\infer[todo]{np \vdash np}{}
+																		&
+																		\infer[todo]{s \vdash s}{}
+																	}
+																	&
+																	\infer[todo]{np \vdash np}{}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					&
+					\infer[todo]{n \vdash n}{}
+				}
+			}
+		}
+	}
+}
+\]
+\end{document}
