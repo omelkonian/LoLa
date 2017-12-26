@@ -67,10 +67,12 @@ We can now proceed with the derivation of
 						\infer[\rd]{np \bs s)/np \otimes \Diamond \Box np \vdash ((np \bs n) \otimes n) \bs s}{\
 							\infer[/]{(np \bs s)/np \vdash (((np \bs n) \otimes n) \bs s)/ \Diamond \Box np}{
 								\infer[\bs]{np \bs  s \vdash ((np \bs n) \otimes n)\bs s}{
-									\infer[\bs]{np \bs s \vdash np \bs s}{
-										\infer[1_{np}]{np \vdash np}{}
-										&
-										\infer[1_n]{n \vdash n}{}
+									\infer[\rd]{(np \bs n) \otimes n \vdash np}{
+										\infer[\bs]{np \bs n \vdash np \bs n}{
+											\infer[1_{np}]{np \vdash np}{}
+											&
+											\infer[1_{n}]{n \vdash n}{}
+										}
 									}
 									&
 									\infer[1_s]{s \vdash s}{}
