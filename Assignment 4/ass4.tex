@@ -34,74 +34,61 @@
 \maketitle
 \section{Syntax}
 \subsection{}
-First, we define the rules of \textit{rightward extraction} $\Xrighta$, $\Xrightc$ as follows:
+First, we define the rules of \textit{rightward extraction} $\Xrighta$, $\Xrightc$:
 \begin{enumerate}
 \begin{minipage}{0.4\textwidth}
 \item[]
 \[
-\infer[]{\Xrighta f: A \otimes (B \otimes \Diamond C) \rightarrow D}{f: (A \otimes B) \otimes \Diamond C \rightarrow D}
+\infer[]{\Xrighta f: (A \otimes B) \otimes \Diamond C \rightarrow D}{f: A \otimes (B \otimes \Diamond C) \rightarrow D}
 \]
 \end{minipage}
 \begin{minipage}{0.6\textwidth}
 \item[]
 \[
-\infer[]{\Xrightc f: A \otimes \Diamond C) \otimes B \rightarrow D}{f: (A \otimes B) \otimes \Diamond C}
+\infer[]{\Xrightc f: (A \otimes B) \otimes \Diamond C \rightarrow D}{f: (A \otimes \Diamond C) \otimes B \rightarrow D}
 \]
 \end{minipage}
 \end{enumerate}
-We can now derive
+We can now proceed with the derivation of
 \[\mbox{$n \otimes ((n \bs n)/(s/ \Diamond \Box np)) \otimes ((np / n) \otimes n) \otimes ((np \bs s) / np)) \rightarrow n$}\] as follows:
 \[
-\infer[\ld]{n \otimes ((n \bs n)/(s/ \Diamond \Box np)) \otimes ((np / n) \otimes n) \otimes ((np \bs s) / np)) \vdash n}{
-	\infer[\ld]{((n \bs n) / (s/ \Diamond \Box np)) \otimes (((np/n) \otimes ((np \bs s)/np)) \vdash n \bs n}{
-		\infer[\rd]{(np/n \otimes n) \otimes (np \bs s) / np \vdash ((n \bs n) / (s/ \Diamond \Box np)) \bs (n \bs n)}{
-			\infer[\rd]{np/n \otimes n \vdash (((n \bs n) /(s / \Diamond \Box np)) \bs (n \bs n)) / ((np \bs s)/np))}{
-				\infer[/]{np/n \vdash ((((n \bs n)/(s / \Diamond \Box np)) \bs (n \bs n)) / ((np \bs s)/np))/n}{
-					\infer[\rhd]{np \vdash ((n \bs n) / (s/ \Diamond \Box np)) \bs (n \bs n))/((np \bs s)/np))}{
-						\infer[\lhd]{np \otimes ((np \bs s)/np) \vdash ((n \bs n)/(s \Diamond \Box np)) \bs (n \bs n)}{
-							\infer[\rd]{(( n \bs n) / (s / \Diamond \Box np)) \otimes (np \otimes ((np \bs s)/np)) \vdash n \bs n}{
-								\infer[/]{(n\bs n)/(s / \Diamond \Box np) \vdash (n \bs n)/(np \otimes ((np \bs s)/np)))}{
-									\infer[\bs]{n \bs n \vdash n \bs n}{
-										\infer[1_n]{n \vdash n}{}
+\infer[\ld]{n \otimes ((n\bs n)/(s / \Diamond \Box np) \otimes (((np/n) \otimes n) \otimes (np \bs s)/np)) \vdash n}{
+	\infer[\rd]{(n\bs n)/(s / \Diamond \Box np) \otimes (((np/n) \otimes (np \bs s)/np) \vdash n \bs n}{
+		\infer[/]{(n \bs n)/(s/ \Diamond \Box np) \vdash (n \bs n)/(((np \bs n) \otimes n) \otimes (np \bs n)/np)}{
+			\infer[/]{n \bs n \vdash n \bs n}{
+				\infer[1_n]{n \vdash n}{}
+				&
+				\infer[1_n]{n \vdash n}{}
+			}
+			&
+			\infer[\rhd]{((np \bs n) \otimes n) \otimes ((np \bs s)/np) \vdash s/ \Diamond \Box np}{
+				\infer[\Xrighta]{(((np \bs n) \otimes n) \otimes ((np \bs s)/np)) \otimes \Diamond \Box np \vdash s}{
+					\infer[\ld]{((np \bs n) \otimes n) \otimes ((np \bs s)/np \otimes \Diamond \Box np) \vdash s}{
+						\infer[\rd]{np \bs s)/np \otimes \Diamond \Box np \vdash ((np \bs n) \otimes n) \bs s}{\
+							\infer[/]{(np \bs s)/np \vdash (((np \bs n) \otimes n) \bs s)/ \Diamond \Box np}{
+								\infer[\bs]{np \bs  s \vdash ((np \bs n) \otimes n)\bs s}{
+									\infer[\bs]{np \bs s \vdash np \bs s}{
+										\infer[1_{np}]{np \vdash np}{}
 										&
 										\infer[1_n]{n \vdash n}{}
 									}
 									&
-									\infer[\rhd]{np \otimes ((np \bs s)/np) \vdash s / \Diamond \Box np \vdash s}{
-										\infer[\Xrighta]{(np \otimes (np \bs s)/np) \otimes \Diamond \Box np \vdash s}{
-											\infer[\ld]{np \otimes (((np \bs s)/np) \otimes \Diamond \Box np) \vdash s}{
-												\infer[\ld]{((np \bs s)/np) \otimes \Diamond \Box np \vdash np \bs s}{
-													\infer[\dd]{\Diamond \Box np \vdash ((np \bs s)/np) \bs (np \bs s)}{
-														\infer[\Box]{\Box (np \vdash \Box ((np \bs s)/np) \bs (np \bs s))}{
-															\infer[\lhd]{np \vdash ((np \bs s)/np) \bs (np \bs s)}{
-																\infer[\rd]{(np \bs s)/np \otimes np \vdash np \bs s}{
-																	\infer[/]{(np \bs s) / np \vdash (np \bs s)/np}{
-																		\infer[\bs]{np \bs s \vdash np \bs s}{
-																			\infer[1_{np}]{np \vdash np}{}
-																			&
-																			\infer[1_s]{s \vdash s}{}
-																		}
-																		&
-																		\infer[1_{np}]{np \vdash np}{}
-																	}
-																}
-															}
-														}
-													}
-												}
-											}
-										}
+									\infer[1_s]{s \vdash s}{}
+								}
+								&
+								\infer[\dd]{\Diamond \Box np \vdash np}{
+									\infer[\Box]{\Box np \vdash \Box np}{
+										\infer[1_{np}]{np \vdash np}{}
 									}
 								}
 							}
 						}
 					}
-					&
-					\infer[1_n]{n \vdash n}{}
 				}
 			}
 		}
 	}
 }
 \]
+
 \end{document}
