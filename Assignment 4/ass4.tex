@@ -26,6 +26,19 @@
 \newcommand{\F}[1]{\lceil #1 \rceil}
 \newcommand{\Arrow}[1]{\xlongrightarrow{\displaystyle #1}}
 
+\usepackage{tikz}
+\usetikzlibrary{calc,shapes,arrows,positioning}
+
+\newcommand{\tikzmark}[1]{\tikz[overlay,remember picture] \node (#1) {};}
+\tikzset{
+	string/.style = {-,semithick}
+}
+
+\newcommand{\tmark}[2]{
+	\underset{\tikzmark{#2}}{\Wv{#1}}
+}
+
+
 \title{\textbf{Logic and Language: Exercise (Week 6)}}
 \author{Orestis Melkonian [6176208], Konstantinos Kogkalidis [6230067]}
 \date{}
@@ -54,7 +67,7 @@ We can now proceed with the derivation of
 \[
 \infer[\ld]{n \otimes ((n\bs n)/(s / \Diamond \Box np) \otimes (((np/n) \otimes n) \otimes (np \bs s)/np)) \vdash n}{
 	\infer[\rd]{(n\bs n)/(s / \Diamond \Box np) \otimes (((np/n) \otimes (np \bs s)/np) \vdash n \bs n}{
-		\infer[/]{(n \bs n)/(s/ \Diamond \Box np) \vdash (n \bs n)/(((np \bs n) \otimes n) \otimes (np \bs n)/np)}{
+		\infer[/]{(n \bs n)/(s/ \Diamond \Box np) \vdash (n \bs n)/(((np \bs n) \otimes n) \otimes (np \bs s)/np)}{
 			\infer[\bs]{n \bs n \vdash n \bs n}{
 				\infer[1_n]{n \vdash n}{}
 				&
@@ -64,7 +77,7 @@ We can now proceed with the derivation of
 			\infer[\rhd]{((np \bs n) \otimes n) \otimes ((np \bs s)/np) \vdash s/ \Diamond \Box np}{
 				\infer[\Xrighta]{(((np \bs n) \otimes n) \otimes ((np \bs s)/np)) \otimes \Diamond \Box np \vdash s}{
 					\infer[\ld]{((np \bs n) \otimes n) \otimes ((np \bs s)/np \otimes \Diamond \Box np) \vdash s}{
-						\infer[\rd]{np \bs s)/np \otimes \Diamond \Box np \vdash ((np \bs n) \otimes n) \bs s}{\
+						\infer[\rd]{(np \bs s)/np \otimes \Diamond \Box np \vdash ((np \bs n) \otimes n) \bs s}{\
 							\infer[/]{(np \bs s)/np \vdash (((np \bs n) \otimes n) \bs s)/ \Diamond \Box np}{
 								\infer[\bs]{np \bs  s \vdash ((np \bs n) \otimes n)\bs s}{
 									\infer[\rd]{(np \bs n) \otimes n \vdash np}{
@@ -92,5 +105,30 @@ We can now proceed with the derivation of
 	}
 }
 \]
+
+\section{Interpretation}
+\subsection{}
+\subsection{}
+By working our way from the leaves of the proof tree, we get the following generalized Kronecker delta:
+\begin{align*}
+& \Wv{island}_{i}\otimes\Wv{that}_{j,k,l,m}\otimes\Wv{the}_{n,o}\otimes\Wv{hurricane}_{p}\otimes\Wv{destroyed}_{q,r,s}
+\overset{\delta^{i,k,l,m,n,o}_{j,t,r,s,q,p}}{\xrightarrow{\hspace*{1cm}}}
+\Wv{v}_r^{obj} \in \textsc{N} \\
+\Wv{v}_r^{obj} = & \Wv{island}_{i}\otimes\Wv{that}_{i,j,k,l}\otimes\Wv{the}_{m,n}\otimes\Wv{hurricane}_{n}\otimes\Wv{destroyed}_{m,k,l} \quad \text{(relabeled)} 
+\end{align*}
+
+We give the matching diagram in the figure below:
+\begin{equation*}
+\tmark{N}{i} \quad \tmark{N}{i'} \otimes \tmark{N}{j} \otimes \tmark{S}{k} \otimes \tmark{N}{l} \quad \tmark{N}{m} \otimes \tmark{N}{n} \quad \tmark{N}{n'} \quad \tmark{N}{m'} \otimes \tmark{S}{k'} \otimes \tmark{N}{l'}
+\begin{tikzpicture}[overlay,remember picture]
+    \draw[string] (i.north) to [bend right=60] node[below] {i} (i'.north);
+    \draw[string] (k.north) to [bend right=90] node[below] {k} (k'.north);
+    \draw[string] (l.north) to [bend right=90] node[below] {l} (l'.north);
+    \draw[string] (m.north) to [bend right=60] node[below] {m} (m'.north);
+    \draw[string] (n.north) to [bend right=60] node[below] {n} (n'.north);
+	\draw[string] (j.north) to node[right] {j} +(0, -1.6cm);
+\end{tikzpicture}
+\end{equation*}
+
 
 \end{document}
