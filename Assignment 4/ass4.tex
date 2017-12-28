@@ -8,8 +8,7 @@
 \usepackage{color}
 \usepackage{proof}
 
-\usepackage{minted}
-
+%\usepackage{minted}
 
 \newcommand{\W}[1]{\textsf{#1}}
 \newcommand{\Wv}[1]{\mathbf{#1}}
@@ -134,7 +133,19 @@ We give the matching diagram in the figure below:
 \end{equation*}
 \\
 \subsection{}
-In order to calculate the semantic value for the relative clause body 'the hurricane destroyed', we first apply $\Wv{the}$ to $\Wv{hurricane}$ (which leaves $\Wv{hurricane}$ unchanged) and then proceed by the tensor application...
+In order to calculate the semantic value for the relative clause body 'the hurricane destroyed', we first apply $\Wv{the}_{MN}$ to $\Wv{hurricane}_{N}$. The operation yields the noun-phrase $\Wv{the\ hurricane}_M$, represented by a row-vector equal to that of $\Wv{hurricane}$. The verb $\Wv{destroyed}_{MKL}$ is then applied to the resulting vector, thereupon we obtain the final result $\Wv{the\ hurricane\ destroyed}_{KL}$.\\
+Concretely, $\Wv{the\ hurricane\ destroyed}_{KL} = \Wv{destroyed}_{MKL}(\Wv{the}_{MN}\Wv{hurricane}_{N})$ is a 2 by 3 matrix, the elements of which are:
+\[
+\left(\begin{array}{ccc}
+12 & -19 & 3 \\
+5 & 10 & 1 \\
+\end{array}
+\right)
+\]
+given by:
+\begin{equation}
+\Wv{the\ hurricane\ destroyed}(k, l) = \sum_{n \epsilon N}^{} \Wv{hurricane}(n) \times \Wv{destroyed}(n,k, l)\ \forall\ k\ \epsilon\ K,\ l\ \epsilon\ L\
+\end{equation}
 
 \subsection{}
 The interpreted type for the relative pronoun is:
@@ -167,17 +178,16 @@ In order to obtain the final interpretation, we do the following (dictated from 
 \]
 \end{enumerate}
 \paragraph{Note}The matrix operations were computed in Python, as shown below:
-\begin{minted}{python}
-import numpy as np
-hurricane = np.array([3,-5,5])
-island = np.array([-5,4,0])
-destroyed = np.array([[[4,-3,1],[5,5,2]],[[-1,-2,2],[2,-3,0]], [[-1,-4,2],[0,-4,-1]]])
-the = np.array([[1, 0,0], [0,1,0], [0,0,1]])
-the_hurricane = np.matmul(the, hurricane)  # == hurricane
-# the_hurricane_destroyed = np.tensordot(the_hurricane, destroyed, axes=1)
-collapsed_destroyed = destroyed[:,0,:] + destroyed[:,1,:]
-the_hurricane_destroyed = np.matmul(hurricane, collapsed_destroyed)
-island_that_the_hurricane_destroyed = island * hurricane_destroyed
-\end{minted}
-
+%\begin{minted}{python}
+%import numpy as np
+%hurricane = np.array([3,-5,5])
+%island = np.array([-5,4,0])
+%destroyed = np.array([[[4,-3,1],[5,5,2]],[[-1,-2,2],[2,-3,0]], [[-1,-4,2],[0,-4,-1]]])
+%the = np.array([[1, 0,0], [0,1,0], [0,0,1]])
+%the_hurricane = np.matmul(the, hurricane)  # == hurricane
+%# the_hurricane_destroyed = np.tensordot(the_hurricane, destroyed, axes=1)
+%collapsed_destroyed = destroyed[:,0,:] + destroyed[:,1,:]
+%the_hurricane_destroyed = np.matmul(hurricane, collapsed_destroyed)
+%island_that_the_hurricane_destroyed = island * hurricane_destroyed
+%\end{minted}
 \end{document}
