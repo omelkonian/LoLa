@@ -58,21 +58,21 @@ We can now proceed with the derivation of
 \[
 \infer[\ld]{n \otimes ((n\bs n)/(s / \Diamond \Box np) \otimes (((np/n) \otimes n) \otimes (np \bs s)/np)) \vdash n}{
 	\infer[\rd]{(n\bs n)/(s / \Diamond \Box np) \otimes (((np/n) \otimes (np \bs s)/np) \vdash n \bs n}{
-		\infer[/]{(n \bs n)/(s/ \Diamond \Box np) \vdash (n \bs n)/(((np \bs n) \otimes n) \otimes (np \bs s)/np)}{
+		\infer[/]{(n \bs n)/(s/ \Diamond \Box np) \vdash (n \bs n)/(((np / n) \otimes n) \otimes (np \bs s)/np)}{
 			\infer[\bs]{n \bs n \vdash n \bs n}{
 				\infer[1_n]{n \vdash n}{}
 				&
 				\infer[1_n]{n \vdash n}{}
 			}
 			&
-			\infer[\rhd]{((np \bs n) \otimes n) \otimes ((np \bs s)/np) \vdash s/ \Diamond \Box np}{
-				\infer[\Xrighta]{(((np \bs n) \otimes n) \otimes ((np \bs s)/np)) \otimes \Diamond \Box np \vdash s}{
-					\infer[\ld]{((np \bs n) \otimes n) \otimes ((np \bs s)/np \otimes \Diamond \Box np) \vdash s}{
-						\infer[\rd]{(np \bs s)/np \otimes \Diamond \Box np \vdash ((np \bs n) \otimes n) \bs s}{\
-							\infer[/]{(np \bs s)/np \vdash (((np \bs n) \otimes n) \bs s)/ \Diamond \Box np}{
-								\infer[\bs]{np \bs  s \vdash ((np \bs n) \otimes n)\bs s}{
-									\infer[\rd]{(np \bs n) \otimes n \vdash np}{
-										\infer[\bs]{np \bs n \vdash np \bs n}{
+			\infer[\rhd]{((np / n) \otimes n) \otimes ((np \bs s)/np) \vdash s/ \Diamond \Box np}{
+				\infer[\Xrighta]{(((np / n) \otimes n) \otimes ((np \bs s)/np)) \otimes \Diamond \Box np \vdash s}{
+					\infer[\ld]{((np / n) \otimes n) \otimes ((np \bs s)/np \otimes \Diamond \Box np) \vdash s}{
+						\infer[\rd]{(np \bs s)/np \otimes \Diamond \Box np \vdash ((np / n) \otimes n) \bs s}{\
+							\infer[/]{(np \bs s)/np \vdash (((np / n) \otimes n) \bs s)/ \Diamond \Box np}{
+								\infer[\bs]{np \bs  s \vdash ((np / n) \otimes n)\bs s}{
+									\infer[\rd]{(np / n) \otimes n \vdash np}{
+										\infer[\bs]{np / n \vdash np / n}{
 											\infer[1_{np}]{np \vdash np}{}
 											&
 											\infer[1_{n}]{n \vdash n}{}
