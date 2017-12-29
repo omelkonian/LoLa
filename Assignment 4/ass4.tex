@@ -133,14 +133,14 @@ Concretely, $\Wv{the\ hurricane\ destroyed}_{KL} = \Wv{destroyed}_{MKL}(\Wv{the}
 \]
 given by:
 \begin{equation*}
-\Wv{the\ hurricane\ destroyed}(k, l) = \sum_{n \epsilon N}^{} \Wv{hurricane}(n) \times \Wv{destroyed}(n,k, l)\ \forall\ k\ \epsilon\ K,\ l\ \epsilon\ L\
+\Wv{the\ hurricane\ destroyed}(k, l) = \sum_{m \epsilon M}^{} \Wv{hurricane}(m) \times \Wv{destroyed}(m,k, l),\ \forall\ k\ \epsilon\ K,\ l\ \epsilon\ L\
 \end{equation*}
 The corresponding Python code is given below:
 \begin{minted}[frame=lines,baselinestretch=1.3]{python}
 import numpy as np
 hurricane, island = np.array([3,-5,5]), np.array([-5,4,0])
-the = np.array([[1, 0,0], [0,1,0], [0,0,1]])
-destroyed = np.array([[[4,-3,1],[5,5,2]],[[-1,-2,2],[2,-3,0]], [[-1,-4,2],[0,-4,-1]]])
+the = np.eye(3)
+destroyed = np.array([[[4,-3,1],[5,5,2]], [[-1,-2,2],[2,-3,0]], [[-1,-4,2],[0,-4,-1]]])
 the_hurricane = np.matmul(the, hurricane)  # == hurricane
 the_hurricane_destroyed = np.tensordot(the_hurricane, destroyed, axes=1)
 \end{minted}
@@ -164,7 +164,7 @@ In order to obtain the final interpretation, we do the following (dictated from 
 \end{array}
 \right)
 \]
-\item Apply $\Wv{collapsed\_destroyed}$ to $\Wv{the\_hurricane}$ in object position:
+\item Apply $\Wv{collapsed\_destroyed}$ to $\Wv{the\_hurricane}$ in subject position:
 \[
 \Wv{the\_hurricane\_destroyed} =
 \left(\begin{array}{ccc} 17 & -9 & 4 \end{array}\right)
@@ -179,11 +179,11 @@ The corresponding Python code is given below:
 \begin{minted}[frame=lines,baselinestretch=1.3]{python}
 import numpy as np
 hurricane, island = np.array([3,-5,5]), np.array([-5,4,0])
-destroyed = np.array([[[4,-3,1],[5,5,2]],[[-1,-2,2],[2,-3,0]], [[-1,-4,2],[0,-4,-1]]])
-the = np.array([[1, 0,0], [0,1,0], [0,0,1]])
+destroyed = np.array([[[4,-3,1],[5,5,2]], [[-1,-2,2],[2,-3,0]], [[-1,-4,2],[0,-4,-1]]])
+the = np.eye(3)
 the_hurricane = np.matmul(the, hurricane)  # == hurricane
-collapsed_destroyed = destroyed[:,0,:] + destroyed[:,1,:]
+collapsed_destroyed = np.sum(destroyed, axis=1) # sum over the S dimension
 the_hurricane_destroyed = np.matmul(hurricane, collapsed_destroyed)
-island_that_the_hurricane_destroyed = island * hurricane_destroyed
+island_that_the_hurricane_destroyed = island * hurricane_destroyed # element-wise
 \end{minted}
 \end{document}
