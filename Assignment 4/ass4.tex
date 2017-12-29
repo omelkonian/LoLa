@@ -4,11 +4,10 @@
 \usepackage{graphicx}
 \usepackage{amssymb}
 \usepackage{amsmath}
-\usepackage{color}
 \usepackage{proof}
-
-\usepackage{minted}
-\usemintedstyle{friendly}
+\usepackage{color}
+%\usepackage{minted}
+%\usemintedstyle{friendly}
 
 \newcommand{\W}[1]{\textsf{#1}}
 \newcommand{\Wv}[1]{\mathbf{#1}}
@@ -72,7 +71,7 @@ We can now proceed with the derivation of
 							\infer[/]{(np \bs s)/np \vdash (((np / n) \otimes n) \bs s)/ \Diamond \Box np}{
 								\infer[\bs]{np \bs  s \vdash ((np / n) \otimes n)\bs s}{
 									\infer[\rd]{(np / n) \otimes n \vdash np}{
-										\infer[\bs]{np / n \vdash np / n}{
+										\infer[/]{np / n \vdash np / n}{
 											\infer[1_{np}]{np \vdash np}{}
 											&
 											\infer[1_{n}]{n \vdash n}{}
@@ -99,6 +98,63 @@ We can now proceed with the derivation of
 
 \section{Interpretation}
 \subsection{}
+We start by assigning a temporary variable at each rule application in the proof tree:
+\[
+\infer[\ld]{{\color{red}q}:n \otimes ((n\bs n)/(s / \Diamond \Box np) \otimes (((np/n) \otimes n) \otimes (np \bs s)/np)) \vdash n}{
+	\infer[\rd]{{\color{red}p}:(n\bs n)/(s / \Diamond \Box np) \otimes (((np/n) \otimes (np \bs s)/np) \vdash n \bs n}{
+		\infer[/]{{\color{red}o}:(n \bs n)/(s/ \Diamond \Box np) \vdash (n \bs n)/(((np / n) \otimes n) \otimes (np \bs s)/np)}{
+			\infer[\bs]{{\color{red}m}:n \bs n \vdash n \bs n}{
+				\infer[1_n]{n \vdash n}{}
+				&
+				\infer[1_n]{n \vdash n}{}
+			}
+			&
+			\infer[\rhd]{{\color{red}n}:((np / n) \otimes n) \otimes ((np \bs s)/np) \vdash s/ \Diamond \Box np}{
+				\infer[\Xrighta]{{\color{red}l}:(((np / n) \otimes n) \otimes ((np \bs s)/np)) \otimes \Diamond \Box np \vdash s}{
+					\infer[\ld]{{\color{red}k}:((np / n) \otimes n) \otimes ((np \bs s)/np \otimes \Diamond \Box np) \vdash s}{
+						\infer[\rd]{{\color{red}j}:(np \bs s)/np \otimes \Diamond \Box np \vdash ((np / n) \otimes n) \bs s}{\
+							\infer[/]{{\color{red}i}:(np \bs s)/np \vdash (((np / n) \otimes n) \bs s)/ \Diamond \Box np}{
+								\infer[\bs]{{\color{red}h}:np \bs  s \vdash ((np / n) \otimes n)\bs s}{
+									\infer[\rd]{{\color{red}g}:(np / n) \otimes n \vdash np}{
+										\infer[/]{{\color{red}f}: np / n \vdash np / n}{
+											\infer[1_{np}]{np \vdash np}{}
+											&
+											\infer[1_{n}]{n \vdash n}{}
+										}
+									}
+									&
+									\infer[1_s]{s \vdash s}{}
+								}
+								&
+								\infer[\dd]{{\color{red}d}: \Diamond \Box np \vdash np}{
+									\infer[\Box]{{\color{red}b}: \Box np \vdash \Box np}{
+										\infer[1_{np}]{np \vdash np}{}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+\]
+We now work our way top-down through the proof-tree, writing the interpretation of each formula using the rules of 3.1.\\
+\begin{align}
+f &: (1_{np} \otimes \eta_n \otimes 1_n) \circ (1_{np \otimes n} \otimes 1_n \otimes 1_n) \circ (1_{np \otimes n} \otimes \epsilon_n)\\
+g \equiv \rd f &: (f \otimes 1_n) \circ (1_{np} \otimes \epsilon_n)\\
+h &: (1_{np} \otimes \eta_{(np/n) \otimes n} \otimes 1_s) \circ (1_{np} \otimes g \otimes 1_{((np/n) \otimes n) \otimes s}) \circ (\epsilon_{np} \otimes 1_{((np/n) \otimes n) \otimes s})\\
+i &: (h \otimes \eta_{np} \otimes 1_{np}) \circ (1_{((np/n)\otimes n) \bs s) \otimes s)} \otimes d \otimes 1_{np}) \otimes (1_{((np/n) \otimes n) \bs s) \otimes s} \otimes \epsilon_{s})\\
+j \equiv \rd i &: (i \otimes 1_{\Diamond \Box np}) \circ (1_{((np/n) \otimes n) \bs s} \otimes \epsilon_{\Diamond \Box np})\\
+k \equiv \ld i &: (1_{(np/n) \otimes n} \otimes i) \circ (\epsilon_{(np/n) \otimes n} \otimes 1_{s})\\
+l \equiv \Xrighta{k} &: \alpha \circ k\\
+m &: (1_{n} \otimes \eta_{n} \otimes 1_{n}) \circ (1_{n} \otimes 1_{n} \otimes 1_{n \otimes n}) \circ (\epsilon_{n} \otimes 1_{n \otimes n})\\
+n \equiv \rhd l &: (1_{(np/n) \otimes n} \otimes \eta_{(np \bs s)/np}) \circ (l \otimes 1_{(np \bs s)/np})\\
+o &: (m \otimes \eta_{(((np/n) \otimes n) \otimes (np \bs s)/np)} \otimes 1_{(s/\Diamond \Box np)}) \circ (1_{ (n \bs n) \otimes (((np/n) \otimes n) \otimes (np \bs s)/np)} \otimes n \otimes 1_{s/\Diamond \Box np}) \circ (1_{ (n \bs n) \otimes (((np/n) \otimes n) \otimes (np \bs s)/np)} \otimes \epsilon_{s/\Diamond \Box np}) \notag \\
+\end{align}
+\\
+Recursively unwrapping the above interpretations, we obtain the final interpretation:
 \subsection{}
 By working our way from the leaves of the proof tree, we get the following generalized Kronecker delta:
 \begin{align*}
@@ -136,14 +192,14 @@ given by:
 \Wv{the\ hurricane\ destroyed}(k, l) = \sum_{m \epsilon M}^{} \Wv{hurricane}(m) \times \Wv{destroyed}(m,k, l),\ \forall\ k\ \epsilon\ K,\ l\ \epsilon\ L\
 \end{equation*}
 The corresponding Python code is given below:
-\begin{minted}[frame=lines,baselinestretch=1.3]{python}
-import numpy as np
-hurricane, island = np.array([3,-5,5]), np.array([-5,4,0])
-the = np.eye(3)
-destroyed = np.array([[[4,-3,1],[5,5,2]], [[-1,-2,2],[2,-3,0]], [[-1,-4,2],[0,-4,-1]]])
-the_hurricane = np.matmul(the, hurricane)  # == hurricane
-the_hurricane_destroyed = np.tensordot(the_hurricane, destroyed, axes=1)
-\end{minted}
+%\begin{minted}[frame=lines,baselinestretch=1.3]{python}
+%import numpy as np
+%hurricane, island = np.array([3,-5,5]), np.array([-5,4,0])
+%the = np.eye(3)
+%destroyed = np.array([[[4,-3,1],[5,5,2]], [[-1,-2,2],[2,-3,0]], [[-1,-4,2],[0,-4,-1]]])
+%the_hurricane = np.matmul(the, hurricane)  # == hurricane
+%the_hurricane_destroyed = np.tensordot(the_hurricane, destroyed, axes=1)
+%\end{minted}
 
 \subsection{}
 The interpreted type for the relative pronoun is:
@@ -176,14 +232,14 @@ In order to obtain the final interpretation, we do the following (dictated from 
 \]
 \end{enumerate}
 The corresponding Python code is given below:
-\begin{minted}[frame=lines,baselinestretch=1.3]{python}
-import numpy as np
-hurricane, island = np.array([3,-5,5]), np.array([-5,4,0])
-destroyed = np.array([[[4,-3,1],[5,5,2]], [[-1,-2,2],[2,-3,0]], [[-1,-4,2],[0,-4,-1]]])
-the = np.eye(3)
-the_hurricane = np.matmul(the, hurricane)  # == hurricane
-collapsed_destroyed = np.sum(destroyed, axis=1) # sum over the S dimension
-the_hurricane_destroyed = np.matmul(hurricane, collapsed_destroyed)
-island_that_the_hurricane_destroyed = island * hurricane_destroyed # element-wise
-\end{minted}
+%\begin{minted}[frame=lines,baselinestretch=1.3]{python}
+%import numpy as np
+%hurricane, island = np.array([3,-5,5]), np.array([-5,4,0])
+%destroyed = np.array([[[4,-3,1],[5,5,2]], [[-1,-2,2],[2,-3,0]], [[-1,-4,2],[0,-4,-1]]])
+%the = np.eye(3)
+%the_hurricane = np.matmul(the, hurricane)  # == hurricane
+%collapsed_destroyed = np.sum(destroyed, axis=1) # sum over the S dimension
+%the_hurricane_destroyed = np.matmul(hurricane, collapsed_destroyed)
+%island_that_the_hurricane_destroyed = island * hurricane_destroyed # element-wise
+%\end{minted}
 \end{document}
