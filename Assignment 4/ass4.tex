@@ -6,8 +6,8 @@
 \usepackage{amsmath}
 \usepackage{proof}
 \usepackage{color}
-%\usepackage{minted}
-%\usemintedstyle{friendly}
+\usepackage{minted}
+\usemintedstyle{friendly}
 
 \newcommand{\W}[1]{\textsf{#1}}
 \newcommand{\Wv}[1]{\mathbf{#1}}
@@ -28,6 +28,10 @@
 \newcommand{\tikzmark}[1]{\tikz[overlay,remember picture] \node (#1) {};}
 \tikzset{string/.style = {-,semithick}}
 \newcommand{\tmark}[2]{\underset{\tikzmark{#2}}{\Wv{#1}}}
+
+\newcommand\n{\textsf{N}}
+\newcommand\s{\textsf{S}}
+\newcommand\ot{\otimes}
 
 \title{\textbf{Logic and Language: Exercise (Week 6)}}
 \author{Orestis Melkonian [6176208], Konstantinos Kogkalidis [6230067]}
@@ -127,7 +131,7 @@ We start by assigning a temporary variable at each rule application in the proof
 								}
 								&
 								\infer[\dd]{{\color{red}d}: \Diamond \Box np \vdash np}{
-									\infer[\Box]{{\color{red}b}: \Box np \vdash \Box np}{
+									\infer[\Box]{\Box np \vdash \Box np}{
 										\infer[1_{np}]{np \vdash np}{}
 									}
 								}
@@ -141,27 +145,41 @@ We start by assigning a temporary variable at each rule application in the proof
 }
 \]
 We now work our way top-down through the proof-tree, writing the interpretation of each formula using the rules of 3.1.\\
-\begin{align}
-f &: (1_{np} \otimes \eta_n \otimes 1_n) \circ (1_{np \otimes n} \otimes 1_n \otimes 1_n) \circ (1_{np \otimes n} \otimes \epsilon_n)\\
-g \equiv \rd f &: (f \otimes 1_n) \circ (1_{np} \otimes \epsilon_n)\\
-h &: (1_{np} \otimes \eta_{(np/n) \otimes n} \otimes 1_s) \circ (1_{np} \otimes g \otimes 1_{((np/n) \otimes n) \otimes s}) \circ (\epsilon_{np} \otimes 1_{((np/n) \otimes n) \otimes s})\\
-i &: (h \otimes \eta_{np} \otimes 1_{np}) \circ (1_{((np/n)\otimes n) \bs s) \otimes s)} \otimes d \otimes 1_{np}) \otimes (1_{((np/n) \otimes n) \bs s) \otimes s} \otimes \epsilon_{s})\\
-j \equiv \rd i &: (i \otimes 1_{\Diamond \Box np}) \circ (1_{((np/n) \otimes n) \bs s} \otimes \epsilon_{\Diamond \Box np})\\
-k \equiv \ld i &: (1_{(np/n) \otimes n} \otimes i) \circ (\epsilon_{(np/n) \otimes n} \otimes 1_{s})\\
-l \equiv \Xrighta{k} &: \alpha \circ k\\
-m &: (1_{n} \otimes \eta_{n} \otimes 1_{n}) \circ (1_{n} \otimes 1_{n} \otimes 1_{n \otimes n}) \circ (\epsilon_{n} \otimes 1_{n \otimes n})\\
-n \equiv \rhd l &: (1_{(np/n) \otimes n} \otimes \eta_{(np \bs s)/np}) \circ (l \otimes 1_{(np \bs s)/np})\\
-o &: (m \otimes \eta_{(((np/n) \otimes n) \otimes (np \bs s)/np)} \otimes 1_{(s/\Diamond \Box np)}) \circ (1_{ (n \bs n) \otimes (((np/n) \otimes n) \otimes (np \bs s)/np)} \otimes n \otimes 1_{s/\Diamond \Box np}) \circ (1_{ (n \bs n) \otimes (((np/n) \otimes n) \otimes (np \bs s)/np)} \otimes \epsilon_{s/\Diamond \Box np}) \notag \\
-\end{align}
+\begin{align*}
+\F{f} &: (1_\n \ot \eta_\n \ot 1_\n) \circ (1_{\n \ot \n} \ot 1_\n \ot 1_\n) \circ (1_{\n \ot \n} \ot \epsilon_\n)	\\
+\F{g} \equiv \F{\rd f} &: (\F{f} \ot 1_\n) \circ (1_\n \ot \epsilon_\n)\\
+\F{h} &: (1_\n \ot \eta_{\n \ot \n \ot \n} \ot 1_\s) \circ (1_\n \ot \F{g} \ot 1_{\n \ot \n \ot \n \ot \s}) \circ (\epsilon_\n \ot 1_{\n \ot \n \ot \n \ot \s})\\
+\F{d} &: 1_\n \\
+\F{i} &: (\F{h} \ot \eta_\n \ot 1_\n) \circ (1_{\n \ot \n \ot \n \ot \s \ot \s} \ot \F{d} \ot 1_\n) \ot (1_{\n \ot \n \ot \n \ot \s \ot \s} \ot \epsilon_\s)\\
+\F{j} \equiv \F{\rd i} &: (\F{i} \ot 1_\n) \circ (1_{\n \ot \n \ot \n \ot \s} \ot \epsilon_\n)\\
+\F{k} \equiv \F{\ld j} &: (1_{\n \ot \n \ot \n} \ot \F{j}) \circ (\epsilon_{\n \ot \n \ot \n} \ot 1_\s)\\
+\F{l} \equiv \Xrighta{k} &: \alpha \circ \F{k}\\
+\F{m} &: (1_\n \ot \eta_\n \ot 1_\n) \circ (1_\n \ot 1_\n \ot 1_{\n \ot \n}) \circ (\epsilon_\n \ot 1_{\n \ot \n})\\
+\F{n} \equiv \F{\rhd l} &: (1_{\n \ot \n \ot \n} \ot \eta_{\n \ot \s \ot \n}) \circ (\F{l} \ot 1_{\n \ot \s \ot \n})\\
+\F{o} &: (\F{m} \ot \eta_{\n \ot \n \ot \n \ot \n \ot \s \ot \n} \ot 1_{\s \ot \n}) \circ (1_{\n \ot \n \ot \n \ot \n \ot \n \ot \n \ot \s \ot \n} \ot \F{n} \ot 1_{\s \ot \n}) \\
+& \quad \circ (1_{\n \ot \n \ot \n \ot \n \ot \n \ot \n \ot \s \ot \n} \ot \epsilon_{\s \ot \n}) \\
+\F{p} \equiv \F{\rd o} &: (\F{o} \ot 1_{\n \ot \n \ot \n \ot \n \ot \s \ot \n}) \circ (1_{\n \ot \n} \ot \epsilon_{\n \ot \n \ot \n \ot \n \ot \s \ot \n})\\
+\F{q} \equiv \F{\ld p} &: (1_\n \ot \F{p}) \circ (\epsilon_\n \ot 1_\n)\\
+\end{align*}
+Recursively unwrapping the above, we obtain the (unarguably humongous) final interpretation:
+\begin{align*}
+& (1_\n \ot ((((((1_\n \ot \eta_\n \ot 1_\n) \circ (1_\n \ot 1_\n \ot 1_{\n \ot \n}) \circ (\epsilon_\n \ot 1_{\n \ot \n})) \ot \eta_{\n \ot \n \ot \n \ot \n \ot \s \ot \n} \ot 1_{\s \ot \n}) \circ (1_{\n \ot \n \ot \n \ot \n \ot \n \ot \n \ot \s \ot \n}
 \\
-Recursively unwrapping the above interpretations, we obtain the final interpretation:
+& \ot ((1_{\n \ot \n \ot \n} \ot \eta_{\n \ot \s \ot \n}) \circ ((\alpha \circ ((1_{\n \ot \n \ot \n} \ot((((((1_\n \ot \eta_{\n \ot \n \ot \n} \ot 1_\s) \circ (1_\n \ot((((1_\n \ot \eta_\n \ot 1_\n) \circ (1_{\n \ot \n}
+\\
+& \ot 1_\n \ot 1_\n) \circ (1_{\n \ot \n} \ot \epsilon_\n))\ot 1_\n) \circ (1_\n \ot \epsilon_\n)) \ot 1_{\n \ot \n \ot \n \ot \s}) \circ (\epsilon_\n \ot 1_{\n \ot \n \ot \n \ot \s})) \ot \eta_\n \ot 1_\n) \circ (1_{\n \ot \n \ot \n \ot \s \ot \s}
+\\
+& \ot1_\n \ot 1_\n) \ot (1_{\n \ot \n \ot \n \ot \s \ot \s} \ot \epsilon_\s)) \ot 1_\n) \circ (1_{\n \ot \n \ot \n \ot \s} \ot \epsilon_\n))) \circ (\epsilon_{\n \ot \n \ot \n} \ot 1_\s))) \ot 1_{\n \ot \s \ot \n})) \ot 1_{\s \ot \n}))
+\\
+& \ot 1_{\n \ot \n \ot \n \ot \n \ot \s \ot \n}) \circ (1_{\n \ot \n} \ot \epsilon_{\n \ot \n \ot \n \ot \n \ot \s \ot \n}))) \circ (\epsilon_\n \ot 1_\n)
+\end{align*}
 \subsection{}
 By working our way from the leaves of the proof tree, we get the following generalized Kronecker delta:
 \begin{align*}
-& \Wv{island}_{i}\otimes\Wv{that}_{j,k,l,m}\otimes\Wv{the}_{n,o}\otimes\Wv{hurricane}_{p}\otimes\Wv{destroyed}_{q,r,s}
+& \Wv{island}_{i}\ot\Wv{that}_{j,k,l,m}\ot\Wv{the}_{n,o}\otimes\Wv{hurricane}_{p}\ot\Wv{destroyed}_{q,r,s}
 \overset{\delta^{i,k,l,m,n,o}_{j,t,r,s,q,p}}{\xrightarrow{\hspace*{1cm}}}
 \Wv{v}_r^{obj} \in \textsc{N} \\
-\Wv{v}_r^{obj} = & \Wv{island}_{i}\otimes\Wv{that}_{i,j,k,l}\otimes\Wv{the}_{m,n}\otimes\Wv{hurricane}_{n}\otimes\Wv{destroyed}_{m,k,l} \quad \text{(relabeled)} 
+\Wv{v}_r^{obj} = & \Wv{island}_{i}\ot\Wv{that}_{i,j,k,l}\ot\Wv{the}_{m,n}\ot\Wv{hurricane}_{n}\ot\Wv{destroyed}_{m,k,l} \quad \text{(relabeled)} 
 \end{align*}
 
 We give the matching diagram in the figure below:
@@ -192,14 +210,13 @@ given by:
 \Wv{the\ hurricane\ destroyed}(k, l) = \sum_{m \epsilon M}^{} \Wv{hurricane}(m) \times \Wv{destroyed}(m,k, l),\ \forall\ k\ \epsilon\ K,\ l\ \epsilon\ L\
 \end{equation*}
 The corresponding Python code is given below:
-%\begin{minted}[frame=lines,baselinestretch=1.3]{python}
-%import numpy as np
-%hurricane, island = np.array([3,-5,5]), np.array([-5,4,0])
-%the = np.eye(3)
-%destroyed = np.array([[[4,-3,1],[5,5,2]], [[-1,-2,2],[2,-3,0]], [[-1,-4,2],[0,-4,-1]]])
-%the_hurricane = np.matmul(the, hurricane)  # == hurricane
-%the_hurricane_destroyed = np.tensordot(the_hurricane, destroyed, axes=1)
-%\end{minted}
+\begin{minted}[frame=lines,baselinestretch=1.3]{python}
+import numpy as np
+hurricane, island, the = np.array([3,-5,5]), np.array([-5,4,0]), np.eye(3)
+destroyed = np.array([[[4,-3,1],[5,5,2]], [[-1,-2,2],[2,-3,0]], [[-1,-4,2],[0,-4,-1]]])
+the_hurricane = np.matmul(the, hurricane)  # == hurricane
+the_hurricane_destroyed = np.tensordot(the_hurricane, destroyed, axes=1)
+\end{minted}
 
 \subsection{}
 The interpreted type for the relative pronoun is:
@@ -232,14 +249,13 @@ In order to obtain the final interpretation, we do the following (dictated from 
 \]
 \end{enumerate}
 The corresponding Python code is given below:
-%\begin{minted}[frame=lines,baselinestretch=1.3]{python}
-%import numpy as np
-%hurricane, island = np.array([3,-5,5]), np.array([-5,4,0])
-%destroyed = np.array([[[4,-3,1],[5,5,2]], [[-1,-2,2],[2,-3,0]], [[-1,-4,2],[0,-4,-1]]])
-%the = np.eye(3)
-%the_hurricane = np.matmul(the, hurricane)  # == hurricane
-%collapsed_destroyed = np.sum(destroyed, axis=1) # sum over the S dimension
-%the_hurricane_destroyed = np.matmul(hurricane, collapsed_destroyed)
-%island_that_the_hurricane_destroyed = island * hurricane_destroyed # element-wise
-%\end{minted}
+\begin{minted}[frame=lines,baselinestretch=1.3]{python}
+import numpy as np
+hurricane, island, the = np.array([3,-5,5]), np.array([-5,4,0]), np.eye(3)
+destroyed = np.array([[[4,-3,1],[5,5,2]], [[-1,-2,2],[2,-3,0]], [[-1,-4,2],[0,-4,-1]]])
+the_hurricane = np.matmul(the, hurricane)  # == hurricane
+collapsed_destroyed = np.sum(destroyed, axis=1) # sum over the S dimension
+the_hurricane_destroyed = np.matmul(hurricane, collapsed_destroyed)
+island_that_the_hurricane_destroyed = island * hurricane_destroyed # element-wise
+\end{minted}
 \end{document}
