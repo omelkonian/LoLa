@@ -115,13 +115,18 @@ g = lambda initial_symbol: Grammar(
     # TOP
     ('S', ['W'], [[x, y, z]]),
     # Base
-    # ('W', e, [[], [], []]),
+    all_o('W', e, [a, b, c]),
     # Concatenation
-    all_o('W', ['W', 'W'], [x, y, z], [k, l, m], x=k, y=l, z=m),
+    # all_o('W', ['W', 'W'], [x, y, z], [k, l, m], x=k, y=l, z=m),
     # 3-ins
-    # all_o('W', ['W'], [x, y, z], [a, b, c]),
+    all_o('W', ['W'], [x, y, z], [a, b, c]),
 
-    all_o('W', e, [a, b, c])
+    # ======================
+    # Debugging
+    # ======================
+    [('_' + k, [k], [[x, y]]) for k in ['W']],
+    [('$_' + k, [k], [[x, '$', y]]) for k in ['W']],
+
 
 ], topdown=True, filtered=True, initial_symbol=initial_symbol)
 
