@@ -1,0 +1,81 @@
+digraph web {
+	rankdir=LR
+	subgraph cluster_00 {
+		"1@A+"
+		"2@A+"
+		"3@B+"
+		"4@A+"
+		"5@B+"
+		"6@B+"
+		"7@A+"
+		"8@C+"
+		"9@B+"
+		"10@C+"
+		"11@C+"
+		"12@C+"
+		"1@A+" -> "2@A+" [color=red constraint=true dir=none]
+		"2@A+" -> "3@B+" [color=red constraint=true dir=none]
+		"3@B+" -> "4@A+" [color=red constraint=true dir=none]
+		"4@A+" -> "5@B+" [color=red constraint=true dir=none]
+		"5@B+" -> "6@B+" [color=red constraint=true dir=none]
+		"6@B+" -> "7@A+" [color=red constraint=true dir=none]
+		"7@A+" -> "8@C+" [color=red constraint=true dir=none]
+		"8@C+" -> "9@B+" [color=red constraint=true dir=none]
+		"9@B+" -> "10@C+" [color=red constraint=true dir=none]
+		"10@C+" -> "11@C+" [color=red constraint=true dir=none]
+		"11@C+" -> "12@C+" [color=red constraint=true dir=none]
+	}
+	"2@A+" -> "13@C-" [constraint=true]
+	"3@B+" -> "13@C-" [constraint=true]
+	"4@A+" -> "14@C-" [constraint=true]
+	"5@B+" -> "14@C-" [constraint=true]
+	"7@A+" -> "15@B-" [constraint=true]
+	"8@C+" -> "15@B-" [constraint=true]
+	"9@B+" -> "16@A-" [constraint=true]
+	"10@C+" -> "16@A-" [constraint=true]
+	subgraph cluster_0 {
+		"13@C-"
+		"14@C-"
+		"15@B-"
+		"16@A-"
+		"13@C-" -> "14@C-" [color=red constraint=true dir=none]
+		"14@C-" -> "15@B-" [color=red constraint=true dir=none]
+		"15@B-" -> "16@A-" [color=red constraint=true dir=none]
+	}
+	"14@C-" -> "18@C-" [constraint=true]
+	"6@B+" -> "17@B+" [constraint=true]
+	"15@B-" -> "19@C+" [constraint=true]
+	"16@A-" -> "19@C+" [constraint=true]
+	subgraph cluster_1 {
+		"17@B+"
+		"18@C-"
+		"19@C+"
+		"17@B+" -> "18@C-" [color=red constraint=true dir=none]
+		"18@C-" -> "19@C+" [color=red constraint=true dir=none]
+	}
+	"13@C-" -> "21@C-" [constraint=true]
+	"17@B+" -> "20@B+" [constraint=true]
+	"18@C-" -> "22@W" [constraint=true]
+	"19@C+" -> "22@W" [constraint=true]
+	subgraph cluster_2 {
+		"20@B+"
+		"21@C-"
+		"22@W"
+		"20@B+" -> "21@C-" [color=red constraint=true dir=none]
+		"21@C-" -> "22@W" [color=red constraint=true dir=none]
+	}
+	"1@A+" -> "23@C-" [constraint=true]
+	"20@B+" -> "23@C-" [constraint=true]
+	"21@C-" -> "24@W" [constraint=true]
+	"11@C+" -> "24@W" [constraint=true]
+	subgraph cluster_3 {
+		"23@C-"
+		"24@W"
+		"23@C-" -> "24@W" [color=red constraint=true dir=none]
+	}
+	"23@C-" -> "25@W" [constraint=true]
+	"12@C+" -> "25@W" [constraint=true]
+	subgraph cluster_4 {
+		"25@W"
+	}
+}

@@ -1,8 +1,10 @@
 import itertools as it
+from functools import partial
 import colorsys
 import numpy as np
 from colors import *
 import argparse
+from graphviz import Graph, Digraph
 
 ########################################################################################################################
 # 2017, Dr. Michael Moortgat, Utrecht University
@@ -111,6 +113,10 @@ def taquin_mod(words,out=[]):
 ########################################################################################################################
 # 2017, Orestis Melkonian & Konstantinos Kogkalidis, Utrecht University
 ########################################################################################################################
+
+########################################################################################################################
+# Taquin rendering
+########################################################################################################################
 def all_orbits(k, n):
     orbits = taquin_mod(list(idyck(k, n)))
     # return orbits_sort_by_rank(list(map(lambda orbit: orbit_sort_by_rank(orbit), orbits)))
@@ -173,6 +179,135 @@ def render_all_orbits(k, n, to_print=True):
             render_promotion(orbit[0], k)
             # render_promotion(orbit[0], k)
 
+########################################################################################################################
+# Web rendering
+########################################################################################################################
+
+class Web(object):
+
+    def __init__(self, word) -> None:
+        self.counter = 0
+        self.rank = 0
+        self.word = word
+        self.g = Digraph('web', filename='web.gv')
+        self.g.attr(rankdir='LR')
+        with self.g.subgraph(name='cluster_00') as init_g:
+            # init_g.attr(rankdir='TB')
+            self.init_g = init_g
+            self.fringe = self.word_to_nodes(constraint=True)
+        # g.attr(rankdir='LR', size='8,5')
+        # g.attr('node', shape='doublecircle')
+
+    def grow(self):
+        print('Growing...')
+        print('Fringe: {}'.format(self.fringe))
+        # Visit fringe
+        new_fringe = []
+        used = False
+        to_iterate = [i for i in self.fringe if self.extract_value(i) != 'W']
+        new_nodes = []
+        with self.g.subgraph(name='cluster_{}'.format(self.rank)) as sub_g:
+            # sub_g.attr(rankdir='LR')
+            for l, r in zip(to_iterate, to_iterate[1:]):
+                # Check if you can use `l`
+                if used:
+                    used = False
+                    continue
+                # Check if growth rule applies
+                new_ids = self.apply_growth_rule(l, r, graph=sub_g)
+                print('\tNewIDs: {}'.format(new_ids))
+                used = new_ids is not None
+
+                # Update new_fringe
+                if used:
+                    if len(new_ids) == 2:
+                        self.connect(l, new_ids[1], constraint=True)
+                        self.connect(r, new_ids[0], constraint=True)
+                    else:
+                        for id in new_ids:
+                            self.connect(l, id, constraint=True)
+                            self.connect(r, id, constraint=True)
+                    new_fringe.extend(new_ids)
+                    new_nodes.extend(new_ids)
+                else:
+                    new_fringe.append(l)
+
+            self.same_depth(new_nodes, graph=sub_g, constraint=True)
+
+        if not used:
+            new_fringe.append(self.fringe[-1])
+
+        if new_fringe == self.fringe:
+            raise RuntimeError("Not growing")
+
+        self.fringe = [i for i in new_fringe if self.extract_value(i) != 'W']
+        print('Fringe\': {}'.format(self.fringe))
+
+        # Grow from new fringe
+        if self.fringe:
+            self.rank += 1
+            self.grow()
+        else:
+            self.rank = 0
+
+    def apply_growth_rule(self, l_id, r_id, graph=None):
+        l, r = map(self.extract_value, [l_id, r_id])
+        ret = {
+            ('A+', 'B+'): ['C-'],
+            ('A+', 'C+'): ['B-'],
+            ('B+', 'C+'): ['A-'],
+            ('B-', 'A-'): ['C+'],
+            ('C-', 'A-'): ['B+'],
+            ('C-', 'B-'): ['A+'],
+            # +/-
+            ('B+', 'B-'): ['A-', 'A+'],
+            ('B+', 'A-'): ['A-', 'B+'],
+            ('A+', 'B-'): ['B-', 'A+'],
+            ('A+', 'A-'): ['W'],
+            # -/+
+            ('B-', 'B+'): ['C+', 'C-'],
+            ('B-', 'C+'): ['C+', 'B-'],
+            ('C-', 'B+'): ['B+', 'C-'],
+            ('C-', 'C+'): ['W'],
+            # Closure
+            # ('W', 'W'): [],
+        }.get((l, r), None)
+        print('\t{} <- {}, {}'.format(ret, l, r))
+        if ret is not None:
+            ret = list(map(partial(self.fresh_id, graph=graph), ret))
+        return ret
+
+    def word_to_nodes(self, constraint=False):
+        # word: "aabbcc"
+        nodes = []
+        for c in self.word:
+            fresh_id = self.fresh_id(c.upper() + '+', graph=self.init_g)
+            nodes.append(fresh_id)
+        self.same_depth(nodes, self.init_g, constraint=constraint)
+        return nodes
+
+    def extract_value(self, id):
+        return id.split('@')[1]
+
+    def fresh_id(self, value, graph=None):
+        self.counter += 1
+        new_id = '{}@{}'.format(self.counter, value)
+        (graph or self.g).node(new_id)
+        return new_id
+
+    def connect(self, id1, id2, graph=None, constraint=False, **style):
+        (graph or self.g).edge(id1, id2, constraint='true' if constraint else 'false', **style)
+
+    def same_depth(self, ids, graph=None, constraint=False):
+        for l, r in zip(ids, ids[1:]):
+            self.connect(l, r, graph=graph, constraint=constraint, color='red', dir='none')
+
+    def render(self):
+        self.grow()
+        print('Graph: {}'.format(self.g))
+        self.g.view()
+
+
 #
 # Entry-point
 #
@@ -181,5 +316,10 @@ if __name__ == '__main__':
     parser.add_argument('-k', type=int, help='symbols in the alphabet', default=3, nargs='?')
     parser.add_argument('-n', type=int, help='number of "abc" occurences', default=3, nargs='?')
     parser.add_argument('-o', help='enable output', action='store_true')
+    parser.add_argument('-w', type=str, help='single word to check', nargs='?')
     args = parser.parse_args()
-    render_all_orbits(args.k, args.n, to_print=args.o)
+
+    if 'w' in vars(args):
+        Web(args.w).render()
+    else:
+        render_all_orbits(args.k, args.n, to_print=args.o)
