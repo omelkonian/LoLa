@@ -179,10 +179,10 @@ def render_all_orbits(k, n, to_print=True):
             render_promotion(orbit[0], k)
             # render_promotion(orbit[0], k)
 
+
 ########################################################################################################################
 # Web rendering
 ########################################################################################################################
-
 class Web(object):
 
     def __init__(self, word) -> None:
@@ -191,10 +191,12 @@ class Web(object):
         self.word = word
         self.g = Digraph('web', filename='web.gv')
         self.g.attr(rankdir='LR')
+        # self.g.attr(newrank='true')
         # self.g.attr(ranksep='1.2 equally')
         # self.g.attr(mindist='20.0')
         with self.g.subgraph(name="cluster_0") as init_g:
-            init_g.attr(rankdir='LR')
+            # init_g.attr(rankdir='LR')
+            init_g.attr(rank='same')
             self.fringe = self.word_to_nodes(constraint=True, graph=init_g)
 
     def grow(self):
@@ -203,36 +205,46 @@ class Web(object):
         used = False
         to_iterate = [i for i in self.fringe if self.extract_value(i) != 'W']
         new_nodes = []
-        for l, r in zip(to_iterate, to_iterate[1:]):
-            # Check if you can use `l`
-            if used:
-                used = False
-                continue
-            # Check if growth rule applies
-            new_ids = self.apply_growth_rule(l, r)
-            used = new_ids is not None
+        with self.g.subgraph(name='cluster_{}'.format(self.rank + 1)) as sub_g:
+            sub_g.attr(rank='same')
+            for l, r in zip(to_iterate, to_iterate[1:]):
+                # Check if you can use `l`
+                if used:
+                    used = False
+                    continue
+                # Check if growth rule applies
+                new_ids = self.apply_growth_rule(l, r)
+                used = new_ids is not None
 
-            # Update new_fringe
-            if used:
-                if len(new_ids) == 2:
-                    intermediate = self.fresh_id(',')
-                    self.connect(l, intermediate, constraint=True)
-                    self.connect(r, intermediate, constraint=True)
-                    self.connect(new_ids[0], new_ids[1], constraint=True, color='red', dir='none')
-                    self.connect(intermediate, new_ids[1], constraint=True)
-                    self.connect(intermediate, new_ids[0], constraint=True)
-                elif not new_ids:
-                    self.connect(l, r, constraint=False, dir='both')
+                # Update new_fringe
+                if used:
+                    if len(new_ids) == 2:  # X, Y -> Y, X
+                        intermediate = self.fresh_id(',', graph=sub_g)
+                        self.connect(l, intermediate, constraint=True, graph=sub_g)
+                        self.connect(intermediate, r, constraint=True, graph=sub_g, dir='back')
+                        # self.connect(new_ids[0], new_ids[1], constraint=False, color='red', dir='none', graph=sub_g)
+                        self.connect(intermediate, new_ids[0], constraint=True, graph=sub_g)
+                        self.connect(new_ids[1], intermediate, constraint=True, graph=sub_g, dir='back')
+                    elif len(new_ids) == 1:  # X, Y -> Z
+                        for id in new_ids:
+                            self.connect(l, id, constraint=True, graph=sub_g)
+                            self.connect(id, r, constraint=True, graph=sub_g, dir='back')
+                    else:  # X, Y -> W
+                        w = self.fresh_id('W', color='green', graph=sub_g)
+                        self.connect(l, w, constraint=True, graph=sub_g)
+                        self.connect(w, r, constraint=True, graph=sub_g, dir='back')
+                        # self.connect(l, r, constraint=False, dir='both')
+
+                    new_fringe.extend(new_ids)
+                    new_nodes.extend(new_ids)
                 else:
-                    for id in new_ids:
-                        self.connect(l, id, constraint=True)
-                        self.connect(r, id, constraint=True)
-                new_fringe.extend(new_ids)
-                new_nodes.extend(new_ids)
-            else:
-                new_fringe.append(l)
+                    # Propagate dummy downwards
+                    dummy = self.fresh_id(self.extract_value(l), graph=sub_g)
+                    self.connect(l, dummy, style='dashed', constraint=False, graph=sub_g)
+                    new_fringe.append(dummy)
 
-            # self.same_depth(new_nodes, constraint=False)
+            print('New-nodes: {}'.format(new_nodes))
+            self.same_depth(new_fringe, constraint=True, graph=sub_g)
 
         if not used:
             new_fringe.append(self.fringe[-1])
@@ -288,10 +300,10 @@ class Web(object):
     def extract_value(self, id):
         return id.split('@')[1]
 
-    def fresh_id(self, value, graph=None):
+    def fresh_id(self, value, graph=None, **style):
         self.counter += 1
         new_id = '{}@{}'.format(self.counter, value)
-        (graph or self.g).node(new_id)
+        (graph or self.g).node(new_id, **style)
         return new_id
 
     def connect(self, id1, id2, graph=None, constraint=False, **style):
