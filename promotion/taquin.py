@@ -191,48 +191,48 @@ class Web(object):
         self.word = word
         self.g = Digraph('web', filename='web.gv')
         self.g.attr(rankdir='LR')
-        with self.g.subgraph(name='cluster_00') as init_g:
-            # init_g.attr(rankdir='TB')
-            self.init_g = init_g
-            self.fringe = self.word_to_nodes(constraint=True)
-        # g.attr(rankdir='LR', size='8,5')
-        # g.attr('node', shape='doublecircle')
+        # self.g.attr(ranksep='1.2 equally')
+        # self.g.attr(mindist='20.0')
+        with self.g.subgraph(name="cluster_0") as init_g:
+            init_g.attr(rankdir='LR')
+            self.fringe = self.word_to_nodes(constraint=True, graph=init_g)
 
     def grow(self):
-        print('Growing...')
-        print('Fringe: {}'.format(self.fringe))
         # Visit fringe
         new_fringe = []
         used = False
         to_iterate = [i for i in self.fringe if self.extract_value(i) != 'W']
         new_nodes = []
-        with self.g.subgraph(name='cluster_{}'.format(self.rank)) as sub_g:
-            # sub_g.attr(rankdir='LR')
-            for l, r in zip(to_iterate, to_iterate[1:]):
-                # Check if you can use `l`
-                if used:
-                    used = False
-                    continue
-                # Check if growth rule applies
-                new_ids = self.apply_growth_rule(l, r, graph=sub_g)
-                print('\tNewIDs: {}'.format(new_ids))
-                used = new_ids is not None
+        for l, r in zip(to_iterate, to_iterate[1:]):
+            # Check if you can use `l`
+            if used:
+                used = False
+                continue
+            # Check if growth rule applies
+            new_ids = self.apply_growth_rule(l, r)
+            used = new_ids is not None
 
-                # Update new_fringe
-                if used:
-                    if len(new_ids) == 2:
-                        self.connect(l, new_ids[1], constraint=True)
-                        self.connect(r, new_ids[0], constraint=True)
-                    else:
-                        for id in new_ids:
-                            self.connect(l, id, constraint=True)
-                            self.connect(r, id, constraint=True)
-                    new_fringe.extend(new_ids)
-                    new_nodes.extend(new_ids)
+            # Update new_fringe
+            if used:
+                if len(new_ids) == 2:
+                    intermediate = self.fresh_id(',')
+                    self.connect(l, intermediate, constraint=True)
+                    self.connect(r, intermediate, constraint=True)
+                    self.connect(new_ids[0], new_ids[1], constraint=True, color='red', dir='none')
+                    self.connect(intermediate, new_ids[1], constraint=True)
+                    self.connect(intermediate, new_ids[0], constraint=True)
+                elif not new_ids:
+                    self.connect(l, r, constraint=False, dir='both')
                 else:
-                    new_fringe.append(l)
+                    for id in new_ids:
+                        self.connect(l, id, constraint=True)
+                        self.connect(r, id, constraint=True)
+                new_fringe.extend(new_ids)
+                new_nodes.extend(new_ids)
+            else:
+                new_fringe.append(l)
 
-            self.same_depth(new_nodes, graph=sub_g, constraint=True)
+            # self.same_depth(new_nodes, constraint=False)
 
         if not used:
             new_fringe.append(self.fringe[-1])
@@ -241,7 +241,6 @@ class Web(object):
             raise RuntimeError("Not growing")
 
         self.fringe = [i for i in new_fringe if self.extract_value(i) != 'W']
-        print('Fringe\': {}'.format(self.fringe))
 
         # Grow from new fringe
         if self.fringe:
@@ -263,27 +262,27 @@ class Web(object):
             ('B+', 'B-'): ['A-', 'A+'],
             ('B+', 'A-'): ['A-', 'B+'],
             ('A+', 'B-'): ['B-', 'A+'],
-            ('A+', 'A-'): ['W'],
+            ('A+', 'A-'): [],
             # -/+
             ('B-', 'B+'): ['C+', 'C-'],
             ('B-', 'C+'): ['C+', 'B-'],
             ('C-', 'B+'): ['B+', 'C-'],
-            ('C-', 'C+'): ['W'],
-            # Closure
-            # ('W', 'W'): [],
+            ('C-', 'C+'): [],
         }.get((l, r), None)
-        print('\t{} <- {}, {}'.format(ret, l, r))
         if ret is not None:
             ret = list(map(partial(self.fresh_id, graph=graph), ret))
         return ret
 
-    def word_to_nodes(self, constraint=False):
+    def word_to_nodes(self, graph=None, constraint=False):
         # word: "aabbcc"
+        to_reverse = False
         nodes = []
-        for c in self.word:
-            fresh_id = self.fresh_id(c.upper() + '+', graph=self.init_g)
+        for c in (reversed(self.word) if to_reverse else self.word):
+            fresh_id = self.fresh_id(c.upper() + '+', graph=graph)
             nodes.append(fresh_id)
-        self.same_depth(nodes, self.init_g, constraint=constraint)
+        if to_reverse:
+            nodes.reverse()
+        self.same_depth(nodes, graph=graph, constraint=constraint)
         return nodes
 
     def extract_value(self, id):
@@ -300,7 +299,7 @@ class Web(object):
 
     def same_depth(self, ids, graph=None, constraint=False):
         for l, r in zip(ids, ids[1:]):
-            self.connect(l, r, graph=graph, constraint=constraint, color='red', dir='none')
+            self.connect(l, r, graph=(graph or self.g), constraint=constraint, color='red', dir='none')
 
     def render(self):
         self.grow()
