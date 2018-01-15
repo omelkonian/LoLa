@@ -1,116 +1,300 @@
 digraph web {
-	rankdir=LR
+	rankdir=TB
+	newrank=true
+	ranksep=".5 equally"
 	subgraph cluster_0 {
 		rank=same
 		"1@A+"
 		"2@A+"
 		"3@A+"
-		"4@B+"
+		"4@A+"
 		"5@B+"
-		"6@B+"
-		"7@C+"
-		"8@C+"
-		"9@C+"
+		"6@A+"
+		"7@B+"
+		"8@B+"
+		"9@B+"
+		"10@C+"
+		"11@A+"
+		"12@B+"
+		"13@C+"
+		"14@B+"
+		"15@C+"
+		"16@C+"
+		"17@C+"
+		"18@C+"
 		"1@A+" -> "2@A+" [color=red constraint=true dir=none]
 		"2@A+" -> "3@A+" [color=red constraint=true dir=none]
-		"3@A+" -> "4@B+" [color=red constraint=true dir=none]
-		"4@B+" -> "5@B+" [color=red constraint=true dir=none]
-		"5@B+" -> "6@B+" [color=red constraint=true dir=none]
-		"6@B+" -> "7@C+" [color=red constraint=true dir=none]
-		"7@C+" -> "8@C+" [color=red constraint=true dir=none]
-		"8@C+" -> "9@C+" [color=red constraint=true dir=none]
+		"3@A+" -> "4@A+" [color=red constraint=true dir=none]
+		"4@A+" -> "5@B+" [color=red constraint=true dir=none]
+		"5@B+" -> "6@A+" [color=red constraint=true dir=none]
+		"6@A+" -> "7@B+" [color=red constraint=true dir=none]
+		"7@B+" -> "8@B+" [color=red constraint=true dir=none]
+		"8@B+" -> "9@B+" [color=red constraint=true dir=none]
+		"9@B+" -> "10@C+" [color=red constraint=true dir=none]
+		"10@C+" -> "11@A+" [color=red constraint=true dir=none]
+		"11@A+" -> "12@B+" [color=red constraint=true dir=none]
+		"12@B+" -> "13@C+" [color=red constraint=true dir=none]
+		"13@C+" -> "14@B+" [color=red constraint=true dir=none]
+		"14@B+" -> "15@C+" [color=red constraint=true dir=none]
+		"15@C+" -> "16@C+" [color=red constraint=true dir=none]
+		"16@C+" -> "17@C+" [color=red constraint=true dir=none]
+		"17@C+" -> "18@C+" [color=red constraint=true dir=none]
 	}
-	"12@C-"
-	"14@A-"
+	"22@C-"
+	"23@C-"
+	"25@A-"
+	"26@C-"
+	"28@A-"
 	subgraph cluster_1 {
 		rank=same
-		"10@A+"
-		"1@A+" -> "10@A+" [constraint=false style=dashed]
-		"11@A+"
-		"2@A+" -> "11@A+" [constraint=false style=dashed]
-		"3@A+" -> "12@C-" [constraint=true]
-		"12@C-" -> "4@B+" [constraint=true dir=back]
-		"13@B+"
-		"5@B+" -> "13@B+" [constraint=false style=dashed]
-		"6@B+" -> "14@A-" [constraint=true]
-		"14@A-" -> "7@C+" [constraint=true dir=back]
-		"15@C+"
-		"8@C+" -> "15@C+" [constraint=false style=dashed]
-		"10@A+" -> "11@A+" [color=red constraint=true dir=none]
-		"11@A+" -> "12@C-" [color=red constraint=true dir=none]
-		"12@C-" -> "13@B+" [color=red constraint=true dir=none]
-		"13@B+" -> "14@A-" [color=red constraint=true dir=none]
-		"14@A-" -> "15@C+" [color=red constraint=true dir=none]
+		"19@A+"
+		"1@A+" -> "19@A+" [constraint=false style=dashed]
+		"20@A+"
+		"2@A+" -> "20@A+" [constraint=false style=dashed]
+		"21@A+"
+		"3@A+" -> "21@A+" [constraint=false style=dashed]
+		"4@A+" -> "22@C-" [constraint=true]
+		"22@C-" -> "5@B+" [constraint=true dir=back]
+		"6@A+" -> "23@C-" [constraint=true]
+		"23@C-" -> "7@B+" [constraint=true dir=back]
+		"24@B+"
+		"8@B+" -> "24@B+" [constraint=false style=dashed]
+		"9@B+" -> "25@A-" [constraint=true]
+		"25@A-" -> "10@C+" [constraint=true dir=back]
+		"11@A+" -> "26@C-" [constraint=true]
+		"26@C-" -> "12@B+" [constraint=true dir=back]
+		"27@C+"
+		"13@C+" -> "27@C+" [constraint=false style=dashed]
+		"14@B+" -> "28@A-" [constraint=true]
+		"28@A-" -> "15@C+" [constraint=true dir=back]
+		"29@C+"
+		"16@C+" -> "29@C+" [constraint=false style=dashed]
+		"30@C+"
+		"17@C+" -> "30@C+" [constraint=false style=dashed]
+		"31@C+"
+		"18@C+" -> "31@C+" [constraint=false style=dashed]
+		"19@A+" -> "20@A+" [color=red constraint=true dir=none]
+		"20@A+" -> "21@A+" [color=red constraint=true dir=none]
+		"21@A+" -> "22@C-" [color=red constraint=true dir=none]
+		"22@C-" -> "23@C-" [color=red constraint=true dir=none]
+		"23@C-" -> "24@B+" [color=red constraint=true dir=none]
+		"24@B+" -> "25@A-" [color=red constraint=true dir=none]
+		"25@A-" -> "26@C-" [color=red constraint=true dir=none]
+		"26@C-" -> "27@C+" [color=red constraint=true dir=none]
+		"27@C+" -> "28@A-" [color=red constraint=true dir=none]
+		"28@A-" -> "29@C+" [color=red constraint=true dir=none]
+		"29@C+" -> "30@C+" [color=red constraint=true dir=none]
+		"30@C+" -> "31@C+" [color=red constraint=true dir=none]
 	}
-	"18@B+"
-	"19@C-"
+	"36@B+"
+	"37@C-"
 	subgraph cluster_2 {
 		rank=same
-		"16@A+"
-		"10@A+" -> "16@A+" [constraint=false style=dashed]
-		"17@A+"
-		"11@A+" -> "17@A+" [constraint=false style=dashed]
-		"20@,"
-		"12@C-" -> "20@," [constraint=true]
-		"20@," -> "13@B+" [constraint=true dir=back]
-		"20@," -> "18@B+" [constraint=true]
-		"19@C-" -> "20@," [constraint=true dir=back]
-		"21@A-"
-		"14@A-" -> "21@A-" [constraint=false style=dashed]
-		"22@C+"
-		"15@C+" -> "22@C+" [constraint=false style=dashed]
-		"16@A+" -> "17@A+" [color=red constraint=true dir=none]
-		"17@A+" -> "18@B+" [color=red constraint=true dir=none]
-		"18@B+" -> "19@C-" [color=red constraint=true dir=none]
-		"19@C-" -> "21@A-" [color=red constraint=true dir=none]
-		"21@A-" -> "22@C+" [color=red constraint=true dir=none]
+		"32@A+"
+		"19@A+" -> "32@A+" [constraint=false style=dashed]
+		"33@A+"
+		"20@A+" -> "33@A+" [constraint=false style=dashed]
+		"34@A+"
+		"21@A+" -> "34@A+" [constraint=false style=dashed]
+		"35@C-"
+		"22@C-" -> "35@C-" [constraint=false style=dashed]
+		"38@," [label="" fixedsize=true width=0]
+		"23@C-" -> "38@," [constraint=true]
+		"38@," -> "24@B+" [constraint=true dir=back]
+		"38@," -> "37@C-" [constraint=true]
+		"36@B+" -> "38@," [constraint=true dir=back]
+		"39@A-"
+		"25@A-" -> "39@A-" [constraint=false style=dashed]
+		"40@W" [color=green]
+		"26@C-" -> "40@W" [constraint=true]
+		"40@W" -> "27@C+" [constraint=true dir=back]
+		"41@A-"
+		"28@A-" -> "41@A-" [constraint=false style=dashed]
+		"42@C+"
+		"29@C+" -> "42@C+" [constraint=false style=dashed]
+		"43@C+"
+		"30@C+" -> "43@C+" [constraint=false style=dashed]
+		"44@C+"
+		"31@C+" -> "44@C+" [constraint=false style=dashed]
+		"32@A+" -> "33@A+" [color=red constraint=true dir=none]
+		"33@A+" -> "34@A+" [color=red constraint=true dir=none]
+		"34@A+" -> "35@C-" [color=red constraint=true dir=none]
+		"35@C-" -> "36@B+" [color=red constraint=true dir=none]
+		"36@B+" -> "37@C-" [color=red constraint=true dir=none]
+		"37@C-" -> "39@A-" [color=red constraint=true dir=none]
+		"39@A-" -> "40@W" [color=red constraint=true dir=none]
+		"40@W" -> "41@A-" [color=red constraint=true dir=none]
+		"41@A-" -> "42@C+" [color=red constraint=true dir=none]
+		"42@C+" -> "43@C+" [color=red constraint=true dir=none]
+		"43@C+" -> "44@C+" [color=red constraint=true dir=none]
 	}
-	"24@C-"
-	"25@B+"
+	"48@B+"
+	"49@C-"
+	"51@B+"
 	subgraph cluster_3 {
 		rank=same
-		"23@A+"
-		"16@A+" -> "23@A+" [constraint=false style=dashed]
-		"17@A+" -> "24@C-" [constraint=true]
-		"24@C-" -> "18@B+" [constraint=true dir=back]
-		"19@C-" -> "25@B+" [constraint=true]
-		"25@B+" -> "21@A-" [constraint=true dir=back]
-		"26@C+"
-		"22@C+" -> "26@C+" [constraint=false style=dashed]
-		"23@A+" -> "24@C-" [color=red constraint=true dir=none]
-		"24@C-" -> "25@B+" [color=red constraint=true dir=none]
-		"25@B+" -> "26@C+" [color=red constraint=true dir=none]
+		"45@A+"
+		"32@A+" -> "45@A+" [constraint=false style=dashed]
+		"46@A+"
+		"33@A+" -> "46@A+" [constraint=false style=dashed]
+		"47@A+"
+		"34@A+" -> "47@A+" [constraint=false style=dashed]
+		"50@," [label="" fixedsize=true width=0]
+		"35@C-" -> "50@," [constraint=true]
+		"50@," -> "36@B+" [constraint=true dir=back]
+		"50@," -> "49@C-" [constraint=true]
+		"48@B+" -> "50@," [constraint=true dir=back]
+		"37@C-" -> "51@B+" [constraint=true]
+		"51@B+" -> "39@A-" [constraint=true dir=back]
+		"52@A-"
+		"41@A-" -> "52@A-" [constraint=false style=dashed]
+		"53@C+"
+		"42@C+" -> "53@C+" [constraint=false style=dashed]
+		"54@C+"
+		"43@C+" -> "54@C+" [constraint=false style=dashed]
+		"55@C+"
+		"44@C+" -> "55@C+" [constraint=false style=dashed]
+		"45@A+" -> "46@A+" [color=red constraint=true dir=none]
+		"46@A+" -> "47@A+" [color=red constraint=true dir=none]
+		"47@A+" -> "48@B+" [color=red constraint=true dir=none]
+		"48@B+" -> "49@C-" [color=red constraint=true dir=none]
+		"49@C-" -> "51@B+" [color=red constraint=true dir=none]
+		"51@B+" -> "52@A-" [color=red constraint=true dir=none]
+		"52@A-" -> "53@C+" [color=red constraint=true dir=none]
+		"53@C+" -> "54@C+" [color=red constraint=true dir=none]
+		"54@C+" -> "55@C+" [color=red constraint=true dir=none]
 	}
-	"28@B+"
-	"29@C-"
+	"58@C-"
+	"59@B+"
+	"60@C-"
 	subgraph cluster_4 {
 		rank=same
-		"27@A+"
-		"23@A+" -> "27@A+" [constraint=false style=dashed]
-		"30@,"
-		"24@C-" -> "30@," [constraint=true]
-		"30@," -> "25@B+" [constraint=true dir=back]
-		"30@," -> "28@B+" [constraint=true]
-		"29@C-" -> "30@," [constraint=true dir=back]
-		"31@C+"
-		"26@C+" -> "31@C+" [constraint=false style=dashed]
-		"27@A+" -> "28@B+" [color=red constraint=true dir=none]
-		"28@B+" -> "29@C-" [color=red constraint=true dir=none]
-		"29@C-" -> "31@C+" [color=red constraint=true dir=none]
+		"56@A+"
+		"45@A+" -> "56@A+" [constraint=false style=dashed]
+		"57@A+"
+		"46@A+" -> "57@A+" [constraint=false style=dashed]
+		"47@A+" -> "58@C-" [constraint=true]
+		"58@C-" -> "48@B+" [constraint=true dir=back]
+		"61@," [label="" fixedsize=true width=0]
+		"49@C-" -> "61@," [constraint=true]
+		"61@," -> "51@B+" [constraint=true dir=back]
+		"61@," -> "60@C-" [constraint=true]
+		"59@B+" -> "61@," [constraint=true dir=back]
+		"62@A-"
+		"52@A-" -> "62@A-" [constraint=false style=dashed]
+		"63@C+"
+		"53@C+" -> "63@C+" [constraint=false style=dashed]
+		"64@C+"
+		"54@C+" -> "64@C+" [constraint=false style=dashed]
+		"65@C+"
+		"55@C+" -> "65@C+" [constraint=false style=dashed]
+		"56@A+" -> "57@A+" [color=red constraint=true dir=none]
+		"57@A+" -> "58@C-" [color=red constraint=true dir=none]
+		"58@C-" -> "59@B+" [color=red constraint=true dir=none]
+		"59@B+" -> "60@C-" [color=red constraint=true dir=none]
+		"60@C-" -> "62@A-" [color=red constraint=true dir=none]
+		"62@A-" -> "63@C+" [color=red constraint=true dir=none]
+		"63@C+" -> "64@C+" [color=red constraint=true dir=none]
+		"64@C+" -> "65@C+" [color=red constraint=true dir=none]
 	}
-	"32@C-"
+	"68@B+"
+	"69@C-"
+	"71@B+"
 	subgraph cluster_5 {
 		rank=same
-		"27@A+" -> "32@C-" [constraint=true]
-		"32@C-" -> "28@B+" [constraint=true dir=back]
-		"33@W" [color=green]
-		"29@C-" -> "33@W" [constraint=true]
-		"33@W" -> "31@C+" [constraint=true dir=back]
+		"66@A+"
+		"56@A+" -> "66@A+" [constraint=false style=dashed]
+		"67@A+"
+		"57@A+" -> "67@A+" [constraint=false style=dashed]
+		"70@," [label="" fixedsize=true width=0]
+		"58@C-" -> "70@," [constraint=true]
+		"70@," -> "59@B+" [constraint=true dir=back]
+		"70@," -> "69@C-" [constraint=true]
+		"68@B+" -> "70@," [constraint=true dir=back]
+		"60@C-" -> "71@B+" [constraint=true]
+		"71@B+" -> "62@A-" [constraint=true dir=back]
+		"72@C+"
+		"63@C+" -> "72@C+" [constraint=false style=dashed]
+		"73@C+"
+		"64@C+" -> "73@C+" [constraint=false style=dashed]
+		"74@C+"
+		"65@C+" -> "74@C+" [constraint=false style=dashed]
+		"66@A+" -> "67@A+" [color=red constraint=true dir=none]
+		"67@A+" -> "68@B+" [color=red constraint=true dir=none]
+		"68@B+" -> "69@C-" [color=red constraint=true dir=none]
+		"69@C-" -> "71@B+" [color=red constraint=true dir=none]
+		"71@B+" -> "72@C+" [color=red constraint=true dir=none]
+		"72@C+" -> "73@C+" [color=red constraint=true dir=none]
+		"73@C+" -> "74@C+" [color=red constraint=true dir=none]
 	}
+	"76@C-"
+	"77@B+"
+	"78@C-"
 	subgraph cluster_6 {
 		rank=same
-		"34@W" [color=green]
-		"32@C-" -> "34@W" [constraint=true]
-		"34@W" -> "9@C+" [constraint=true dir=back]
+		"75@A+"
+		"66@A+" -> "75@A+" [constraint=false style=dashed]
+		"67@A+" -> "76@C-" [constraint=true]
+		"76@C-" -> "68@B+" [constraint=true dir=back]
+		"79@," [label="" fixedsize=true width=0]
+		"69@C-" -> "79@," [constraint=true]
+		"79@," -> "71@B+" [constraint=true dir=back]
+		"79@," -> "78@C-" [constraint=true]
+		"77@B+" -> "79@," [constraint=true dir=back]
+		"80@C+"
+		"72@C+" -> "80@C+" [constraint=false style=dashed]
+		"81@C+"
+		"73@C+" -> "81@C+" [constraint=false style=dashed]
+		"82@C+"
+		"74@C+" -> "82@C+" [constraint=false style=dashed]
+		"75@A+" -> "76@C-" [color=red constraint=true dir=none]
+		"76@C-" -> "77@B+" [color=red constraint=true dir=none]
+		"77@B+" -> "78@C-" [color=red constraint=true dir=none]
+		"78@C-" -> "80@C+" [color=red constraint=true dir=none]
+		"80@C+" -> "81@C+" [color=red constraint=true dir=none]
+		"81@C+" -> "82@C+" [color=red constraint=true dir=none]
+	}
+	"84@B+"
+	"85@C-"
+	subgraph cluster_7 {
+		rank=same
+		"83@A+"
+		"75@A+" -> "83@A+" [constraint=false style=dashed]
+		"86@," [label="" fixedsize=true width=0]
+		"76@C-" -> "86@," [constraint=true]
+		"86@," -> "77@B+" [constraint=true dir=back]
+		"86@," -> "85@C-" [constraint=true]
+		"84@B+" -> "86@," [constraint=true dir=back]
+		"87@W" [color=green]
+		"78@C-" -> "87@W" [constraint=true]
+		"87@W" -> "80@C+" [constraint=true dir=back]
+		"88@C+"
+		"81@C+" -> "88@C+" [constraint=false style=dashed]
+		"89@C+"
+		"82@C+" -> "89@C+" [constraint=false style=dashed]
+		"83@A+" -> "84@B+" [color=red constraint=true dir=none]
+		"84@B+" -> "85@C-" [color=red constraint=true dir=none]
+		"85@C-" -> "87@W" [color=red constraint=true dir=none]
+		"87@W" -> "88@C+" [color=red constraint=true dir=none]
+		"88@C+" -> "89@C+" [color=red constraint=true dir=none]
+	}
+	"90@C-"
+	subgraph cluster_8 {
+		rank=same
+		"83@A+" -> "90@C-" [constraint=true]
+		"90@C-" -> "84@B+" [constraint=true dir=back]
+		"91@W" [color=green]
+		"85@C-" -> "91@W" [constraint=true]
+		"91@W" -> "88@C+" [constraint=true dir=back]
+		"92@C+"
+		"89@C+" -> "92@C+" [constraint=false style=dashed]
+		"90@C-" -> "91@W" [color=red constraint=true dir=none]
+		"91@W" -> "92@C+" [color=red constraint=true dir=none]
+	}
+	subgraph cluster_9 {
+		rank=same
+		"93@W" [color=green]
+		"90@C-" -> "93@W" [constraint=true]
+		"93@W" -> "92@C+" [constraint=true dir=back]
 	}
 }
