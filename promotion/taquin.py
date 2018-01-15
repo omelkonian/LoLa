@@ -192,10 +192,14 @@ class Web(object):
         self.g = Digraph('web', filename='web.gv')
         self.g.attr(rankdir='TB')
         self.g.attr(newrank='true')
-        self.g.attr(ranksep='.5 equally')
+        self.g.attr(ranksep='1.2 equally')
+        self.g.attr(nodesep='2')
+        self.g.attr(splines='false')
+        # self.g.attr(splines='compound')
 
         with self.g.subgraph(name="cluster_0") as init_g:
             init_g.attr(rank='same')
+            init_g.attr(style='invis')
             self.fringe = self.word_to_nodes(constraint=True, graph=init_g)
 
     def grow(self):
@@ -206,6 +210,7 @@ class Web(object):
         new_nodes = []
         with self.g.subgraph(name='cluster_{}'.format(self.rank + 1)) as sub_g:
             sub_g.attr(rank='same')
+            sub_g.attr(style='invis')
             for l, r in zip(to_iterate, to_iterate[1:]):
                 # Check if you can use `l`
                 if used:
@@ -219,11 +224,14 @@ class Web(object):
                 if used:
                     if len(new_ids) == 2:  # X, Y -> Y, X
                         [new_l, new_r] = new_ids
-                        intermediate = self.fresh_id(',', graph=sub_g, label='', fixedsize='true', width='0')
-                        self.connect(l, intermediate, constraint=True, graph=sub_g)
-                        self.connect(intermediate, r, constraint=True, graph=sub_g, dir='back')
-                        self.connect(intermediate, new_r, constraint=True, graph=sub_g)
-                        self.connect(new_l, intermediate, constraint=True, graph=sub_g, dir='back')
+                        intermediate = self.fresh_id(',', graph=sub_g, label='', fixedsize='true', width='0', style='invis')
+                        self.connect(l, intermediate, constraint=True, graph=sub_g, style='invis')
+                        self.connect(intermediate, r, constraint=True, graph=sub_g, dir='back', style='invis')
+                        self.connect(intermediate, new_r, constraint=True, graph=sub_g, style='invis')
+                        self.connect(new_l, intermediate, constraint=True, graph=sub_g, dir='back', style='invis')
+                        # Crossing
+                        self.connect(l, new_r, constraint=False, dir='both')
+                        self.connect(r, new_l, constraint=False, dir='both')
                     elif len(new_ids) == 1:  # X, Y -> Z
                         for id in new_ids:
                             self.connect(l, id, constraint=True, graph=sub_g)
@@ -239,16 +247,15 @@ class Web(object):
                     new_nodes.extend(new_ids)
                 else:
                     # Propagate dummy downwards
-                    dummy = self.fresh_id(self.extract_value(l), graph=sub_g)
-                    self.connect(l, dummy, style='dashed', constraint=False, graph=sub_g)
+                    dummy = self.fresh_id(self.extract_value(l), dummy=self.extract_dummy_origin(l), graph=sub_g, style='invis', label='', fixedsize='true', width='0')
+                    self.connect(l, dummy, dir='none', constraint=False, graph=sub_g)
                     new_fringe.append(dummy)
 
             if not used:
                 # Create last dummy
                 last = self.fringe[-1]
-                dummy = self.fresh_id(self.extract_value(last), graph=sub_g)
-                print('{} --> {}'.format(last, dummy))
-                self.connect(last, dummy, style='dashed', constraint=False, graph=sub_g)
+                dummy = self.fresh_id(self.extract_value(last), dummy=self.extract_dummy_origin(last), graph=sub_g, style='invis', label='', fixedsize='true', width='0')
+                self.connect(last, dummy, dir='none', constraint=False, graph=sub_g)
                 new_fringe.append(dummy)
 
             self.same_depth(new_fringe, constraint=True, graph=sub_g)
@@ -303,21 +310,47 @@ class Web(object):
         self.same_depth(nodes, graph=graph, constraint=constraint)
         return nodes
 
+    def extract_dummy_origin(self, id):
+        if self.is_dummy(id):
+            return id.split('$')[0]
+        return self.extract_id(id)
+
+    def extract_id(self, id):
+        if self.is_dummy(id):
+            return self.extract_id(id.split('$')[1])
+        return id.split('@')[0]
+
     def extract_value(self, id):
         return id.split('@')[1]
 
-    def fresh_id(self, value, graph=None, **style):
+    def is_dummy(self, id):
+        return '$' in id
+
+    def fresh_id(self, value, graph=None, dummy=None, **style):
         self.counter += 1
-        new_id = '{}@{}'.format(self.counter, value)
+        new_id = '{}{}@{}'.format('{}$'.format(dummy) if dummy else '', self.counter, value)
         (graph or self.g).node(new_id, **style)
         return new_id
 
     def connect(self, id1, id2, graph=None, constraint=False, **style):
+        # Dummy has reached its endpoint
+        style.update(
+            tailclip='false' if '$' in id1 else style.get('tailclip'),
+            headclip='false' if '$' in id2 else style.get('headclip'),
+            style='dashed' if (('$' in id1 or '$' in id2) and 'style' not in style) else style.get('style')
+        )
         (graph or self.g).edge(id1, id2, constraint='true' if constraint else 'false', **style)
+
+        if style.get('dir') is 'back':
+            t = id1
+            id1 = id2
+            id2 = t
+        if self.is_dummy(id1) and not self.is_dummy(id2) and ('color' not in style or style['color'] != 'red'):
+            self.connect('{}@{}'.format(self.extract_dummy_origin(id1), self.extract_value(id1)), id2, graph=self.g, constraint=False, color='purple', overlap='scale')
 
     def same_depth(self, ids, graph=None, constraint=False):
         for l, r in zip(ids, ids[1:]):
-            self.connect(l, r, graph=(graph or self.g), constraint=constraint, color='red', dir='none')
+            self.connect(l, r, graph=(graph or self.g), constraint=constraint, color='red', dir='none', style='invis')
 
     def render(self):
         self.grow()
