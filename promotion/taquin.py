@@ -1,12 +1,16 @@
 import itertools as it
+import shutil
 from functools import partial
 import colorsys
-from math import ceil, floor
+import glob
+import os
 
 import numpy as np
+# from __builtin__ import file
 from colors import *
 import argparse
 from graphviz import Graph, Digraph
+from pdfrw import PdfReader, PdfWriter
 
 ########################################################################################################################
 # 2017, Dr. Michael Moortgat, Utrecht University
@@ -149,10 +153,7 @@ def orbit(word):
     return [t2w(tbl) for tbl in taquin_star(w2t(word))]
 
 
-def count_orbits(k, n):
-    words = list(idyck(k, n))
-    mod = taquin_mod(words)
-    print('[{}, {}]\t #words: {}\t #orbits: {}'.format(k, n, len(words), len(mod)))
+
 
 
 def render_promotion(word, k):
@@ -173,15 +174,6 @@ def render_promotion(word, k):
         print()
 
 
-def render_all_orbits(k, n, to_print=True):
-    count_orbits(k, n)
-    if to_print:
-        for i, orbit in enumerate(all_orbits(k, n), start=1):
-            print('-------------- [{}] (#{}) (rank: {})----------------'.format(i, len(orbit), orbit_max_rank(orbit)))
-            render_promotion(orbit[0], k)
-            # render_promotion(orbit[0], k)
-
-
 ########################################################################################################################
 # Web rendering
 ########################################################################################################################
@@ -191,7 +183,7 @@ dummy_stroke = 'invis'
 w_color = 'green'
 big_node = '2'
 node_style = 'invis'
-A, B, C = '𝓐', '𝓑', '𝓒'  # 𝓐
+A, B, C = '𝓐', '𝓑', '𝓒'
 Ap, Bp, Cp, Am, Bm, Cm = A + '+', B + '+', C + '+', A + '-', B + '-', C + '-'
 
 
@@ -201,7 +193,7 @@ class Web(object):
         self.counter = 0
         self.rank = 0
         self.word = word
-        self.g = Digraph('web', filename='web.gv')
+        self.g = Digraph('graph')
         self.g.attr(rankdir='TB')
         self.g.attr(newrank='true')
         self.g.attr(ranksep='1.2')
@@ -255,7 +247,6 @@ class Web(object):
                         self.connect(l, w, constraint=True, graph=sub_g)
                         self.connect(w, r, constraint=True, graph=sub_g, dir='back')
                         new_fringe.append(w)
-                        # self.connect(self.get_origin(l), self.get_origin(r), constraint=False, color=w_color, dir='both')
                 else:
                     # Propagate dummy downwards
                     dummy = self.fresh_id(self.extract_value(l), dummy=self.extract_dummy_origin(l), graph=sub_g, style=dummy_style, width='1')
@@ -306,7 +297,6 @@ class Web(object):
         return ret
 
     def word_to_nodes(self, graph=None, constraint=False):
-        # word: "aabbcc"
         to_reverse = False
         nodes = []
         for c in (reversed(self.word) if to_reverse else self.word):
@@ -359,36 +349,58 @@ class Web(object):
             style.update(headclip='false', dir='none')
         (graph or self.g).edge(id1, id2, constraint='true' if constraint else 'false', **style)
 
-        # if reverse:
-        #     t = id1
-        #     id1 = id2
-        #     id2 = t
-        # if self.is_dummy(id1) and not self.is_dummy(id2) and ('color' not in style or style['color'] != 'red') and self.extract_value(id2) != 'D':
-        #     self.connect(self.get_origin(id1), id2,
-        #                  graph=self.g, constraint=propagate_constraint, style=dummy_stroke, dir='none', weight='1')
-
     def same_depth(self, ids, graph=None, constraint=False):
         for l, r in zip(ids, ids[1:]):
             self.connect(l, r, graph=(graph or self.g), constraint=constraint, color='red', dir='none', style=dummy_style)
 
-    def render(self):
+    def render(self, equiv_class=None):
         self.grow()
-        # print('Graph: {}'.format(self.g))
-        self.g.view()
+        self.g.render(filename='{}{}'.format('{}_'.format(equiv_class) if equiv_class else '', self.word),
+                      directory='webs',
+                      cleanup=True)
+
+
+########################################################################################################################
+# Render orbits
+########################################################################################################################
+def count_orbits(k, n):
+    words = list(idyck(k, n))
+    mod = taquin_mod(words)
+    print('[{}, {}]\t #words: {}\t #orbits: {}'.format(k, n, len(words), len(mod)))
+
+
+def render_all_orbits(k, n, to_print=True):
+    count_orbits(k, n)
+    if to_print:
+        for i, orbit in enumerate(all_orbits(k, n), start=1):
+            print('Orbit: {}'.format(orbit))
+            # Taquin
+            print('-------------- [{}] (rank: {}) ----------------'.format(i, orbit_max_rank(orbit)))
+            render_promotion(orbit[0], k)
+            # Webs
+            for w in orbit:
+                Web(w).render(equiv_class=i)
+            merger = PdfWriter()
+            for filename in glob.glob('webs/*.pdf'):
+                merger.addpages(PdfReader(filename).pages)
+            merger.write('equiv_class_{}.pdf'.format(i))
+            for filename in glob.glob('webs/*.pdf'.format(i-1)):
+                os.remove(filename)
+    shutil.rmtree('./webs')
 
 
 #
 # Entry-point
 #
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Colored rendering of Dyck promotions.')
+    parser = argparse.ArgumentParser(description='Rendering of Dyck promotions.')
     parser.add_argument('-k', type=int, help='symbols in the alphabet', default=3, nargs='?')
     parser.add_argument('-n', type=int, help='number of "abc" occurences', default=3, nargs='?')
     parser.add_argument('-o', help='enable output', action='store_true')
     parser.add_argument('-w', type=str, help='single word to check', nargs='?')
     args = parser.parse_args()
 
-    if 'w' in vars(args):
-        Web(args.w).render()
-    else:
-        render_all_orbits(args.k, args.n, to_print=args.o)
+    # if 'w' in vars(args):
+    #     Web(args.w).render()
+    # else:
+    render_all_orbits(args.k, args.n, to_print=args.o)
