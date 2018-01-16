@@ -128,7 +128,7 @@ class Grammar(object):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Check your D3 grammar.')
-    parser.add_argument('-n', type=int, help='number of "abc" occurences', default=6, nargs='?')
+    parser.add_argument('-n', type=int, help='number of "abc" occurences', nargs='?')
     parser.add_argument('-w', type=str, help='single word to check', nargs='?')
     parser.add_argument('-ws', type=str, help='file containing words to check', nargs='?')
     parser.add_argument('-p', type=str, help='single parse of a word', nargs='?')
@@ -143,6 +143,10 @@ if __name__ == "__main__":
     parser.add_argument('--time', help='measure execution time', action='store_true')
     parser.add_argument('--rand', help='generate random Dyck word', action='store_true')
     args = parser.parse_args()
+
+    if args.n is None:
+        exit(0)
+
     g = globals()[args.g](args.i)
     if args.time:
         start = time.time()

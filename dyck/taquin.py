@@ -1,20 +1,20 @@
 import itertools as it
 import shutil
-from functools import partial
 import colorsys
 import glob
 import os
+import subprocess
 
 import numpy as np
-# from __builtin__ import file
 from colors import *
 import argparse
-from graphviz import Graph, Digraph
+from graphviz import Digraph
 from pdfrw import PdfReader, PdfWriter
 
 ########################################################################################################################
 # 2017, Dr. Michael Moortgat, Utrecht University
 ########################################################################################################################
+
 
 #
 # Dyck generation
@@ -47,8 +47,8 @@ def yamanouchi(tbl):
 
 def tableau(y):
     """Yamanouchi word --> Young tableau"""
-    elist = [ j+1 for _,j in sorted(list(zip(y,range(len(y))))) ]
-    tbl = np.array(elist).reshape(max(y),len(y)//max(y))
+    elist = [j+1 for _, j in sorted(list(zip(y, range(len(y)))))]
+    tbl = np.array(elist).reshape(max(y), len(y)//max(y))
     return tbl
 
 
@@ -56,10 +56,11 @@ def tableau(y):
 # translation to alphabetic form
 #
 def t2w(tbl):
-    return ''.join([ chr(96+i) for i in yamanouchi(tbl) ])
+    return ''.join([chr(96+i) for i in yamanouchi(tbl)])
+
 
 def w2t(word):
-    return tableau([ ord(i)-96 for i in word ])
+    return tableau([ord(i)-96 for i in word])
 
 
 #
@@ -108,12 +109,13 @@ def taquin_star(tbl):
     return result[:-1]
 
 
-def taquin_mod(words,out=[]):
+def taquin_mod(words, out=[]):
     """Orbit partitioning"""
-    if not words: return out
+    if not words:
+        return out
     else:
-        tws = [ t2w(t) for t in taquin_star(w2t(words[0])) ]
-        return taquin_mod([ w for w in words if not w in tws ],out+[ tws ])
+        tws = [t2w(t) for t in taquin_star(w2t(words[0]))]
+        return taquin_mod([w for w in words if w not in tws], out + [tws])
 
 
 ########################################################################################################################
@@ -377,30 +379,61 @@ def render_all_orbits(k, n, to_print=True):
             # Taquin
             print('-------------- [{}] (rank: {}) ----------------'.format(i, orbit_max_rank(orbit)))
             render_promotion(orbit[0], k)
-            # Webs
-            for w in orbit:
-                Web(w).render(equiv_class=i)
-            merger = PdfWriter()
-            for filename in glob.glob('webs/*.pdf'):
-                merger.addpages(PdfReader(filename).pages)
-            merger.write('equiv_class_{}.pdf'.format(i))
-            for filename in glob.glob('webs/*.pdf'.format(i-1)):
-                os.remove(filename)
-    shutil.rmtree('./webs')
+            # Webs (only for k = 3)
+            if k == 3:
+                for w in orbit:
+                    Web(w).render(equiv_class=i)
+                merger = PdfWriter()
+                for filename in glob.glob('webs/*.pdf'):
+                    merger.addpages(PdfReader(filename).pages)
+                merger.write('equiv_class_{}.pdf'.format(i))
+                for filename in glob.glob('webs/*.pdf'.format(i-1)):
+                    os.remove(filename)
+                shutil.rmtree('./webs')
 
 
 #
 # Entry-point
 #
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Rendering of Dyck promotions.')
-    parser.add_argument('-k', type=int, help='symbols in the alphabet', default=3, nargs='?')
-    parser.add_argument('-n', type=int, help='number of "abc" occurences', default=3, nargs='?')
+    # Command-line parsing
+    parser = argparse.ArgumentParser(description='Rendering of Dyck promotions.', add_help=False)
+    parser.add_argument('--dim', type=str, help='(symbols, size)')
     parser.add_argument('-o', help='enable output', action='store_true')
-    parser.add_argument('-w', type=str, help='single word to check', nargs='?')
-    args = parser.parse_args()
+    parser.add_argument('-h', '--help', help='show help message', action='store_true')
+    args, rest = parser.parse_known_args()
 
-    # if 'w' in vars(args):
-    #     Web(args.w).render()
-    # else:
-    render_all_orbits(args.k, args.n, to_print=args.o)
+    if args.help:
+        print('\n'.join([
+            '',
+            '------------------------------------------------',
+            '---------------- RENDERING ---------------------',
+            '------------------------------------------------',
+            '',
+            'usage: taquin.py [-h] [--dim [DIM]] [-o]',
+            'Rendering of Dyck promotions.',
+
+            'optional arguments:',
+            '  -h, --help   show this help message and exit',
+            '  --dim [DIM]  (symbols, size)',
+            '  -o           enable output',
+            '',
+            '------------------------------------------------',
+            '------------------ PARSING ---------------------',
+            '------------------------------------------------',
+            '',
+        ]))
+        subprocess.check_call('python2 dyck.py -h'.split())
+
+    # Rendering
+    if args.dim:
+        k, n = list(map(int, args.dim.split(',')))
+        render_all_orbits(k, n, to_print=args.o)
+
+    # Parsing
+    py2_cmd = 'python2 dyck.py {}'.format(' '.join(rest))
+    try:
+        subprocess.check_call(py2_cmd.split())
+    except subprocess.CalledProcessError as e:
+        print(e.stderr)
+
