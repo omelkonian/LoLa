@@ -187,8 +187,13 @@ def render_all_orbits(k, n, to_print=True):
 ########################################################################################################################
 small_weight, big_weight = '1', '100'
 dummy_style = 'invis'
-dummy_stroke = ''
+dummy_stroke = 'invis'
 w_color = 'green'
+big_node = '2'
+node_style = 'invis'
+A, B, C = '𝓐', '𝓑', '𝓒'  # 𝓐
+Ap, Bp, Cp, Am, Bm, Cm = A + '+', B + '+', C + '+', A + '-', B + '-', C + '-'
+
 
 class Web(object):
 
@@ -199,8 +204,8 @@ class Web(object):
         self.g = Digraph('web', filename='web.gv')
         self.g.attr(rankdir='TB')
         self.g.attr(newrank='true')
-        self.g.attr(ranksep='1.2 equally')
-        # self.g.attr(nodesep='1')
+        self.g.attr(ranksep='1.2')
+        # self.g.attr(nodesep='0')
         self.g.attr(splines='false')
 
         with self.g.subgraph(name="cluster_0") as init_g:
@@ -208,19 +213,16 @@ class Web(object):
             init_g.attr(style='invis')
             self.fringe = self.word_to_nodes(constraint=True, graph=init_g)
 
-    def grow(self, before=0, after=0, previous_fringe=None):
+    def grow(self):
         # Visit fringe
         with self.g.subgraph(name='cluster_{}'.format(self.rank + 1)) as sub_g:
             used = False
             to_iterate = [i for i in self.fringe if self.extract_value(i) != 'W']
             sub_g.attr(rank='same')
             sub_g.attr(style='invis')
-            sub_g.attr(nodesep='5')
 
-            len_0 = previous_fringe or 0
             # Dummies after
-            new_fringe = [self.fresh_id('D', graph=sub_g, label='', style=dummy_style) for _ in range(before)]
-
+            new_fringe = []
             for l, r in zip(to_iterate, to_iterate[1:]):
                 # Check if you can use `l`
                 if used:
@@ -234,97 +236,73 @@ class Web(object):
                 if used:
                     if len(new_ids) == 2:  # X, Y -> Y, X
                         [new_l, new_r] = new_ids
-                        intermediate = self.fresh_id('D', graph=sub_g, label='', fixedsize='true', width='0', style='invis')
-                        self.connect(l, intermediate, constraint=True, graph=sub_g, style='invis')
-                        self.connect(intermediate, r, constraint=True, graph=sub_g, dir='back', style='invis')
-                        self.connect(intermediate, new_r, constraint=True, graph=sub_g, style='invis')
-                        self.connect(new_l, intermediate, constraint=True, graph=sub_g, dir='back', style='invis')
+                        intermediate = self.fresh_id('D', graph=sub_g, fixedsize='true', width='0', style='invis')
+                        self.connect(l, intermediate, constraint=True, graph=sub_g, style=dummy_style)
+                        self.connect(intermediate, r, constraint=True, graph=sub_g, dir='back', style=dummy_style)
+                        self.connect(intermediate, new_r, constraint=True, graph=sub_g, style=dummy_style)
+                        self.connect(new_l, intermediate, constraint=True, graph=sub_g, dir='back', style=dummy_style)
                         # Crossing
-                        self.connect(l, new_r, constraint=False, dir='both')
-                        self.connect(r, new_l, constraint=False, dir='both')
+                        self.connect(l, new_r, constraint=False)
+                        self.connect(r, new_l, constraint=False)
                         new_fringe.extend(new_ids)
                     elif len(new_ids) == 1:  # X, Y -> Z
-                        for id in new_ids:
-                            self.connect(l, id, constraint=True, graph=sub_g)
-                            self.connect(id, r, constraint=True, graph=sub_g, dir='back')
-                            # Also one dummy node for alignment
-                            dummy = self.fresh_id('D', graph=sub_g, style=dummy_style, label='', width='1')
-                            # dummy2 = self.fresh_id('D', graph=sub_g, style=dummy_style, label='', width='0.42')
-                            new_fringe.append(dummy)
-                            new_fringe.extend(new_ids)
-                            # new_fringe.append(dummy2)
+                        new_node = new_ids[0]
+                        self.connect(l, new_node, constraint=True, graph=sub_g)
+                        self.connect(new_node, r, constraint=True, graph=sub_g, dir='back')
+                        new_fringe.append(new_node)
                     else:  # X, Y -> W
-                        w = self.fresh_id('W', color='green', graph=sub_g, style=dummy_style, fixedsize='true', width='1')
+                        w = self.fresh_id('W', graph=sub_g, fixedsize='true', width=big_node)
                         self.connect(l, w, constraint=True, graph=sub_g)
                         self.connect(w, r, constraint=True, graph=sub_g, dir='back')
-
-                        # Also one dummy node for alignment
-                        dummy = self.fresh_id('D', graph=sub_g, style=dummy_style, label='', width='1')
-                        # dummy2 = self.fresh_id('D', graph=sub_g, style='invis', label='', width='0.42')
-                        new_fringe.append(dummy)
                         new_fringe.append(w)
-                        # new_fringe.append(dummy2)
-
                         # self.connect(self.get_origin(l), self.get_origin(r), constraint=False, color=w_color, dir='both')
                 else:
                     # Propagate dummy downwards
-                    dummy = self.fresh_id(self.extract_value(l), dummy=self.extract_dummy_origin(l), graph=sub_g, style=dummy_style, label='', width='1')
+                    dummy = self.fresh_id(self.extract_value(l), dummy=self.extract_dummy_origin(l), graph=sub_g, style=dummy_style, width='1')
                     self.connect(l, dummy, dir='none', constraint=False, graph=sub_g)
                     new_fringe.append(dummy)
 
             if not used:
                 # Create last dummy
                 last = self.fringe[-1]
-                dummy = self.fresh_id(self.extract_value(last), dummy=self.extract_dummy_origin(last), graph=sub_g, style='invis', label='', width='1')
+                dummy = self.fresh_id(self.extract_value(last), dummy=self.extract_dummy_origin(last), graph=sub_g, style=dummy_style, width='1')
                 self.connect(last, dummy, dir='none', constraint=False, graph=sub_g)
                 new_fringe.append(dummy)
-
-            # Dummies after
-            new_fringe.extend([self.fresh_id('D', graph=sub_g, label='', style=dummy_style) for _ in range(after)])
-
 
             self.same_depth(new_fringe, constraint=True, graph=sub_g)
 
         if new_fringe == self.fringe:
             raise RuntimeError("Not growing")
-        # print('Fringe: {}'.format(new_fringe))
         self.fringe = [i for i in new_fringe if self.extract_value(i) not in ['W', 'D']]
-        len_1 = len(self.fringe)
-        print('before, after, len_1, len2', (before, after, len_0, len_1))
-
-        to_insert = len_0 - len_1 if len_0 > len_1 else 0
-        ins_left, ins_right = 0, 0 # int(floor(to_insert/2)), int(ceil(to_insert/2))
-        print('ins, insL, insR', (to_insert, ins_left, ins_right))
 
         # Grow from new fringe
         if self.fringe:
             self.rank += 1
-            self.grow(before=before + ins_left, after=after + ins_right, previous_fringe=len_1)
+            self.grow()
         else:
             self.rank = 0
 
     def apply_growth_rule(self, l_id, r_id, graph=None):
         l, r = map(self.extract_value, [l_id, r_id])
         ret = {
-            ('A+', 'B+'): ['C-'],
-            ('A+', 'C+'): ['B-'],
-            ('B+', 'C+'): ['A-'],
-            ('B-', 'A-'): ['C+'],
-            ('C-', 'A-'): ['B+'],
-            ('C-', 'B-'): ['A+'],
+            (Ap, Bp): [Cm],
+            (Ap, Cp): [Bm],
+            (Bp, Cp): [Am],
+            (Bm, Am): [Cp],
+            (Cm, Am): [Bp],
+            (Cm, Bm): [Ap],
             # +/-
-            ('B+', 'B-'): ['A-', 'A+'],
-            ('B+', 'A-'): ['A-', 'B+'],
-            ('A+', 'B-'): ['B-', 'A+'],
-            ('A+', 'A-'): [],
+            (Bp, Am): [Am, Bp],
+            (Ap, Bm): [Bm, Ap],
+            (Ap, Am): [],
             # -/+
-            ('B-', 'B+'): ['C+', 'C-'],
-            ('B-', 'C+'): ['C+', 'B-'],
-            ('C-', 'B+'): ['B+', 'C-'],
-            ('C-', 'C+'): [],
+            (Bm, Bp): [Cp, Cm],
+            (Bm, Cp): [Cp, Bm],
+            (Cm, Bp): [Bp, Cm],
+            (Cm, Cp): [],
         }.get((l, r), None)
         if ret is not None:
-            ret = list(map(partial(self.fresh_id, graph=graph, width='1' if len(ret) == 1 else '1'), ret))
+            ret = list(map(partial(self.fresh_id, graph=graph, width=big_node if len(ret) == 1 else '1'), ret))
         return ret
 
     def word_to_nodes(self, graph=None, constraint=False):
@@ -332,7 +310,7 @@ class Web(object):
         to_reverse = False
         nodes = []
         for c in (reversed(self.word) if to_reverse else self.word):
-            fresh_id = self.fresh_id(c.upper() + '+', graph=graph)
+            fresh_id = self.fresh_id({'a': A, 'b': B, 'c': C}[c] + '+', graph=graph)
             nodes.append(fresh_id)
         if to_reverse:
             nodes.reverse()
@@ -363,7 +341,9 @@ class Web(object):
     def fresh_id(self, value, graph=None, dummy=None, **style):
         self.counter += 1
         new_id = '{}{}@{}'.format('{}$'.format(dummy) if dummy else '', self.counter, value)
-        (graph or self.g).node(new_id, **style)
+        if not self.is_dummy(new_id):
+            style.update(shape='none')
+        (graph or self.g).node(new_id, label='' if (self.is_dummy(new_id) or 'D' in new_id) else ('●' if 'W' in new_id else value), **style)
         return new_id
 
     def connect(self, id1, id2, graph=None, constraint=False, propagate_constraint=False, reverse=False, **style):
@@ -371,29 +351,25 @@ class Web(object):
         style.update(
             tailclip='false' if '$' in id1 else style.get('tailclip'),
             headclip='false' if '$' in id2 else style.get('headclip'),
-            style='invis' if (('$' in id1 or '$' in id2) and 'style' not in style) else style.get('style')
+            style='dotted' if (('$' in id1 or '$' in id2) and 'style' not in style) else style.get('style')
         )
-        if style.get('dir') is 'back':
-            reverse = True
-
-        if 'W' in id1 or 'W' in id2:
-            style.update(
-                headclip='false',
-                dir='none'
-            )
+        if 'W' in id1:
+            style.update(tailclip='false', dir='none')
+        if 'W' in id2:
+            style.update(headclip='false', dir='none')
         (graph or self.g).edge(id1, id2, constraint='true' if constraint else 'false', **style)
 
-        if reverse:
-            t = id1
-            id1 = id2
-            id2 = t
-        if self.is_dummy(id1) and not self.is_dummy(id2) and ('color' not in style or style['color'] != 'red') and self.extract_value(id2) != 'D':
-            self.connect(self.get_origin(id1), id2,
-                         graph=self.g, constraint=propagate_constraint, style=dummy_stroke, dir='none', weight='1')
+        # if reverse:
+        #     t = id1
+        #     id1 = id2
+        #     id2 = t
+        # if self.is_dummy(id1) and not self.is_dummy(id2) and ('color' not in style or style['color'] != 'red') and self.extract_value(id2) != 'D':
+        #     self.connect(self.get_origin(id1), id2,
+        #                  graph=self.g, constraint=propagate_constraint, style=dummy_stroke, dir='none', weight='1')
 
     def same_depth(self, ids, graph=None, constraint=False):
         for l, r in zip(ids, ids[1:]):
-            self.connect(l, r, graph=(graph or self.g), constraint=constraint, color='red', dir='none', style='invis')
+            self.connect(l, r, graph=(graph or self.g), constraint=constraint, color='red', dir='none', style=dummy_style)
 
     def render(self):
         self.grow()
