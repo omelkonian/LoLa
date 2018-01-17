@@ -127,7 +127,6 @@ def taquin_mod(words, out=[]):
 ########################################################################################################################
 def all_orbits(k, n):
     orbits = taquin_mod(list(idyck(k, n)))
-    # return orbits_sort_by_rank(list(map(lambda orbit: orbit_sort_by_rank(orbit), orbits)))
     return orbits_sort_by_length(list(map(lambda orbit: orbit_sort_by_rank(orbit), orbits)))
 
 
@@ -148,14 +147,11 @@ def orbit_sort_by_rank(orbit):
 
 
 def rank_word(word):
-    return sum([sum(map(lambda t: abs(t[0] - t[1]), zip(col, col[1:]))) for col in w2t(word).T])
+    return max([sum(map(lambda t: abs(t[0] - t[1]), zip(col, col[1:]))) for col in w2t(word).T])
 
 
 def orbit(word):
     return [t2w(tbl) for tbl in taquin_star(w2t(word))]
-
-
-
 
 
 def render_promotion(word, k):
@@ -164,7 +160,7 @@ def render_promotion(word, k):
     HSV_tuples = [(x * 1.0 / N, .5, 1) for x in range(N)]
     RGB_tuples = list(map(lambda x: tuple(map(lambda i: int(i * 255), colorsys.hsv_to_rgb(*x))), HSV_tuples))
     colored_word = [()] * l
-    for i, word in enumerate(orbit(word), start=1):
+    for i, word in enumerate(orbit_sort_by_rank(orbit(word)), start=1):
         tab = w2t(word)
         for ic, col in enumerate(tab.T):
             col_color = RGB_tuples[ic]
@@ -285,6 +281,7 @@ class Web(object):
             (Cm, Am): [Bp],
             (Cm, Bm): [Ap],
             # +/-
+            (Bp, Bm): [Am, Ap],
             (Bp, Am): [Am, Bp],
             (Ap, Bm): [Bm, Ap],
             (Ap, Am): [],
@@ -324,10 +321,12 @@ class Web(object):
             return self.extract_id(id.split('$')[1])
         return id.split('@')[0]
 
-    def extract_value(self, id):
+    @staticmethod
+    def extract_value(id):
         return id.split('@')[1]
 
-    def is_dummy(self, id):
+    @staticmethod
+    def is_dummy(id):
         return '$' in id
 
     def fresh_id(self, value, graph=None, dummy=None, **style):
@@ -355,11 +354,29 @@ class Web(object):
         for l, r in zip(ids, ids[1:]):
             self.connect(l, r, graph=(graph or self.g), constraint=constraint, color='red', dir='none', style=dummy_style)
 
+    def view(self):
+        self.grow()
+        self.g.view()
+
     def render(self, equiv_class=None):
         self.grow()
         self.g.render(filename='{}{}'.format('{}_'.format(equiv_class) if equiv_class else '', self.word),
                       directory='webs',
                       cleanup=True)
+
+    @staticmethod
+    def render_orbit(word):
+        orbits = orbit_sort_by_rank(orbit(word))
+        l = len(orbits)
+        for i, w in enumerate(orbits):
+            Web(w).render(equiv_class=i)
+        merger = PdfWriter()
+        for filename in sorted(glob.glob('webs/*.pdf'), reverse=True):
+            merger.addpages(PdfReader(filename).pages)
+        merger.write('equiv_class.pdf')
+        for filename in glob.glob('webs/*.pdf'):
+            os.remove(filename)
+        shutil.rmtree('./webs')
 
 
 ########################################################################################################################
@@ -387,7 +404,7 @@ def render_all_orbits(k, n, to_print=True):
                 for filename in glob.glob('webs/*.pdf'):
                     merger.addpages(PdfReader(filename).pages)
                 merger.write('equiv_class_{}.pdf'.format(i))
-                for filename in glob.glob('webs/*.pdf'.format(i-1)):
+                for filename in glob.glob('webs/*.pdf'):
                     os.remove(filename)
                 shutil.rmtree('./webs')
 
@@ -398,7 +415,8 @@ def render_all_orbits(k, n, to_print=True):
 if __name__ == '__main__':
     # Command-line parsing
     parser = argparse.ArgumentParser(description='Rendering of Dyck promotions.', add_help=False)
-    parser.add_argument('--dim', type=str, help='(symbols, size)')
+    parser.add_argument('--dim', type=str, help='symbols, size')
+    parser.add_argument('--word', type=str, help='single word to render')
     parser.add_argument('-o', help='enable output', action='store_true')
     parser.add_argument('-h', '--help', help='show help message', action='store_true')
     args, rest = parser.parse_known_args()
@@ -429,6 +447,9 @@ if __name__ == '__main__':
     if args.dim:
         k, n = list(map(int, args.dim.split(',')))
         render_all_orbits(k, n, to_print=args.o)
+    elif args.word:
+        render_promotion(args.word, 3)
+        Web.render_orbit(args.word)
 
     # Parsing
     py2_cmd = 'python2 dyck.py {}'.format(' '.join(rest))
