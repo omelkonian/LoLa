@@ -1,15 +1,21 @@
+import importlib
+
 import numpy
+import pickle
 from math import ceil
 from os.path import isfile
 
 from MCFParser import *
-from grammars import *
+from grammars.grammar_utils import *
 
 import time
 import argparse
-from pprint import pprint, pformat
+from pprint import pformat
 import re
 from itertools import permutations
+
+
+initial_symbol = 'S'
 
 
 #
@@ -60,11 +66,13 @@ def rand_dyck(n):
             val['c'] += 1
     return ret
 
+
 #
 # Grammar class
 #
 class Grammar(object):
-    def __init__(self, rules, initial_symbol='S', **kwargs):
+
+    def __init__(self, rules, **kwargs):
         # Normalize rules
         rules = sum(map(lambda r: r if isinstance(r, list) else [r],
                         map(lambda r: sum(r, []) if isinstance(r, list) and (not r or not isinstance(r[0], tuple)) else r,
@@ -72,6 +80,9 @@ class Grammar(object):
         # Construct rule tuples
         self.grammar = [('{}: {} <- {} ({})'.format(i, lhs, rhs, recipe), lhs, rhs, recipe)
                         for i, (lhs, rhs, recipe) in enumerate(rules)]
+        kwargs.setdefault('topdown', True)
+        kwargs.setdefault('filtered', True)
+        kwargs.setdefault('nonempty', True)
         self.parser = Parser(self.grammar, [initial_symbol], **kwargs)
 
     def test_parse(self, word):
@@ -134,9 +145,10 @@ if __name__ == "__main__":
     parser.add_argument('-p', type=str, help='single parse of a word', nargs='?')
     parser.add_argument('-minp', type=str, help='show minimal parse of a word', nargs='?')
     parser.add_argument('-ps', type=str, help='multiple parses of a word', nargs='?')
-    parser.add_argument('-g', type=str, help='grammar to use', default='g', nargs='?')
+    parser.add_argument('-g', type=str, help='grammar to use', default='automatic_rule_inference', nargs='?')
     parser.add_argument('-i', type=str, help='initial symbol to use', default='S', nargs='?')
     parser.add_argument('--rules', help='print all rules', action='store_true')
+    parser.add_argument('--serialize', help='serialize grammar to file', action='store_true')
     parser.add_argument('--check', help='check soundness', action='store_true')
     parser.add_argument('--gen', help='generate dyck words', action='store_true')
     parser.add_argument('--range', type=str, default='0-100%', help='search in given percentage range')
@@ -144,12 +156,30 @@ if __name__ == "__main__":
     parser.add_argument('--rand', help='generate random Dyck word', action='store_true')
     args = parser.parse_args()
 
-    if args.n is None:
-        exit(0)
+    # Set initial symbol
+    initial_symbol = args.i
 
-    g = globals()[args.g](args.i)
+    # Load grammar
+    g = pickle.load(open('serialized_grammars/{}'.format(args.g), 'r')) \
+        if '.grammar' in args.g else getattr(importlib.import_module('grammars.{}'.format(args.g)), args.g)
+    print('Parser for provided grammar created.')
+
+    # Start time
     if args.time:
         start = time.time()
+
+    if args.rules:
+        if args.serialize:
+            with open('serialized_grammars/{}.grammar'.format(args.g), 'wb') as f:
+                pickle.dump(g, f)
+        ret = pformat(g.grammar)
+        for k, v in tuple_to_char.items():
+            ret = ret.replace(str(k), v)
+        print(ret)
+        exit(0)
+    if args.n is None and 'w' not in vars(args):
+        exit(0)
+
     if args.rand:
         while True:
             r = rand_dyck(args.n)
@@ -163,8 +193,6 @@ if __name__ == "__main__":
     elif args.check:
         assert args.n
         g.test_soundness(n_range=[args.n])
-    elif args.rules:
-        pprint(g.grammar)
     elif 'w' in vars(args) and args.w is not None:
         print(g.test_parse(args.w))
     elif 'p' in vars(args) and args.p is not None:
@@ -179,5 +207,7 @@ if __name__ == "__main__":
                 print('{}: {}'.format(w, g.test_parse(w)))
     else:
         g.test_n(args.n, range=map(float, args.range.strip('%').split('-')))
+
+    # End time
     if args.time:
         print('Time elapsed: {} seconds'.format(time.time() - start))
