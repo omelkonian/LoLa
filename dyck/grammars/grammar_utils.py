@@ -40,9 +40,9 @@ all_singles = [A, A_, B, B_, C, C_]
 all_doubles = [AA, AA_, AB, AB_, AC, AC_, BA_, BB, BB_, BC, BC_, CC, CC_, A_A_, A_B_, A_C_, B_B_, B_C_, C_C_]
 
 
-#
+########################################################################################################################
 # Meta-grammar utilities
-#
+########################################################################################################################
 def flatten(l):
     return sum(l, [])
 
@@ -79,12 +79,11 @@ def ordered_permutations(orders, **symmetries):
 
 def ordered_pairs(orders, splits=1, **symmetries):
     return [tuple([np_arr.tolist() for np_arr in np.split(list(perm), indices)])
-            for indices in combinations(range(len(symbols_from_orders(orders))), splits)
+            for indices in combinations(range(len(symbols_from_orders(orders)) + 1), splits)
             for perm in ordered_permutations(orders, **symmetries)]
 
 
 def post_process(orders, splits=1, **symmetries):
-    p = ordered_pairs(orders, splits=splits, **symmetries)
     return [map(post_process_single, tuple) for tuple in ordered_pairs(orders, splits=splits, **symmetries)]
 
 
@@ -134,3 +133,161 @@ def translate(word, **symmetries):
     symmetries = {k: (tuple_to_char[v] if isinstance(v, tuple) else v) for k, v in symmetries.items()}
     symmetries = dict(symmetries, **{v: k for k, v in symmetries.items()})  # add inverse translations
     return ''.join([symmetries.get(c, c) for c in word])
+
+
+########################################################################################################################
+# ARIS: Automatic Rule Inference System
+########################################################################################################################
+def all_state_tuples(states):
+    cur = []
+    for L in states:
+        for R in states:
+            if (R, L) not in cur:
+                cur.append((L, R))
+                yield (L, R)
+
+
+def all_state_tuples3(states):
+    cur = []
+    for A in states:
+        for B in states:
+            for C in states:
+                if all([(X, Y, Z) not in cur for X, Y, Z in [
+                    (A, C, B),
+                    (B, A, C), (B, C, A),
+                    (C, A, B), (C, B, A)
+                ]]):
+                    yield (A, B, C)
+
+
+def all_state_tuples4(states):
+    cur = []
+    for A in states:
+        for B in states:
+            for C in states:
+                for D in states:
+                    if all([(X, Y, Z, W) not in cur for X, Y, Z, W in [
+                        (A, B, D, C), (A, D, B, C), (A, D, C, B), (A, C, B, D), (A, C, D, B),
+                        (B, A, C, D), (B, A, D, C), (B, C, A, D), (B, C, D, A), (B, D, A, C), (B, D, C, A),
+                        (C, A, B, D), (C, A, D, B), (C, B, A, D), (C, B, D, A), (C, D, A, B), (C, D, B, A),
+                        (D, A, B, C), (D, A, C, B), (D, B, A, C), (D, B, C, A), (D, C, A, B), (D, C, B, A),
+                    ]]):
+                        yield (A, B, C, D)
+
+
+# def all_state_pairs3():
+#     cur = []
+#     for L in states:
+#         for R in states:
+#             for C in states:
+#                 # Exclude X-
+#                 if any(map(lambda t: '-' in states[t], [L, R, C])):
+#                     continue
+#                 if all(map(lambda t: t not in cur, [(L, R, C), (R, L, C), (R, C, L), (C, L, R), (C, R, L)])):
+#                     cur.append((L, C, R))
+#                     yield (L, C, R)
+
+
+def eliminate((l, r)):
+    lr = l + '%' + r
+    a_choices = [i for i, ch in enumerate(lr) if ch == 'a']
+    b_choices = [i for i, ch in enumerate(lr) if ch == 'b']
+    c_choices = [i for i, ch in enumerate(lr) if ch == 'c']
+
+    choices = [(a_i, b_i, c_i) for a_i in a_choices for b_i in b_choices for c_i in c_choices]
+    valid_choices = filter(lambda (k, l, m): k < l < m, choices)
+    if not valid_choices:
+        yield tuple(lr.split('%'))
+    for (a_i, b_i, c_i) in valid_choices:
+        temp = list(lr)
+        temp[a_i] = '$'
+        temp[b_i] = '$'
+        temp[c_i] = '$'
+        lr2 = "".join(temp)
+        eliminated = "".join([ch for ch in lr2 if ch != '$'])
+        rule = tuple(eliminated.split('%'))
+        yield rule # W <- ....
+        if rule == (e, e):
+            yield (l, r)
+
+
+def double_ins(_x, _y, states):
+    d = {x: _x, y: _y}
+    rhs = states[(_x, _y)]
+    perms = flatten([
+        all_ordered([[x, y], [k], [l]])
+        for k in [a, b, c]
+        for l in [a, b, c]])
+
+    def transform(l):
+        return ''.join(map(lambda elem: d[elem] if isinstance(elem, tuple) else elem, l))
+
+    perms2 = map(lambda (l1, l2): (transform(l1), transform(l2)), perms)
+    for perm, _perm in zip(perms2, perms):
+        eliminated = list(eliminate(perm))[0]
+        try:
+            state = states[eliminated]
+            rule = (state, [rhs], [_perm[0], _perm[1]])
+            yield rule
+        except KeyError:
+            continue
+
+
+def triple_ins(_x, _y, states):
+    d = {x: _x, y: _y}
+    rhs = states[(_x, _y)]
+    perms = all_ordered([[x, y], [a], [b], [c]])
+
+    def transform(l):
+        return ''.join(map(lambda elem: d[elem] if isinstance(elem, tuple) else elem, l))
+
+    perms2 = map(lambda (l1, l2): (transform(l1), transform(l2)), perms)
+    for perm, _perm in zip(perms2, perms):
+        for eliminated in eliminate(perm):
+            try:
+                state = states[eliminated]
+                rule = (state, [rhs], [_perm[0], _perm[1]])
+                yield rule
+            except KeyError:
+                continue
+
+
+# TODO progN
+def prog((_x, _y), (_z, _w), states):
+    L = states[(_x, _y)]
+    R = states[(_z, _w)]
+    d = {x: _x, y: _y, z: _z, w: _w}
+    for element1, element2 in all_ordered([[x, y], [z, w], [k, l]]):
+        desc1, desc2 = "", ""
+        for elem in element1:
+            desc1 += d[elem]
+        for elem in element2:
+            desc2 += d[elem]
+        descriptor = (desc1, desc2)
+        for eliminated in eliminate(descriptor):
+            try:
+                eliminated_state = states[eliminated]
+            except KeyError:
+                continue
+            yield (eliminated_state, [L, R], [element1, element2])
+
+
+def prog3((_x, _y), (_z, _w), (_k, _l), states):
+    A = states[(_x, _y)]
+    B = states[(_z, _w)]
+    C = states[(_k, _l)]
+    d = {x:_x, y:_y, z:_z, w:_w, k: _k, l: _l}
+    for element1, element2 in all_ordered([[x, y], [z, w], [k, l]]):
+        desc1, desc2 = "", ""
+        for elem in element1:
+            desc1 += d[elem]
+        for elem in element2:
+            desc2 += d[elem]
+        descriptor = (desc1, desc2)
+        eliminated_list = eliminate(descriptor)
+        for eliminated in eliminated_list:
+            try:
+                eliminated_state = states[eliminated]
+            except KeyError:
+                continue
+            yield (eliminated_state, [A, B, C], [element1, element2])

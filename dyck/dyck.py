@@ -104,20 +104,28 @@ class Grammar(object):
                 l, min_parse = cur_l, p
         print('{}\n'.format(min_parse))
 
-    def test_n(self, n, range=(0.0, 100.0)):
+    def test_n(self, n, range=(0.0, 100.0), grammar_id='', start_time=None):
         ws = dyck(3, n)
         l = len(ws)
         start, end = map(lambda p: int(ceil(l * (p/100))), range)
-        print('Checking {} to {}'.format(start, end))
-        ws = ws[start:end]
-        c = 1
-        for i, w in enumerate(ws):
-            sys.stdout.write("\r{0:.2f}%".format(float(i) / float(len(ws)) * 100.0))
-            sys.stdout.flush()
-            if not self.parser.chart_parse(list(w)):
-                print('\n{0}.\t {1}'.format(c, w))
-                c += 1
-        print('\n-------------- [{0} out of {1}] --------------'.format(c - 1, len(ws)))
+        counters = []
+        with open('stats/{}_{}.stats'.format(grammar_id, n), 'wb') as f:
+            f.write('Rule size: {}'.format(len(self.grammar)))
+            f.write('\nChecking {} to {}'.format(start, end))
+            c = 1
+            for i, w in enumerate(ws[start:end]):
+                sys.stdout.write("\r{0:.2f}%".format(float(i) / float(len(ws)) * 100.0))
+                sys.stdout.flush()
+                if not self.parser.chart_parse(list(w)):
+                    counters.append(w)
+                    c += 1
+            f.write('\nResult: {0} out of {1}'.format(c - 1, len(ws)))
+            if start_time:
+                f.write('\nTime elapsed: {} seconds'.format(time.time() - start_time))
+            f.write('\n-------------------- COUNTERS --------------------')
+            for counter in counters:
+                f.write('\n{}'.format(counter))
+
 
     def test_soundness(self, n_range=range(1, 10)):
         for n in n_range:
@@ -162,11 +170,9 @@ if __name__ == "__main__":
     # Load grammar
     g = pickle.load(open('serialized_grammars/{}'.format(args.g), 'r')) \
         if '.grammar' in args.g else getattr(importlib.import_module('grammars.{}'.format(args.g)), args.g)
-    print('Parser for provided grammar created.')
 
     # Start time
-    if args.time:
-        start = time.time()
+    start = time.time()
 
     if args.rules:
         if args.serialize:
@@ -205,8 +211,10 @@ if __name__ == "__main__":
         with open(args.ws, 'r') as f:
             for w in f.read().splitlines():
                 print('{}: {}'.format(w, g.test_parse(w)))
+    elif args.n:
+        g.test_n(args.n, range=map(float, args.range.strip('%').split('-')), grammar_id=args.g, start_time=start)
     else:
-        g.test_n(args.n, range=map(float, args.range.strip('%').split('-')))
+        exit(0)
 
     # End time
     if args.time:
