@@ -257,7 +257,7 @@ def prog((_x, _y), (_z, _w), states):
     L = states[(_x, _y)]
     R = states[(_z, _w)]
     d = {x: _x, y: _y, z: _z, w: _w}
-    for element1, element2 in all_ordered([[x, y], [z, w], [k, l]]):
+    for element1, element2 in all_ordered([[x, y], [z, w]]):
         desc1, desc2 = "", ""
         for elem in element1:
             desc1 += d[elem]

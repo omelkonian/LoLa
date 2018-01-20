@@ -178,10 +178,10 @@ if __name__ == "__main__":
         if args.serialize:
             with open('serialized_grammars/{}.grammar'.format(args.g), 'wb') as f:
                 pickle.dump(g, f)
-        ret = pformat(g.grammar)
-        for k, v in tuple_to_char.items():
-            ret = ret.replace(str(k), v)
-        print(ret)
+        for r in map(lambda t: t[0], g.grammar):
+            for k, v in tuple_to_char.items():
+                r = r.replace(str(k), v)
+            print(r)
         exit(0)
     if args.n is None and 'w' not in vars(args):
         exit(0)

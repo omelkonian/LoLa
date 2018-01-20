@@ -51,8 +51,6 @@ aris2 = Grammar([
     # 2-tuples
     [list(prog(L, R)) for L, R in all_state_tuples()],
 
-    # 2-ins
-    [list(double_ins(v[0], v[1])) for v in states],
     # 3-ins
     [list(triple_ins(v[0], v[1])) for v in states],
 ])

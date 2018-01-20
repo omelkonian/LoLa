@@ -18,6 +18,7 @@ states = {
     ("bc", ""): 'lA-',
     ("", "bc"): 'rA-',
     ("b", "c"): 'lrA-',
+    ("cb", ""): 'ulA-',
     # ------------------
     ("ac", ""): 'lB-',
     ("", "ac"): 'rB-',
@@ -41,7 +42,7 @@ all_state_tuples3 = partial(all_state_tuples3, states=states)
 all_state_tuples4 = partial(all_state_tuples4, states=states)
 
 x, y, z, w, k, l, m, n = (0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1), (3, 0), (3, 1)
-aris1 = Grammar([
+aris2 = Grammar([
     # TOP
     ('S', ['W'], [[x, y]]),
 
@@ -51,12 +52,7 @@ aris1 = Grammar([
     # 2-tuples
     [list(prog(L, R)) for L, R in all_state_tuples()],
 
-    # 2-ins
-    [list(double_ins(v[0], v[1])) for v in states],
     # 3-ins
     [list(triple_ins(v[0], v[1])) for v in states],
-
-    # 3-tuples
-    [list(prog3(L, C, R)) for L, C, R in all_state_tuples3()],
 ])
 
