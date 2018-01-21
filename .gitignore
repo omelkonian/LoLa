@@ -8,3 +8,6 @@
 *.dvi
 .idea/
 **/_minted*/
+**.nav
+**.snm
+**.toc

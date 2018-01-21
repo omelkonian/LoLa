@@ -1,0 +1,108 @@
+\documentclass{beamer}
+\usetheme[
+  block=fill, 
+  background=dark, 
+  titleformat=smallcaps,
+  progressbar=frametitle,
+%  numbering=none,
+]{metropolis}
+
+%----------------------------------------------------------------------------
+% From dyck-paper
+%----------------------------------------------------------------------------
+\usepackage{epigraph}
+% Math
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+% Code listing
+\usepackage{minted}
+%\usemintedstyle{friendly}
+\usemintedstyle{tango}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+% Colors
+\usepackage{xcolor}
+\colorlet{CodeBg}{gray!90}
+\usepackage{color, colortbl}
+\definecolor{Gray}{rgb}{0.9,0.9,0.9}
+\definecolor{bblue}{HTML}{1D577A}
+\definecolor{rred}{HTML}{C03425}
+\definecolor{ggreen}{HTML}{8BB523}
+\definecolor{ppurple}{HTML}{6B1B7F}
+\definecolor{pblack}{HTML}{000000}
+\definecolor{pyellow}{HTML}{C0B225}
+% Graphs
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{trees}
+\usetikzlibrary{positioning}
+\usepackage{pgfplots}
+% Graphics
+\usepackage{graphics}
+\graphicspath{{figures/}} % Location of the graphics files
+
+\newcommand\todo[1]{\textcolor{red}{#1}}
+\newcommand{\w}[1]{\textit{"#1"}}
+\newcommand\s{\textsc}
+
+\newcommand{\Order}[5]{
+	\[
+	\mathcal{#1}_{#5}\llbracket #2 \leftarrow #3 \mid \{ #4 \} \rrbracket.
+	\]
+}
+\newcommand{\Orderr}[5]{
+	\mathcal{#1}_{#5}\llbracket #2 \leftarrow #3 \mid \{ #4 \} \rrbracket.
+}
+\newcommand{\Ord}[4]{\Order{O}{#1}{#2}{#3}{#4}}
+\newcommand{\Or}[4]{\Orderr{O}{#1}{#2}{#3}{#4}}
+\newcommand{\Con}[4]{\Order{C}{#1}{#2}{#3}{#4}}
+%----------------------------------------------------------------------------
+
+% Beamer
+\title{$D^3$ as a 2-MCFL}
+\subtitle{}
+\author{Orestis Melkonian, Konstantinos Kogkalidis}
+\date{January 25, 2018}
+\institute{Universiteit Utrecht}
+
+% Box macro
+\newcommand{\ex}[2]{
+  \vfill
+  \begin{alertblock}{#1}
+    #2
+  \end{alertblock}
+}
+
+\begin{document}
+	\maketitle	
+	\begin{frame}{}
+		\epigraph
+			{When you depart for Ithaca,\\wish for the road to be long,\\full of adventure, full of knowledge.}
+			{\textit{C. P. Cavafy\\ Ithaca}}
+	\end{frame}
+	
+	\begin{frame}{Overview}
+    \begin{itemize}
+      \item Theoretical background
+      \item Modelling techniques
+      \item Implemented grammars
+      \item Road to completeness
+      \item Tools
+      \item Demo
+    \end{itemize}
+	\end{frame}
+  	
+  	\begin{frame}{Theoretical background}
+  	\end{frame}
+  	\begin{frame}{Modelling techniques}
+  	\end{frame}
+  	\begin{frame}{Implemented grammars}
+  	\end{frame}
+  	\begin{frame}{Road to completeness}
+  	\end{frame}
+  	\begin{frame}{Tools}
+  	\end{frame}
+  	\begin{frame}{Demo}
+  	\end{frame}
+\end{document}
