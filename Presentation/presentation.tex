@@ -1,6 +1,6 @@
 \documentclass{beamer}
 \usetheme[
-  block=fill, 
+  block=fill,
   background=dark,
   titleformat=smallcaps,
   progressbar=frametitle,
@@ -69,10 +69,8 @@
   \end{alertblock}
 }
 \newcommand\tsc[1]{\alert{\textsc{#1}}}
-
-%\setbeamercolor{alerted text}{%
-%  fg=ggreen
-%}
+\newcommand\charth{4cm}
+\newcommand\bb[1]{\scriptsize \textcolor{black}{$n=#1$}}
 %----------------------------------------------------------------------------
 
 % Beamer
@@ -84,7 +82,7 @@
 
 \begin{document}
 	\maketitle
-	
+
 	\begin{frame}{}
 	\begin{center}
 	\vspace{1cm}
@@ -107,7 +105,7 @@
 			\item \textcolor{ggreen}{abc}
 			\item \textcolor{ggreen}{aabbcc}
 			\item \textcolor{ggreen}{abcabcabacbc}
-		\end{itemize}	
+		\end{itemize}
 		\end{minipage}
 		\pause
 		\begin{minipage}{.4\textwidth}
@@ -118,7 +116,7 @@
 			\item \textcolor{rred}{aabbbcc}
 			\pause
 			\item \textcolor{rred}{abcacb}
-		\end{itemize}	
+		\end{itemize}
 		\end{minipage}
 		\vspace{1cm}
 		\pause
@@ -153,7 +151,7 @@
 		\caption*{First-match policy}
 		\end{figure}
 	\end{frame}
-	
+
 	\begin{frame}{G$_0$: Grammar of triple insertions}
 		\begin{figure}[h!]
 		\begin{align}
@@ -172,7 +170,7 @@
 		\end{align}
 		\end{figure}
 	\end{frame}
-	
+
 	\begin{frame}{G$_0$: Grammar of triple insertions}
 		\begin{figure}[h!]
 		\centering
@@ -205,7 +203,7 @@
 		\caption*{Straddling counter-example}
 		\end{figure}
 	\end{frame}
-  	
+
   	\begin{frame}{Meta-grammars: Introduction}
 	  	\vspace{.7cm}
 	  	\center \tsc{Notation}
@@ -215,22 +213,33 @@
   		\vspace{.1cm}
   		\pause
   		\begin{center}\tsc{Meta-grammar G$_1$}\end{center}
-  		  \[ \left . \ \begin{array}{ll}
-					\Or{W}{\epsilon}{a < b < c}{2} \\
-                \Or{W}{W_{xy}}{x < y,\ a < b < c}{2}
-           \end{array}
-           \right\} \textsc{triple insertion}
+  		  \[ \left . \
+  		  	\begin{array}{ll}
+				\Or{W}{\epsilon}{a < b < c}{2} \\
+               		\Or{W}{W_{xy}}{x < y,\ a < b < c}{2}
+	           \end{array}
+           	\right\} \
+           	\begin{array}{c}
+           		\textsc{triple} \\
+	           	\textsc{insertion}
+     		      \end{array}
 		  \]
   		\pause
-  		\hspace{-4cm}\textcolor{ggreen}{+}
-  		\[ \left . \ \hspace{-3cm}\begin{array}{ll}
-					\Or{W}{W_{xy}, W_{zw}}{x < y,\ z < w}{2}
-         \end{array}
-         \right . \
+  		\hspace{-4cm} \textcolor{ggreen}{+} \vspace{-3mm}
+  		\[ \left . \
+  		   \hspace{.75cm}
+  		   \begin{array}{ll}
+		       \Or{W}{W_{xy}, W_{zw}}{x < y,\ z < w}{2}
+         	   \end{array}
+             \right\} \
+             \begin{array}{c}
+         		  \textsc{interleaving} \\
+           	  \textsc{words}
+	        \end{array}
 		\]
   		\vspace{.7cm}
   	\end{frame}
-  	
+
   	\begin{frame}{G$_2$: Adding states}
    	\small
    	\begin{flalign*}
@@ -259,10 +268,10 @@
            \right\} \tsc{closures}
 	\end{flalign*}
   	\end{frame}
-  	
+
   	\begin{frame}{G$_3$: G$_2$ + Universal triple insertion}
   	\begin{align*}
-  		&\text{G}_3 = \text{G}_2\ \textcolor{ggreen}{+}\ \forall \ \s{K} \in \mathcal{S} \setminus \s{W}:\\ 
+  		&\text{G}_3 = \text{G}_2\ \textcolor{ggreen}{+}\ \forall \ \s{K} \in \mathcal{S} \setminus \s{W}:\\
 &\hspace{3cm}\Or{\s{K}}{\s{K}_{xy}}{x < y,\ a < b < c}{2}
   	\end{align*}
   	\end{frame}
@@ -270,54 +279,61 @@
 {\usebackgroundtemplate{%
   \includegraphics[width=\paperwidth,height=\paperheight]{demo.png}}
 	\begin{frame}{Demo}
-	   \centering   
+	   \centering
 	   \begin{overpic}[scale=0.3]{demo.png}
-	     \put(20,10){\includegraphics[scale=0.2]{demo.png}} 
+	     \put(20,10){\includegraphics[scale=0.2]{demo.png}}
 	     \put(35,20){\includegraphics[scale=0.1]{demo.png}}
 	   \end{overpic}
   	\end{frame}
 }
-  	
-  	\begin{frame}{Refining states I}
+  	\begin{frame}{Refining states}
   		\center \tsc{Example}
   		\begin{figure}[h!]
 		\centering
-		\begin{tikzpicture}[every node/.style={anchor=base}]
+		\begin{tikzpicture}[every node/.style={anchor=base}, scale=.9]
 			\node (c) at (0,0) {$A^{+}(x, y)$};
-			\node (l) at (-2,-1) {$A^{+}_{left}(\dots a\dots ,\ \dots)$};
-			\node (r) at (2,-1) {$A^{+}_{right}(\dots,\ \dots a\dots)$};
+			\node (l) at (-1,-1) {$A^{+}_{left}$};
+			\node (r) at (1,-1) {$A^{+}_{right}$};
 			\draw (c) edge [->, mLightBrown, thick] (l);
 			\draw (c) edge [->, mLightBrown, thick] (r);
+			\node (v) at (0,-1.6) {$\vdots$};
+			\node (cc) at (0,-2.3) {$C^{-}(x, y)$};
+			\node (ll) at (-2,-3.3) {$C^{-}_{left}$};
+			\node (rr) at (2,-3.3) {$C^{-}_{right}$};
+			\node (lr) at (0,-3.8) {$C^{-}_{left,\ right}$};
+			\draw (cc) edge [->, mLightBrown, thick] (ll);
+			\draw (cc) edge [->, mLightBrown, thick] (rr);
+			\draw (cc) edge [->, mLightBrown, thick] (lr);
 		\end{tikzpicture}
 		\end{figure}
 		\center \tsc{Why? \pause \\New orders in interactions}
 		\[ C^-(xz,\ wy) \leftarrow A^{+}_{left}(x,\ y),\ B^{+}_{left}(z,\ w).
 		\]
   	\end{frame}
-  	
-  	\begin{frame}{Refining states II}
+
+  	\begin{frame}{Refining states: Interactions}
   		\centering
 		\begin{tikzpicture}[scale=.7]
 		  \foreach \x /\alph/\name in {
-		  		0/n1/$A^{+}_{left}$,
-		  		22.5/n2/$A^{+}_{right}$,
-		  		45/n3/$B^{+}_{left}$,
-		  		67.5/n4/$B^{+}_{right}$,
-		  		90/n5/$C^{+}_{left}$,
-		  		112.5/n6/$C^{+}_{right}$,
-		  		135/n7/$C^{+}_{right}$,
-		  		157.5/n8/$C^{+}_{right}$,
-		  		180/n9/$C^{+}_{right}$,
-		  		202.5/n10/$C^{+}_{right}$,
-		  		225/n11/$C^{+}_{right}$,
-		  		247.5/n12/$C^{+}_{right}$,
-		  		270/n13/$C^{+}_{right}$,
-		  		292.5/n14/$C^{+}_{right}$,
-		  		315/n15/$C^{+}_{right}$,
+		  		0/n1/$A^{+}_{l}$,
+		  		22.5/n2/$A^{+}_{r}$,
+		  		45/n3/$B^{+}_{l}$,
+		  		67.5/n4/$B^{+}_{r}$,
+		  		90/n5/$C^{+}_{l}$,
+		  		112.5/n6/$C^{+}_{r}$,
+		  		135/n7/$A^{-}_{l}$,
+		  		157.5/n8/$A^{-}_{r}$,
+		  		180/n9/$A^{-}_{lr}$,
+		  		202.5/n10/$B^{-}_{l}$,
+		  		225/n11/$B^{-}_{r}$,
+		  		247.5/n12/$B^{-}_{lr}$,
+		  		270/n13/$C^{-}_{l}$,
+		  		292.5/n14/$C^{-}_{r}$,
+		  		315/n15/$C^{-}_{lr}$,
 		  		337.5/n16/$W$
 		  }{
 		  	\node[] (\alph) at (\x:5cm) {};
-		  }		
+		  }
 		  \foreach \alpha in {n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15,n16}%
 		  {%
 		  \foreach \alphb in {n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15}%
@@ -325,48 +341,240 @@
 		   \draw (\alpha) edge (\alphb);%
 		  }}
 		  \foreach \x /\alph/\name in {
-		  		0/n1/$A^{+}_{left}$,
-		  		22.5/n2/$A^{+}_{right}$,
-		  		45/n3/$B^{+}_{left}$,
-		  		67.5/n4/$B^{+}_{right}$,
-		  		90/n5/$C^{+}_{left}$,
-		  		112.5/n6/$C^{+}_{right}$,
-		  		135/n7/$C^{+}_{right}$,
-		  		157.5/n8/$C^{+}_{right}$,
-		  		180/n9/$C^{+}_{right}$,
-		  		202.5/n10/$C^{+}_{right}$,
-		  		225/n11/$C^{+}_{right}$,
-		  		247.5/n12/$C^{+}_{right}$,
-		  		270/n13/$C^{+}_{right}$,
-		  		292.5/n14/$C^{+}_{right}$,
-		  		315/n15/$C^{+}_{right}$,
+		  		0/n1/$A^{+}_{l}$,
+		  		22.5/n2/$A^{+}_{r}$,
+		  		45/n3/$B^{+}_{l}$,
+		  		67.5/n4/$B^{+}_{r}$,
+		  		90/n5/$C^{+}_{l}$,
+		  		112.5/n6/$C^{+}_{r}$,
+		  		135/n7/$A^{-}_{l}$,
+		  		157.5/n8/$A^{-}_{r}$,
+		  		180/n9/$A^{-}_{lr}$,
+		  		202.5/n10/$B^{-}_{l}$,
+		  		225/n11/$B^{-}_{r}$,
+		  		247.5/n12/$B^{-}_{lr}$,
+		  		270/n13/$C^{-}_{l}$,
+		  		292.5/n14/$C^{-}_{r}$,
+		  		315/n15/$C^{-}_{lr}$,
 		  		337.5/n16/$W$
 		  }{
 		  	\node[circle,inner sep=0pt,minimum size=8mm,fill=white] (\alph) at (\x:5cm) {\tiny \textcolor{black}{\name}};
-		  }	
+		  }
 		 \end{tikzpicture}
   	\end{frame}
-  	\begin{frame}{Automatic Rule Inference System}
+
+  	\begin{frame}{G$_4$: Automatic Rule Inference}
+  		\center \tsc{State descriptors $\mathcal{D}$}\\
+	  	\begin{minipage}{.49\textwidth}
+		\begin{align*}
+		\s{W} &\mapsto (\epsilon, \epsilon) \\
+		\s{A}^+_{l} &\mapsto (a, \epsilon) \\
+		\s{A}^+_{r} &\mapsto (\epsilon, a) \\
+		\s{B}^+_{l} &\mapsto (b, \epsilon) \\
+		\s{B}^+_{r} &\mapsto (\epsilon, b) \\
+		\s{C}^+_{l} &\mapsto (c, \epsilon) \\
+		\s{C}^+_{r} &\mapsto (\epsilon, c) \\
+		\s{A}^-_{l} &\mapsto (bc, \epsilon)
+		\end{align*}
+		\end{minipage}
+		\begin{minipage}{.49\textwidth}
+		\begin{align*}
+		\s{A}^-_{r} &\mapsto (\epsilon, bc) \\
+		\s{A}^-_{lr} &\mapsto (b, c) \\
+		\s{B}^-_{l} &\mapsto (ac, \epsilon) \\
+		\s{B}^-_{r} &\mapsto (\epsilon, ac) \\
+		\s{B}^-_{lr} &\mapsto (a, c) \\
+		\s{C}^-_{l} &\mapsto (ab, \epsilon) \\
+		\s{C}^-_{r} &\mapsto (\epsilon, ab) \\
+		\s{C}^-_{lr} &\mapsto (a, b)
+		\end{align*}
+		\end{minipage}
   	\end{frame}
-  	
-  	
-  	\begin{frame}{Overview}
-    \begin{itemize}
-      \item Background
-      \item $G0$: Triple insertion
-      \item Meta-grammar notation
-      \item $G_0'$: Triple insertion (in $O_2$ notation)
-      \item $G_1$: G0' + interleavings
-      \item $G_2$: incomplete words
-      \item $G_3$: G2 + 3-ins
-      \item \alert{DEMO}: \textbf{dyck}
-      \item Refined states
-      \item Constraints (notation)
-      \item ARIS
-      \item Results
-      \item Road to completeness
-      \item Correspondences
-      \item \alert{DEMO}: \textbf{dyckviz}
-    \end{itemize}
-	\end{frame}
+
+  	\begin{frame}{Automatic Rule Inference: Example}
+  		\center \tsc{Case of} $\s{A}^-_{lr}(x_{\textcolor{ggreen}{b}},\ y_{\textcolor{ggreen}{c}})$ \tsc{+} $\s{B}^-_{lr}(x_{\textcolor{ggreen}{a}},\ y_{\textcolor{ggreen}{c}})$
+		\begin{figure}[h!]
+		\centering
+		\begin{tikzpicture}[every node/.style={anchor=base}, scale=.9]
+			\node (i0) at (-1,1) {\textsc{permutation}};
+			\node (i1) at (3,1) {\textsc{descriptor}};
+			\node (i2) at (7,1) {\textsc{eliminated}};
+
+			\node at (-1,0) {$\vdots$};
+			\node (p1) at (-1,-1) {$(zxw,\ y)$};
+			\node at (-1,-2) {$\vdots$};
+			\node (p2) at (-1,-3) {$(xzw,\ y)$};
+			\node at (-1,-4) {$\vdots$};
+
+			\node at (3,0) {$\vdots$};
+			\node (d1) at (3,-1) {$(abc,\ c)$};
+			\node at (3,-2) {$\vdots$};
+			\node (d2) at (3,-3) {$(bac,\ c)$};
+			\node at (3,-4) {$\vdots$};
+
+			\node at (7,.25) {$\vdots$};
+			\node (e1) at (7,-.5) {$(c,\ \epsilon) \mapsfrom \s{C}^+_{l}$};
+			\node (e2) at (7,-1.5) {$(c,\ \epsilon) \mapsfrom \s{C}^+_{r}$};
+			\node at (7,-2.25) {$\vdots$};
+			\node (e3) at (7,-3) {$(bac,\ c) \ \notin\ \mathcal{D} $};
+			\node at (7,-3.75) {$\vdots$};
+
+			\draw (p1) edge [->, mLightBrown, thick] (d1);
+			\draw (d1) edge [->, mLightBrown, thick] (e1);
+			\draw (d1) edge [->, mLightBrown, thick] (e2);
+			\draw (p2) edge [->, mLightBrown, thick] (d2);
+			\draw (d2) edge [->, mLightBrown, thick] (e3);
+		\end{tikzpicture}
+		\end{figure}
+  	\end{frame}
+
+	\metroset{background=light}
+  	\begin{frame}{Results}
+  	\begin{figure}[h!]
+  		% Counter-examples
+		\begin{tikzpicture}
+		    \begin{axis}[
+		    		black,
+		        width  = \textwidth,
+		        height = \charth,
+		        major x tick style = transparent,
+		        ybar=4*\pgflinewidth,
+		        bar width=3pt,
+		        ymajorgrids = true,
+		        ylabel = {\textsc{Counter-examples} \small (\%)},
+		        every tick label/.append style={font=\tiny},
+		        every axis x label/.style={
+		        		  black,
+		  			  at={(ticklabel* cs:1.05)},
+		  			  anchor=west,
+		  			  },
+			   every axis y label/.style={black,at={(current axis.north)},above=1mm},
+		        symbolic x coords={\bb{2},\bb{3},\bb{4},\bb{5},\bb{6}},
+		        xtick = data,
+		        scaled y ticks = false,
+		        enlarge x limits=0.1,
+		        ymin=0,
+		        legend cell align=left,
+		        legend style={
+		        		at={(.25,.75)},
+						anchor=south west,
+						legend columns=-1
+					},
+		    ]
+		    	%triple
+		        \addplot[style={bblue,fill=bblue,mark=none}]
+		            coordinates {(\bb{2}, 0.0) (\bb{3},0.0) (\bb{4},1.7) (\bb{5},6.42) (\bb{6},14.55)};
+
+		        \addplot[style={rred,fill=rred,mark=none}]
+		             coordinates {(\bb{2},1.123) (\bb{3},0.85) (\bb{4},1.09) (\bb{5},1.0) (\bb{6},1.0)};
+
+
+		        \addplot[style={ggreen,fill=ggreen,mark=none}]
+		             coordinates {(\bb{2},0.0) (\bb{3},0.0) (\bb{4},0.0) (\bb{5},0.0) (\bb{6},1.0)};
+
+				% meta3
+		        \addplot[style={ppurple,fill=ppurple,mark=none}]
+		             coordinates {(\bb{2},0.74) (\bb{3},1.07) (\bb{4},1.23) (\bb{5},1.0) (\bb{6},1.0)};
+
+		        \addplot[style={pyellow,fill=pyellow,mark=none}]
+		             coordinates {(\bb{2},0.74) (\bb{3},1.07) (\bb{4},1.23) (\bb{5},1.0) (\bb{6},1.0)};
+			  \legend{\textcolor{black}{G$_0$},\textcolor{black}{G$_1$},\textcolor{black}{G$_2$},\textcolor{black}{G$_3$},\textcolor{black}{G$_4$},\textcolor{black}{G$_5$}}
+		    \end{axis}
+		\end{tikzpicture}
+		\\[12pt]
+		% Rule size
+		\begin{tikzpicture}
+		    \begin{axis}[
+		    black,
+		        width  = 0.39*\textwidth,
+		        height = \charth,
+		        major x tick style = transparent,
+		        ybar=2*\pgflinewidth,
+		        bar width=6pt,
+		        ymajorgrids = true,
+		        ylabel = {\textsc{Rule size}},
+		        every tick label/.append style={font=\tiny},
+		        every axis x label/.style={
+		        			white,
+		  			  at={(ticklabel* cs:1.05)},
+		  			  anchor=west,
+		  			  },
+					every axis y label/.style={at={(current axis.north)},above=1mm},
+		        symbolic x coords={\textcolor{white}{abc}},
+		        xtick = data,
+		        scaled y ticks = false,
+		        enlarge x limits=0,
+		        ymin=0,
+		        legend cell align=left,
+		        legend style={
+		        		at={(0.5,-0.15)},
+						anchor=north,
+						legend columns=-1
+					},
+		    ]
+				% triple in
+		    	\addplot[style={bblue,fill=bblue,mark=none}]
+		            coordinates {(\textcolor{white}{abc}, 65)};
+
+		        \addplot[style={rred,fill=rred,mark=none}]
+		             coordinates {(\textcolor{white}{abc},95)};
+
+		        \addplot[style={ggreen,fill=ggreen,mark=none}]
+		             coordinates {(\textcolor{white}{abc},270)};
+
+				% meta-3
+		        \addplot[style={ppurple,fill=ppurple,mark=none}]
+		             coordinates {(\textcolor{white}{abc},690)};
+
+		        \addplot[style={pyellow,fill=pyellow,mark=none}]
+		             coordinates {(\textcolor{white}{abc},1456)};
+		    \end{axis}
+		\end{tikzpicture}
+		\hspace*{1cm}
+		% Computation Time
+		\begin{tikzpicture}
+		    \begin{axis}[black,
+		        width  = 0.59*\textwidth,
+		        height = 1.01*\charth,
+		        major x tick style = transparent,
+		        ybar=2*\pgflinewidth,
+		        bar width=3pt,
+		        ymajorgrids = true,
+		        ylabel = {\textsc{Computation Time} \small (sec)},
+		        every tick label/.append style={font=\tiny},
+		        every axis x label/.style={
+		  			  at={(ticklabel* cs:1.05)},
+		  			  anchor=west,
+		  			  },
+					every axis y label/.style={black, at={(current axis.north)},above=1mm},
+		        symbolic x coords={\bb{2},\bb{3},\bb{4},\bb{5},\bb{6}},
+		        xtick = data,
+		        scaled y ticks = false,
+		        enlarge x limits=0.1,
+		        ymin=0,
+		        legend cell align=left,
+		        legend style={
+		        		at={(0.5,-0.25)},
+						anchor=north,
+						legend columns=-1
+					},
+		    ]
+				\addplot[style={bblue,fill=bblue,mark=none}]
+		           coordinates {(\bb{2}, 1.0) (\bb{3},1.0) (\bb{4},1.0) (\bb{5},1.0) (\bb{6},1.0)};
+
+		        \addplot[style={rred,fill=rred,mark=none}]
+		             coordinates {(\bb{2},1.123) (\bb{3},0.85) (\bb{4},1.09) (\bb{5},1.0) (\bb{6},1.0)};
+
+		        \addplot[style={ggreen,fill=ggreen,mark=none}]
+		             coordinates {(\bb{2},0.92) (\bb{3},0.56) (\bb{4},0.95) (\bb{5},1.0) (\bb{6},1.0)};
+
+		        \addplot[style={ppurple,fill=ppurple,mark=none}]
+		             coordinates {(\bb{2},0.74) (\bb{3},1.07) (\bb{4},1.23) (\bb{5},1.0) (\bb{6},1.0)};
+
+		        \addplot[style={pyellow,fill=pyellow,mark=none}]
+		             coordinates {(\bb{2},0.74) (\bb{3},1.07) (\bb{4},1.23) (\bb{5},1.0) (\bb{6},1.0)};
+		    \end{axis}
+		\end{tikzpicture}
+		\end{figure}
+  	\end{frame}
 \end{document}
