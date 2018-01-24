@@ -93,12 +93,6 @@
 	\end{center}
 	\end{frame}
 
-%	\begin{frame}{}
-%		\epigraph
-%			{When you depart for Ithaca,\\wish for the road to be long,\\full of adventure, full of knowledge.}
-%			{\textit{C. P. Cavafy\\ Ithaca}}
-%	\end{frame}
-
 	\begin{frame}{Some examples}
 		\hspace{1cm}
 		\begin{minipage}{.4\textwidth}
@@ -440,7 +434,7 @@
 			\node (i2) at (7,1) {\textsc{\underline{eliminated}}};
 			\node at (7,.25) {$\vdots$};
 			\node (e1) at (7,-.5) {$(c,\ \epsilon) \mapsfrom \s{C}^+_{l}$};
-			\node (e2) at (7,-1.5) {$(c,\ \epsilon) \mapsfrom \s{C}^+_{r}$};
+			\node (e2) at (7,-1.5) {$(\epsilon,\ c) \mapsfrom \s{C}^+_{r}$};
 			\node at (7,-2.25) {$\vdots$};
 			\node (e3) at (7,-3) {$(bac,\ c) \ \notin\ \mathcal{D} $};
 			\node at (7,-3.75) {$\vdots$};
@@ -1001,7 +995,7 @@
 			\[
 			\begin{tikzpicture}[
 			scale=.7,
-			every node/.style={anchor=base},xscale=1,yscale=1.2,
+			every node/.style={anchor=base},xscale=1.35,yscale=1.1,
 			-->/.style={->,shorten >=2pt,shorten <=2pt,>=stealth},
 			<--/.style={<-,shorten >=2pt,shorten <=2pt,>=stealth},
 			--->/.style={->,shorten >=1pt,shorten <=1pt,>=stealth},
@@ -1055,90 +1049,90 @@
 			\draw[<-,>=stealth] (ii6) -- (d6.center);
 			\draw[->,>=stealth] (d6.center) -- (o6);
 			
-			\node (i21) at (.5,-2.5) {$\textsc{\small B}^+$};
-			\node (ii21) at (2.5,-2.5) {$\textsc{\small B}^-$};
-			\node (d21) at (1,-3.5) {};
-			\node (dd21) at (2,-3.5) {};
-			\node (o21) at (.5,-4.5) {$\textsc{\small A}^-$};
-			\node (oo21) at (2.5,-4.5) {$\textsc{\small A}^-$};
+			\node (i21) at (.5,-3) {$\textsc{\small B}^+$};
+			\node (ii21) at (2.5,-3) {$\textsc{\small B}^-$};
+			\node (d21) at (1,-4) {};
+			\node (dd21) at (2,-4) {};
+			\node (o21) at (.5,-5) {$\textsc{\small A}^-$};
+			\node (oo21) at (2.5,-5) {$\textsc{\small A}^-$};
 			\draw[->,>=stealth] (i21) -- (d21.center);
 			\draw[<-,>=stealth] (ii21) -- (dd21.center);
 			\draw[<-,>=stealth] (d21.center) -- (dd21.center);
 			\draw[<-,>=stealth, shorten >=5pt] (d21.center) -- (o21.center);
 			\draw[->,>=stealth, shorten >=5pt] (dd21.center) -- (oo21.center);
 			
-			\node (i22) at (3.75,-2.5) {$\textsc{\small B}^+$};
-			\node (ii22) at (5.75,-2.5) {$\textsc{\small A}^-$};
-			\node (d22) at (4.25,-3.5) {};
-			\node (dd22) at (5.25,-3.5) {};
-			\node (o22) at (3.75,-4.5) {$\textsc{\small A}^-$};
-			\node (oo22) at (5.75,-4.5) {$\textsc{\small B}^+$};
+			\node (i22) at (3.75,-3) {$\textsc{\small B}^+$};
+			\node (ii22) at (5.75,-3) {$\textsc{\small A}^-$};
+			\node (d22) at (4.25,-4) {};
+			\node (dd22) at (5.25,-4) {};
+			\node (o22) at (3.75,-5) {$\textsc{\small A}^-$};
+			\node (oo22) at (5.75,-5) {$\textsc{\small B}^+$};
 			\draw[->,>=stealth] (i22) -- (d22.center);
 			\draw[<-,>=stealth] (ii22) -- (dd22.center);
 			\draw[<-,>=stealth] (d22.center) -- (dd22.center);
 			\draw[<-,>=stealth, shorten >=5pt] (d22.center) -- (o22.center);
 			\draw[->,>=stealth, shorten >=5pt] (dd22.center) -- (oo22.center);
 			
-			\node (i23) at (7,-2.5) {$\textsc{\small A}^+$};
-			\node (ii23) at (9,-2.5) {$\textsc{\small B}^-$};
-			\node (d23) at (7.5,-3.5) {};
-			\node (dd23) at (8.5,-3.5) {};
-			\node (o23) at (7,-4.5) {$\textsc{\small B}^-$};
-			\node (oo23) at (9,-4.5) {$\textsc{\small A}^+$};
+			\node (i23) at (7,-3) {$\textsc{\small A}^+$};
+			\node (ii23) at (9,-3) {$\textsc{\small B}^-$};
+			\node (d23) at (7.5,-4) {};
+			\node (dd23) at (8.5,-4) {};
+			\node (o23) at (7,-5) {$\textsc{\small B}^-$};
+			\node (oo23) at (9,-5) {$\textsc{\small A}^+$};
 			\draw[->,>=stealth] (i23) -- (d23.center);
 			\draw[<-,>=stealth] (ii23) -- (dd23.center);
 			\draw[<-,>=stealth] (d23.center) -- (dd23.center);
 			\draw[<-,>=stealth, shorten >=5pt] (d23.center) -- (o23.center);
 			\draw[->,>=stealth, shorten >=5pt] (dd23.center) -- (oo23.center);
 			
-			\node (i24) at (10,-2.5) {$\textsc{\small A}^+$};
-			\node (ii24) at (11,-2.5) {$\textsc{\small A}^-$};
-			\node (d24) at (10,-3.5) {};
-			\node (dd24) at (11,-3.5) {};
+			\node (i24) at (10,-3) {$\textsc{\small A}^+$};
+			\node (ii24) at (11,-3) {$\textsc{\small A}^-$};
+			\node (d24) at (10,-4) {};
+			\node (dd24) at (11,-4) {};
 			\draw[->,>=stealth] (i24) -- (d24.center);
 			\draw[<-,>=stealth] (ii24) -- (dd24.center);
 			\draw (d24.center) edge [-,>=stealth,bend right=90] (dd24.center);
 			
-			\node (i31) at (.5,-5) {$\textsc{\small B}^-$};
-			\node (ii31) at (2.5,-5) {$\textsc{\small B}^+$};
-			\node (d31) at (1,-6) {};
-			\node (dd31) at (2,-6) {};
-			\node (o31) at (.5,-7) {$\textsc{\small C}^+$};
-			\node (oo31) at (2.5,-7) {$\textsc{\small C}^-$};
+			\node (i31) at (.5,-6) {$\textsc{\small B}^-$};
+			\node (ii31) at (2.5,-6) {$\textsc{\small B}^+$};
+			\node (d31) at (1,-7) {};
+			\node (dd31) at (2,-7) {};
+			\node (o31) at (.5,-8) {$\textsc{\small C}^+$};
+			\node (oo31) at (2.5,-8) {$\textsc{\small C}^-$};
 			\draw[<-,>=stealth] (i31) -- (d31.center);
 			\draw[->,>=stealth] (ii31) -- (dd31.center);
 			\draw[->,>=stealth] (d31.center) -- (dd31.center);
 			\draw[->,>=stealth, shorten >=5pt] (d31.center) -- (o31.center);
 			\draw[<-,>=stealth, shorten >=5pt] (dd31.center) -- (oo31.center);
 			
-			\node (i32) at (3.75,-5) {$\textsc{\small B}^-$};
-			\node (ii32) at (5.75,-5) {$\textsc{\small C}^+$};
-			\node (d32) at (4.25,-6) {};
-			\node (dd32) at (5.25,-6) {};
-			\node (o32) at (3.75,-7) {$\textsc{\small C}^+$};
-			\node (oo32) at (5.75,-7) {$\textsc{\small B}^-$};
+			\node (i32) at (3.75,-6) {$\textsc{\small B}^-$};
+			\node (ii32) at (5.75,-6) {$\textsc{\small C}^+$};
+			\node (d32) at (4.25,-7) {};
+			\node (dd32) at (5.25,-7) {};
+			\node (o32) at (3.75,-8) {$\textsc{\small C}^+$};
+			\node (oo32) at (5.75,-8) {$\textsc{\small B}^-$};
 			\draw[<-,>=stealth] (i32) -- (d32.center);
 			\draw[->,>=stealth] (ii32) -- (dd32.center);
 			\draw[->,>=stealth] (d32.center) -- (dd32.center);
 			\draw[->,>=stealth, shorten >=5pt] (d32.center) -- (o32.center);
 			\draw[<-,>=stealth, shorten >=5pt] (dd32.center) -- (oo32.center);
 			
-			\node (i33) at (7,-5) {$\textsc{\small C}^-$};
-			\node (ii33) at (9,-5) {$\textsc{\small B}^+$};
-			\node (d33) at (7.5,-6) {};
-			\node (dd33) at (8.5,-6) {};
-			\node (o33) at (7,-7) {$\textsc{\small B}^+$};
-			\node (oo33) at (9,-7) {$\textsc{\small C}^-$};
+			\node (i33) at (7,-6) {$\textsc{\small C}^-$};
+			\node (ii33) at (9,-6) {$\textsc{\small B}^+$};
+			\node (d33) at (7.5,-7) {};
+			\node (dd33) at (8.5,-7) {};
+			\node (o33) at (7,-8) {$\textsc{\small B}^+$};
+			\node (oo33) at (9,-8) {$\textsc{\small C}^-$};
 			\draw[<-,>=stealth] (i33) -- (d33.center);
 			\draw[->,>=stealth] (ii33) -- (dd33.center);
 			\draw[->,>=stealth] (d33.center) -- (dd33.center);
 			\draw[->,>=stealth, shorten >=5pt] (d33.center) -- (o33.center);
 			\draw[<-,>=stealth, shorten >=5pt] (dd33.center) -- (oo33.center);
 			
-			\node (i34) at (10,-5) {$\textsc{\small C}^-$};
-			\node (ii34) at (11,-5) {$\textsc{\small C}^+$};
-			\node (d34) at (10,-6) {};
-			\node (dd34) at (11,-6) {};
+			\node (i34) at (10,-6) {$\textsc{\small C}^-$};
+			\node (ii34) at (11,-6) {$\textsc{\small C}^+$};
+			\node (d34) at (10,-7) {};
+			\node (dd34) at (11,-7) {};
 			\draw[<-,>=stealth] (i34) -- (d34.center);
 			\draw[->,>=stealth] (ii34) -- (dd34.center);
 			\draw (d34.center) edge [-,>=stealth,bend right=90] (dd34.center);
@@ -1147,8 +1141,10 @@
 			\]
 			\end{figure}
 	\end{frame}
-	\begin{frame}{Road to completeness}
-		 	
+	\begin{frame}{}
+		\epigraph
+			{When you depart for Ithaca,\\wish for the road to be long,\\full of adventure, full of knowledge.}
+			{\textit{C. P. Cavafy\\ Ithaca}}
 	\end{frame}
   	
 \end{document}
