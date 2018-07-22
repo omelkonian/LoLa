@@ -1,0 +1,28 @@
+\begin{tikzpicture}[every node/.style={anchor=base}, scale=.9]
+  \node (i0) at (-1,1) {\textsc{\underline{permutation}}};
+  \node at (-1,0) {$\vdots$};
+  \node (p1) at (-1,-1) {$(zxw,\ y)$};
+  \node at (-1,-2) {$\vdots$};
+  \node (p2) at (-1,-3) {$(xzw,\ y)$};
+  \node at (-1,-4) {$\vdots$};
+  \pause
+  \node (i1) at (3,1) {\textsc{\underline{descriptor}}};
+  \node at (3,0) {$\vdots$};
+  \node (d1) at (3,-1) {$(abc,\ c)$};
+  \node at (3,-2) {$\vdots$};
+  \node (d2) at (3,-3) {$(bac,\ c)$};
+  \node at (3,-4) {$\vdots$};
+  \draw (p1) edge [->, mLightBrown, thick] (d1);
+  \draw (p2) edge [->, mLightBrown, thick] (d2);
+  \pause
+  \node (i2) at (7,1) {\textsc{\underline{eliminated}}};
+  \node at (7,.25) {$\vdots$};
+  \node (e1) at (7,-.5) {$(c,\ \epsilon) \mapsfrom \s{C}^+_{l}$};
+  \node (e2) at (7,-1.5) {$(\epsilon,\ c) \mapsfrom \s{C}^+_{r}$};
+  \node at (7,-2.25) {$\vdots$};
+  \node (e3) at (7,-3) {$(bac,\ c) \ \notin\ \mathcal{D} $};
+  \node at (7,-3.75) {$\vdots$};
+  \draw (d1) edge [->, mLightBrown, thick] (e1);
+  \draw (d1) edge [->, mLightBrown, thick] (e2);
+  \draw (d2) edge [->, mLightBrown, thick] (e3);
+\end{tikzpicture}

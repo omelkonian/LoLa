@@ -1,0 +1,41 @@
+\begin{tikzpicture}
+    \begin{axis}[
+    black,
+        width  = 0.39*\textwidth,
+        height = \charth,
+        major x tick style = transparent,
+        ybar=2*\pgflinewidth,
+        bar width=6pt,
+        ymajorgrids = true,
+        ylabel = {\textsc{Rule size}},
+        every tick label/.append style={font=\tiny},
+        every axis x label/.style={
+              white,
+          at={(ticklabel* cs:1.05)},
+          anchor=west,
+          },
+      every axis y label/.style={at={(current axis.north)},above=1mm},
+        symbolic x coords={\textcolor{white}{abc}},
+        xtick = data,
+        scaled y ticks = false,
+        enlarge x limits=0,
+        ymin=0,
+        legend cell align=left,
+        legend style={
+            at={(0.5,-0.15)},
+        anchor=north,
+        legend columns=-1
+      },
+    ]
+        \addplot[style={bblue,fill=bblue,mark=none}]
+            coordinates {(\textcolor{white}{abc}, 65)};
+        \addplot[style={rred,fill=rred,mark=none}]
+             coordinates {(\textcolor{white}{abc},95)};
+        \addplot[style={ggreen,fill=ggreen,mark=none}]
+             coordinates {(\textcolor{white}{abc},270)};
+        \addplot[style={ppurple,fill=ppurple,mark=none}]
+             coordinates {(\textcolor{white}{abc},690)};
+        \addplot[style={pyellow,fill=pyellow,mark=none}]
+             coordinates {(\textcolor{white}{abc},1456)};
+    \end{axis}
+\end{tikzpicture}

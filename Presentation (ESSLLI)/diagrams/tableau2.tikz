@@ -1,0 +1,12 @@
+\begin{tikzpicture}[every node/.style={anchor=base},xscale=.5]
+	\node (n0) at (0,0) {$a_1$};
+	\node (n1) at (1,0) {$b_2$};
+	\node (n2) at (2,0) {$a_3$};
+	\node (n3) at (3,0) {$c_4$};
+	\node (n4) at (4,0) {$b_5$};
+	\node (n5) at (5,0) {$c_6$};
+	\draw (n0) edge [thick, rred, bend left=90] (n1);
+	\draw (n1) edge [thick, rred, bend right=90] (n3);
+	\draw (n2) edge [thick, ggreen, bend left=90] (n4);
+	\draw (n4) edge [thick, ggreen, bend right=90] (n5);
+\end{tikzpicture}

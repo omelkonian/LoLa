@@ -1,0 +1,44 @@
+\begin{tikzpicture}
+    \begin{axis}[black,
+        width  = 0.59*\textwidth,
+        height = 1.01*\charth,
+        major x tick style = transparent,
+        ybar=2*\pgflinewidth,
+        bar width=3pt,
+        ymajorgrids = true,
+        ylabel = {\textsc{Computation Time} \small (in log(sec))},
+        %ytick={10^1, 2, 3, 4, 5, 6},
+        every tick label/.append style={font=\tiny},
+        every axis x label/.style={
+          at={(ticklabel* cs:1.05)},
+          anchor=west,
+          },
+      every axis y label/.style={black, at={(current axis.north)},above=1mm},
+        symbolic x coords={\bb{2},\bb{3},\bb{4},\bb{5},\bb{6}},
+        xtick = data,
+        scaled y ticks = false,
+        enlarge x limits=0.1,
+        ymin=0,
+        legend cell align=left,
+        legend style={
+            at={(0.5,-0.25)},
+        anchor=north,
+        legend columns=-1
+      },
+    ]
+    \addplot[style={bblue,fill=bblue,mark=none}]
+           coordinates {(\bb{2}, -1.5) (\bb{3},-0.3) (\bb{4},0.9) (\bb{5},2.1) (\bb{6},3.37)};
+
+        \addplot[style={rred,fill=rred,mark=none}]
+             coordinates {(\bb{2},-1.3) (\bb{3},0) (\bb{4},1.23) (\bb{5},2.39) (\bb{6},3.73)};
+
+        \addplot[style={ggreen,fill=ggreen,mark=none}]
+             coordinates {(\bb{2},-0.22) (\bb{3},1) (\bb{4},2.28) (\bb{5},3.54) (\bb{6},4.79)};
+
+        \addplot[style={ppurple,fill=ppurple,mark=none}]
+             coordinates {(\bb{2},-0.22) (\bb{3},1.04) (\bb{4},2.34) (\bb{5},3.64) (\bb{6},4.99)};
+
+        \addplot[style={pyellow,fill=pyellow,mark=none}]
+             coordinates {(\bb{2},0.17) (\bb{3},1.46) (\bb{4},2.77) (\bb{5},4.09) (\bb{6},5.42)};
+    \end{axis}
+\end{tikzpicture}

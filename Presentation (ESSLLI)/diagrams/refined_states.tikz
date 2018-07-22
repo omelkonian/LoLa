@@ -1,0 +1,15 @@
+\begin{tikzpicture}[every node/.style={anchor=base}, scale=.9]
+	\node (c) at (0,0) {$A^{+}(x, y)$};
+	\node (l) at (-1,-1) {$A^{+}_{left}$};
+	\node (r) at (1,-1) {$A^{+}_{right}$};
+	\draw (c) edge [->, mLightBrown, thick] (l);
+	\draw (c) edge [->, mLightBrown, thick] (r);
+	\node (v) at (0,-1.6) {$\vdots$};
+	\node (cc) at (0,-2.3) {$C^{-}(x, y)$};
+	\node (ll) at (-2,-3.3) {$C^{-}_{left}$};
+	\node (rr) at (2,-3.3) {$C^{-}_{right}$};
+	\node (lr) at (0,-3.8) {$C^{-}_{left,\ right}$};
+	\draw (cc) edge [->, mLightBrown, thick] (ll);
+	\draw (cc) edge [->, mLightBrown, thick] (rr);
+	\draw (cc) edge [->, mLightBrown, thick] (lr);
+\end{tikzpicture}

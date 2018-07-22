@@ -1,0 +1,26 @@
+\begin{tikzpicture}[every node/.style={anchor=base}]
+	\node (n0) at (0,0) {$a$};
+	\node (n1) at (1,0) {$a$};
+	\node (n2) at (2,0) {$b$};
+	\node (n3) at (3,0) {$b$};
+	\node (n4) at (4,0) {$a$};
+	\node (n5) at (5,0) {$c$};
+	\node (n6) at (6,0) {$b$};
+	\node (n7) at (7,0) {$a$};
+	\node (n8) at (8,0) {$c$};
+	\node (n9) at (9,0) {$c$};
+	\node (n10) at (10,0) {$b$};
+	\node (n11) at (11,0) {$c$};
+	\pause
+	\draw (n0) edge [thick, rred, bend left=90] (n2);
+	\draw (n2) edge [thick, rred, bend right=90] (n5);
+	\pause
+	\draw (n1) edge [thick, ggreen, bend left=90] (n3);
+	\draw (n3) edge [thick, ggreen, bend right=90] (n8);
+	\pause
+	\draw (n4) edge [thick, bblue, bend left=90] (n6);
+	\draw (n6) edge [thick, bblue, bend right=90] (n9);
+	\pause
+	\draw (n7) edge [thick, pyellow, bend left=90] (n10);
+	\draw (n10) edge [thick, pyellow, bend right=90] (n11);
+\end{tikzpicture}

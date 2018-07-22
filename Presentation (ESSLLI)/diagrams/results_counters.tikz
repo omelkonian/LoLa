@@ -1,0 +1,42 @@
+\begin{tikzpicture}
+    \begin{axis}[
+        black,
+        width  = \textwidth,
+        height = \charth,
+        major x tick style = transparent,
+        ybar=4*\pgflinewidth,
+        bar width=3pt,
+        ymajorgrids = true,
+        ylabel = {\textsc{Counter-examples} \small (\%)},
+        every tick label/.append style={font=\tiny},
+        every axis x label/.style={
+              black,
+          at={(ticklabel* cs:1.05)},
+          anchor=west,
+          },
+        every axis y label/.style={black,at={(current axis.north)},above=1mm},
+        symbolic x coords={\bb{2},\bb{3},\bb{4},\bb{5},\bb{6}},
+        xtick = data,
+        scaled y ticks = false,
+        enlarge x limits=0.1,
+        ymin=0,
+        legend cell align=left,
+        legend style={
+            at={(.25,.75)},
+        anchor=south west,
+        legend columns=-1
+      },
+    ]
+        \addplot[style={bblue,fill=bblue,mark=none}]
+            coordinates {(\bb{2}, 0.0) (\bb{3},0.0) (\bb{4},1.7) (\bb{5},6.4) (\bb{6},14.6)};
+        \addplot[style={rred,fill=rred,mark=none}]
+            coordinates {(\bb{2},0) (\bb{3},0) (\bb{4},1.5) (\bb{5},5) (\bb{6},10)};
+        \addplot[style={ggreen,fill=ggreen,mark=none}]
+            coordinates {(\bb{2},0) (\bb{3},0) (\bb{4},0.2) (\bb{5},0.8) (\bb{6},1.7)};
+        \addplot[style={ppurple,fill=ppurple,mark=none}]
+            coordinates {(\bb{2},0) (\bb{3},0) (\bb{4},0) (\bb{5},0) (\bb{6},0.02)};
+        \addplot[style={pyellow,fill=pyellow,mark=none}]
+            coordinates {(\bb{2},0) (\bb{3},0) (\bb{4},0) (\bb{5},0) (\bb{6},0.001)};
+    \legend{\textcolor{black}{G$_0$},\textcolor{black}{G$_1$},\textcolor{black}{G$_2$},\textcolor{black}{G$_3$},\textcolor{black}{G$_4$},\textcolor{black}{G$_5$}}
+    \end{axis}
+\end{tikzpicture}

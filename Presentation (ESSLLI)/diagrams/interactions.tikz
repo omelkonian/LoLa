@@ -1,0 +1,48 @@
+\begin{tikzpicture}[scale=.7]
+  \foreach \x /\alph/\name in {
+  		0/n1/$A^{+}_{l}$,
+  		22.5/n2/$A^{+}_{r}$,
+  		45/n3/$B^{+}_{l}$,
+  		67.5/n4/$B^{+}_{r}$,
+  		90/n5/$C^{+}_{l}$,
+  		112.5/n6/$C^{+}_{r}$,
+  		135/n7/$A^{-}_{l}$,
+  		157.5/n8/$A^{-}_{r}$,
+  		180/n9/$A^{-}_{lr}$,
+  		202.5/n10/$B^{-}_{l}$,
+  		225/n11/$B^{-}_{r}$,
+  		247.5/n12/$B^{-}_{lr}$,
+  		270/n13/$C^{-}_{l}$,
+  		292.5/n14/$C^{-}_{r}$,
+  		315/n15/$C^{-}_{lr}$,
+  		337.5/n16/$W$
+  }{
+  	\node[] (\alph) at (\x:5cm) {};
+  }
+  \foreach \alpha in {n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15,n16}%
+  {%
+  \foreach \alphb in {n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12,n13,n14,n15}%
+  {%
+   \draw (\alpha) edge (\alphb);%
+  }}
+  \foreach \x /\alph/\name in {
+  		0/n1/$A^{+}_{l}$,
+  		22.5/n2/$A^{+}_{r}$,
+  		45/n3/$B^{+}_{l}$,
+  		67.5/n4/$B^{+}_{r}$,
+  		90/n5/$C^{+}_{l}$,
+  		112.5/n6/$C^{+}_{r}$,
+  		135/n7/$A^{-}_{l}$,
+  		157.5/n8/$A^{-}_{r}$,
+  		180/n9/$A^{-}_{lr}$,
+  		202.5/n10/$B^{-}_{l}$,
+  		225/n11/$B^{-}_{r}$,
+  		247.5/n12/$B^{-}_{lr}$,
+  		270/n13/$C^{-}_{l}$,
+  		292.5/n14/$C^{-}_{r}$,
+  		315/n15/$C^{-}_{lr}$,
+  		337.5/n16/$W$
+  }{
+  	\node[circle,inner sep=0pt,minimum size=6mm, draw=black,fill=white] (\alph) at (\x:5cm) {\tiny \textcolor{black}{\name}};
+  }
+ \end{tikzpicture}
