@@ -94,9 +94,18 @@
 	\maketitle
 
 	\begin{frame}{Introduction/Definition}
+		\tsc{2-MCFG}\\
+			Generalization of the CFG over tuples of strings	
+	
+		\tsc{N-dimensional Dyck Language $D^N$}\\
+			Defined over an ordered alphabet of $N$ symbols: \{$\alpha_1 < \dots < \alpha_N$\} s.t. words satisfy two conditions:
+			\begin{enumerate}
+				\item Equal number of occurrences of all alphabet symbols
+				\item Any prefix of a word must contain at least as many $\alpha_i$ as $\alpha_{i+1} \quad \forall \ i \ \leq N-1$
+			\end{enumerate}
 	\end{frame}
 	
-	\begin{frame}{Some examples}
+	\begin{frame}{$D^3$ - Some examples}
 		\hspace{1cm}
 		\begin{minipage}{.4\textwidth}
 		\textsc{Dyck words}
