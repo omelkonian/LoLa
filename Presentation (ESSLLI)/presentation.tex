@@ -94,9 +94,11 @@
 	\maketitle
 
 	\begin{frame}{Introduction/Definition}
+	% Define M-MCFG and D^N or 2-MCFG and D^3?
 		\tsc{2-MCFG}\\
 			Generalization of the CFG over tuples of strings	
 	
+	\pause
 		\tsc{N-dimensional Dyck Language $D^N$}\\
 			Defined over an ordered alphabet of $N$ symbols: \{$\alpha_1 < \dots < \alpha_N$\} s.t. words satisfy two conditions:
 			\begin{enumerate}
@@ -137,10 +139,13 @@
 	
 	
 	\begin{frame}{Motivation}
-	\begin{center}
-%	1) Linguistics
-% 2) Static Analysis
-	\end{center}
+		\tsc{Natural Languages}\\
+			Free word order respecting linear order constraints
+		
+		\pause 
+				
+		\tsc{Programming Languages}\\
+			Static Analysis of non-standard control flows (e.g. \textit{yield})
 	\end{frame}
 
 	\begin{frame}{G$_0$: Grammar of triple insertions}
