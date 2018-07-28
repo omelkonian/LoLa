@@ -23,7 +23,7 @@ And finally this isn't a D3 word either, because even though we have an equal nu
 
 An easy way to distinguish a D3 word is what we call the first-match policy. What it says is that you may simply pick the first 'a', create a link from it towards the first 'b', and 
 then connect that one to the first 'c'. Then you can repeat this process with the second 'abc' triplet and so on and so forth. By the end of the process, every character in your word
-must be linked with its matches. This examples already hinds towards the existence of crossing dependencies in D3, but more on that later.
+must be linked with its matches. This examples already hinds towards the existence of crossing dependencies in D3, but more on in a bit.
 
 MOTIVATION
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -50,6 +50,44 @@ With this, O will show you what we tried at first and what sort of problems star
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+REFINING STATES
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+It was at this point when we realized the over-constrained nature of our rules. Even though our incomplete states are expressive enough with respect to their content, they provide no 
+information whatsoever about the position of the characters they have extra or are missing. To counter this, each of our incomplete states may be split into a number of refined, 
+position-aware states. For instance an A-plus may be split into two versions of itself; an A-plus-left, which has the extra 'a' in its left-hand side, and an A-plus-right which has it in
+the right-hand side. Similarly, a C-minus may be split into three versions; a C-minus-left, which has both the extra and the extra b on its left, a C-minus-right, which has them on its right,
+and a C-minus-left-right, which has the extra 'a' in the left and the extra 'b' in the right. By creating these new states, a vast amount of previously hidden state interactions and 
+tuple element permutations started becoming apparent.
+
+REFINING STATES: INTERACTIONS
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+These new rules, however, come at a great cost. The number of states we need to consider and all their possible combinations has become way too large to manage. Manually writing down a 
+full grammar and proofreading through it has become impossible, even at a meta-rule level. Obviously our meta-grammar approach no longer suffices, and we needed something even more abstract
+to automate the rule-making process. 
+
+G4: ARIS
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+This is where our last method, Automatic Rule Inference, comes into play. First, each of our new, refined states is matched with a descriptor of its tuple element's contents. These descriptors
+essentially tell our system what each state's extra characters are, but also WHERE they are. Using these descriptors, each state may then be uniquely identified. To create rules out of them,
+all candidate permutations between all pairs of states are considered, and then all occurrences of ordered 'abc' triplets are removed. If the resulting descriptor is the match of a state 
+we have already defined, then this interaction in fact constitutes a valid rule which can be inferred and used.
+
+ARI: Example
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+As an example, let us consider the case of an A-minus-left-right interacting with a B-minus-left-right. The first has an extra 'b' on its left and an extra 'c' on its right, while the second
+has an extra 'a' on its left and an extra 'c' on its right. First, all permutations that respect the internal order constraints are constructed. Then, from each such permutation we obtain
+a descriptor. These descriptors are finally reduced; in the first permutation shown, two valid rules arise: one that leads to a C-plus-left, when the second 'c' gets eliminated, and another
+that leads to a C-plus-right, when the first 'c' is removed. The second descriptor, on the other hand, may neither be reduced nor is the mapping of any state, so this permutation does not 
+generate any rule.
+
+This system allows us to remove ourselves almost completely from the rule-making process. We are now able to generate full, extensive grammars by simply describing the grammar's states on an
+abstract level, and letting the system work out the rules on its own.
+
+RESULTS:
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Despite its appeal, this system was not enough to parse D3 either. As our charts show, we can see that each successive grammar gets significantly better at parsing, but a small number of 
+counter-examples, or failed parses, continues appearing as words get larger. Additionally, the abstractive nature of our grammars comes at the cost of a rule size explosion, which is in 
+turn associated with an increase in computation time. As the time required to check new grammars started becoming prohibitive, we recognized the necessity of switching to more theoretical, 
+less hacky approaches. 
+
