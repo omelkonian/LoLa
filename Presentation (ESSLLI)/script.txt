@@ -1,0 +1,55 @@
+TITLE
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Hi. I am K and this is O and we're going to be talking to you about the three dimensional Dyck language and our attempts to parse it with a 2-multiple context free grammar.
+We know this may sound a bit cryptic, so we're going to start off with some brief definitions and examples to make sure we're on the same page.
+
+DEFINITIONS
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+First of all, multiple context free grammars are a mildly context sensitive grammar formalism that generalizes the concept of a standard CFG. They do so by employing the standard
+CFG operations of concatenation, but now on tuples of strings instead of just singular strings. More precisely, an m-MCFG is a multiple context free grammar that operates on
+tuples of arity m.
+Multi-dimensional dyck languages are also a generalization over the Dyck language, which is the language of well-bracketed parentheses. An N-dimensional Dyck language is defined
+over a lexicographically ordered alphabet of N symbols. A word is said to belong in this language if it satifies two conditions.
+	One, all of the N symbols must occur in this word an equal number of times
+and Two, the occurrence of a character in this word must be indirectly preceeded by at least as many occurrences of all previous characters from the alphabet
+
+EXAMPLES
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+To make things clearer, we are going to inspect a few examples from the three dimensional case, where our alphabet is abc. All these words obviously belong to D3, as they satisfy 
+both conditions mentioned.
+This is not a D3 word, as it has no occurrences of the letter c. 
+This is not a D3 word, because the number of 'c's does not match the number of 'a's and 'b's. 
+And finally this isn't a D3 word either, because even though we have an equal number of 'a's, 'b's and 'c's, the second 'c' appears before the second 'b', breaking condition two.
+
+An easy way to distinguish a D3 word is what we call the first-match policy. What it says is that you may simply pick the first 'a', create a link from it towards the first 'b', and 
+then connect that one to the first 'c'. Then you can repeat this process with the second 'abc' triplet and so on and so forth. By the end of the process, every character in your word
+must be linked with its matches. This examples already hinds towards the existence of crossing dependencies in D3, but more on that later.
+
+MOTIVATION
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+For now, let us quickly examine what the significance of the problem at hand is.
+
+To begin with, the three dimensional Dyck language is in fact a subset of the so-called MIX language, which we get by simply removing condition number two. MIX has already been proven
+expressible by a 2-MCFG, but the amount of shuffling it allows for has been characterized linguistically irrelevant. D3 on the other hand is more constrained in nature, thus being
+closer to modeling natural language syntax.
+
+Additionally, the uni-dimensional dyck language has found a lot of uses in programming language theory, where it has been used for the purposes of static analysis. This suffices for 
+most control flows, such as if/then statements. Non-standard flows, however, such as Python's yield, require a jump to higher dimensions, where all the nice computational properties 
+of CFGs are lost, which enforces resorting to approximations.
+
+For these reasons, we thought that managing to parse D3 with a 2-MCFG, a computationally efficient alternative to fully context sensitive approaches, would be a promising endeavour. 
+
+With this, O will show you what we tried at first and what sort of problems started arising.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
