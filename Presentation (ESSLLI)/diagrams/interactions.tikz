@@ -43,6 +43,6 @@
   		315/n15/$C^{-}_{lr}$,
   		337.5/n16/$W$
   }{
-  	\node[circle, inner sep=0pt, minimum size=6mm, thick, draw=black, fill=white] (\alph) at (\x:5cm) {\tiny \textcolor{black}{\name}};
+  	\node[circle, inner sep=0pt, minimum size=6mm, thick, fill=white] (\alph) at (\x:5cm) {\tiny \textcolor{black}{\name}};
   }
  \end{tikzpicture}
