@@ -17,8 +17,8 @@
 \usepackage{stmaryrd}
 % Code listing
 \usepackage{minted}
-%\usemintedstyle{friendly}
-\usemintedstyle{tango}
+\usemintedstyle{friendly}
+%\usemintedstyle{tango}
 % Colors
 \usepackage{xcolor}
 \colorlet{CodeBg}{gray!90}
@@ -311,6 +311,10 @@
 		\end{figure}
   	\end{frame}
 
+  \begin{frame}{DSL in Python (\texttt{\$ pip install dyck})}
+	  \inputminted[fontsize=\scriptsize]{python}{code/dyck.py}
+  \end{frame}
+
   	\begin{frame}{Results}
   	\begin{figure}[h!]
     \input{diagrams/results_counters.tikz}
@@ -381,5 +385,26 @@
 			\[ \input{diagrams/webs.tikz} \]
 		\end{figure}
 	\end{frame}
+	
+	\begin{frame}{Python Visualization Package (\texttt{\$ pip install dyckviz})}
+	  \includegraphics[width=.5\textwidth]{terminal.png}
+	  \includegraphics[width=.55\textwidth]{web.pdf}
+  \end{frame}
+  
+  \begin{frame}{Conclusion}
+    \begin{itemize}
+    \item Conjecture still open :(
+    \item Lots of fun along the way
+    \item We are confident we have a complete 3-MCFG, though
+      \begin{itemize}
+      \item Currently mechanizing the proof using \textsc{coq}
+      \end{itemize}
+    \end{itemize}
+  \end{frame}
+  
+  \begin{frame}[standout]
+    Questions?
+  \end{frame}
+  
   	
 \end{document}
