@@ -1,4 +1,4 @@
-@K{6m}
+@K{5m}
 
 TITLE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -55,7 +55,7 @@ sensitive approaches, would be a promising endeavour.
 
 With this, O will show you what we tried at first and what sort of problems started arising.
 
-@O{9m}
+@O{5m}
 
 G0
 --
