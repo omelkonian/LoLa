@@ -1,4 +1,6 @@
-@K{5m}
+==========================
+          @K{5m}
+==========================
 
 TITLE
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -55,20 +57,51 @@ sensitive approaches, would be a promising endeavour.
 
 With this, O will show you what we tried at first and what sort of problems started arising.
 
-@O{5m}
+==========================
+          @O{5m}
+==========================
 
-G0
---
+G0: 3-insertions
+- - - - - - - - -
+We start out with the most straightforward intuition, namely only inserting ABC-triples. This immediately satisfies the first invariant (#A=#B=#C) and we also insert in order to satisfy the 2nd invariant.
 
-Straddling
-----------
+Even this very simple grammar requires 65 rules to cover all cases, where 4 of them are base cases in which we have positioned a single ABC-triple in all possible ways and the rest are inductive cases where we insert another ABC-triple in all possible ways.
 
-Meta (G1-G3)
-------------
+STRADDLING
+- - - - - -
+Now, we quickly find a counter-example where an ABC-triple straddles in-between 2 words, as evidenced by the green BC link in this FMP. So, it turns out that our initial intuition cannot cover such complex interleavings.
 
-SHALL NOT PARSE -> Now, K ...
+META-NOTATION
+- - - - - - -
+Before we move on to a more complicated grammar, we need to manage the growing complexity, so we come up with a meta-grammatical notation to help us, where - instead of specifying all possible positioning manually, we just declare which partial orders should be satisfied. (These partial orders also implicitly tell us which new terminal symbols we insert)
 
-@K{5m}
+G1: Meta-G0 + interleaving
+- - - - - - - - - - - - - -
+So our previous 65-rule grammar reduces to just 2 meta-rules, where the base cases just declare that A must come before B, which comes before C, and our inductive cases naturally respect the previous XY-order and again insert an ABC-triple in-order.
+
+We can now easily extend the previous grammar with the notion interleaving words, where we combine two previous word-nonterminals placing them in any position that respects their internal order XY and ZW.
+
+But we still get straddling counter-examples, although in bigger sizes. What we haven't utilized thus far is the ability to have multiple non-terminals/states.
+
+G2: Adding states
+- - - - - - - - - -
+We now introduce states that represent incomplete words, either having one additional symbol (A+,B+,C+) or missing one symbol (A-,B-,C-). Our base cases correspond to the positive states, while the combination rules take two states to a single state of the reverse polarity and also model interleaving words, but now we interleave a word-state with any other state and keep the same polariry.
+
+Finally, we have the closure rules to eliminate dual states, namely an A+ coming before an A- and a C- appearing before a C+.
+
+We can see our meta-grammar notation pays off, since we only have 12 meta-rules that eventually expand to approximately 300 concrete rules.
+
+While this greatly reduces the counter-examples, we still find a handful in larger sizes, and even augmenting our grammar with 3-insertions to every state, we still have counter-examples appearing in large words consisting of 5 abc-triples (that is, length=15).
+
+SHALL NOT PARSE
+- - - - - - - - -
+Well, although we have come up with a complicated grammar of over 600 rules, we still cannot parse the Dyck language completely!!!
+Kokos will now show you further attempts to solve this problem.
+
+
+==========================
+          @K{5m}
+==========================
 
 REFINING STATES
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -113,7 +146,7 @@ This system allows us to remove ourselves almost completely from the rule-making
 by simply describing the grammar's states on an abstract level, and letting the system work out the rules on its own.
 
 CODE SNIPPET
-------------
+- - - - - - -
 ??
 
 RESULTS:
@@ -124,16 +157,52 @@ nature of our grammars comes at the cost of a rule size explosion, which is in t
 required to check new grammars started becoming prohibitive, we recognized the necessity of switching to more theoretical,
 less hacky approaches. O will
 
-@O{5m}
+==========================
+          @O{5m}
+==========================
 
 PROMOTION
----------
+- - - - - -
+It turns out Dyck words have a 1-to-1 correspondence with standard young tableaux, which are rectangular tables (of 3 rows, in our case) which contain the numbers 1-to-N (where N is the length of the word) and, moreover, the elements are strictly increasing both row-wise and column-wise.
+
+On the left, we can see a simple example, where the 1st row indicates the positions of all the As in the string, the 2nd of the Bs, and so forth.
+
+Additionally, if we read it column-by-column, we get the FMP which was the most intuitive all along.
+
+Now, there is an interesting operation you can apply to these tableaux, namely "le jeu de taquin" (or just promotion), where
+you replace the number 1 with a dot and decrement all other elements by 1. You then move the dot either right or down, depending on where the smallest element is. When you eventually reach the lower right part, you replace the dot with the number N.
+
+You end up in another standard young tableau, which corresponds to another Dyck word! This operation is in fact cyclic, meaning
+you will eventually circle back to your original tableau, in at most N rounds. Therefore, it separates the Dyck word space in disjoint equivalence classes, allowing us to somehow divide the problem into smaller ones.
 
 WEBS
-----
+- - -
+Another interesting correspondence exist with a combinatorial object, called spider webs (which are a specific kind of planar graphs). The mathematicians who came up with that, call Dyck words Yamanouchi words which have 10\bar{1} instead of ABC, but it is essentially the same problem.
+
+We have no time to go into the definition of spider webs, but the act of promotion on Young Tableaux corresponds to rotation of these graphs and, most importantly, there exists an algorithm which transforms a given Dyck word to the corresponding spider web using the so-called "growth rules".
+
+Now, if we replace 1 with A, 0 with B, \bar{1} with C and assign positive polarity to nodes which have outgoing edges and negative polarity otherwise, we come up with these growth rules, which are very similar to the multiple-state rules you saw earlier.
+
+When we first realised that, our minds were blown since if we modelled all these growth rules with our meta-rules, we would have a complete Dyck grammar!!!
+
+But, unfortunately, we quickly realised we cannot model the 4-node rules which have two output states, since we can only have one output...
 
 VIZ
----
+- - -
+After all, we did not manage to utilize these mathematical correspondences to solve our problem, but we nonetheless developed another python package (called dyckviz), which allows you to experiment with different equivalence classes and check the corresponding combinatorial objects.
+
+You essentially give a Dyck word and get the complete matching equivalence class, coloured in the terminal using the FMP.
+At the same time you get an automatically-generated pdf containing all the spider webs corresponding to the words in this equivalence class.
 
 CONCLUSION
-----------
+- - - - - -
+To conclude, we did not manage to find an 2-MCFG for the Dyck language of dimension 3, but had lots of fun and twists along the way.
+
+We are now quite pessimistic on whether there exists a 2-MCFG, but we cannot yet exclude the possibility formally.
+Nonetheless, we are confident we've found a complete 3-MCFG and we are currently trying to mechanize a proof in the COQ programming  language.
+
+We chose to do it that way, since we have to consider a lot of cases in our proof as our meta-grammar consists of 2 meta-rules which expand to ~100 rules...
+
+QUESTIONS
+- - - - -
+Thank you for your attention and feel free to ask any questions
